@@ -26,6 +26,12 @@ namespace MobileShopAPI.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<ApplicationUser>(entity =>
+            {
+                entity.Property(e => e.Status)
+                    .HasDefaultValueSql("((0))");
+            });
+
             modelBuilder.Entity<Brand>(entity =>
             {
                 entity.ToTable("brand");

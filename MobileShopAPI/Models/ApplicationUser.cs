@@ -22,7 +22,9 @@ namespace MobileShopAPI.Models
         [PersonalData]
         public string? Address { get; set; }
         [PersonalData]
-        public int Status { get; set; }
+        public int? Status { get; set; }
+        [PersonalData]
+        public string? avatar_url { get; set; }
         [PersonalData]
         [Column("createdDate")]
         public DateTime? CreatedDate { get; set; }
