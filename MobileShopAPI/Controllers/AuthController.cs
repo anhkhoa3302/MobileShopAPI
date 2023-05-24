@@ -24,11 +24,25 @@ namespace MobileShopAPI.Controllers
             {
                 var result = await _userService.RegisterUserAsync(model);
                 if(result.isSuccess)
-                    return Ok(result); //Status code 200
-                return BadRequest(result);
+                    return Ok(result); //Status code: 200
+                return BadRequest(result);//Status code: 404
             }
 
-            return BadRequest("Some properies are not valid");//Status code 404
+            return BadRequest("Some properies are not valid");//Status code: 404
+        }
+
+        // api/auth/login
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginAsync(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.LoginUserAsync(model);
+                if (result.isSuccess)
+                    return Ok(result); //Status code: 200
+                return BadRequest(result);//Status code: 404
+            }
+            return BadRequest("Some properies are not valid");//Status code: 404
         }
     }
 }

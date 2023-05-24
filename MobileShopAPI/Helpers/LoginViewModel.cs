@@ -2,14 +2,12 @@
 
 namespace MobileShopAPI.Helpers
 {
-    public class RegisterViewModel
+    public class LoginViewModel
     {
         [Required]
         [EmailAddress]
         public string Email { get; set; } = null!;
         [Required]
         public string Password { get; set; } = null!;
-        [Required]
-        public string ConfirmPassword { get; set; } = null!;
     }
 }
