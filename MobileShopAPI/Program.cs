@@ -6,6 +6,7 @@ using MobileShopAPI.Data;
 using MobileShopAPI.Models;
 using MobileShopAPI.Services;
 using System.Text;
+using static MobileShopAPI.Services.ISizeService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,11 @@ builder.Services.AddAuthentication(options =>
 
 //Inject services
 builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IColorService, ColorService>();
+builder.Services.AddScoped<ISizeService, SizeService>();
+
 
 
 builder.Services.AddControllers();
