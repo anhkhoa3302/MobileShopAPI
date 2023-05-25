@@ -14,11 +14,11 @@ namespace MobileShopAPI.Models
         /// <summary>
         /// url hình ảnh
         /// </summary>
-        public long? Url { get; set; }
+        public string? Url { get; set; }
         /// <summary>
         /// hình ảnh là ảnh bìa
         /// </summary>
-        public int? IsCover { get; set; }
+        public bool? IsCover { get; set; }
         public DateTime? CreatedDate { get; set; }
 
         public virtual ICollection<ProductImg> ProductImgs { get; set; }
