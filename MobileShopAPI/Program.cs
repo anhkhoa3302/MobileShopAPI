@@ -43,7 +43,7 @@ builder.Services.AddAuthentication(options =>
 
 //Inject services
 builder.Services.AddScoped<IUserService,UserService>();
-
+builder.Services.AddTransient<IMailService, SendGridMailService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

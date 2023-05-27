@@ -10,10 +10,11 @@ namespace MobileShopAPI.Controllers
     public class AuthController : ControllerBase
     {
         private IUserService _userService;
-
-        public AuthController(IUserService userService)
+        private IMailService _mailService;
+        public AuthController(IUserService userService,IMailService mailService)
         {
             _userService = userService;
+            _mailService = mailService;
         }
 
         // api/auth/register
@@ -39,7 +40,11 @@ namespace MobileShopAPI.Controllers
             {
                 var result = await _userService.LoginUserAsync(model);
                 if (result.isSuccess)
+                {
+                    await _mailService.SendEmailAsync(model.Email, "New login", "New login");
                     return Ok(result); //Status code: 200
+                }
+                    
                 return BadRequest(result);//Status code: 404
             }
             return BadRequest("Some properies are not valid");//Status code: 404

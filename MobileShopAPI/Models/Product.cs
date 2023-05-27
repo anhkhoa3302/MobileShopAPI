@@ -8,7 +8,7 @@ namespace MobileShopAPI.Models
         public Product()
         {
             OrderDetails = new HashSet<OrderDetail>();
-            ProductImgs = new HashSet<ProductImg>();
+            Images = new HashSet<Image>();
             UserRatings = new HashSet<UserRating>();
         }
 
@@ -38,7 +38,7 @@ namespace MobileShopAPI.Models
         public virtual Size Size { get; set; } = null!;
         public virtual ApplicationUser User { get; set; } = null!;
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-        public virtual ICollection<ProductImg> ProductImgs { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<UserRating> UserRatings { get; set; }
     }
 }

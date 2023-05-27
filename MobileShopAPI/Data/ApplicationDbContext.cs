@@ -18,7 +18,6 @@ namespace MobileShopAPI.Data
         public virtual DbSet<Order> Orders { get; set; } = null!;
         public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
-        public virtual DbSet<ProductImg> ProductImgs { get; set; } = null!;
         public virtual DbSet<Size> Sizes { get; set; } = null!;
         public virtual DbSet<Transaction> Transactions { get; set; } = null!;
         public virtual DbSet<UserRating> UserRatings { get; set; } = null!;
@@ -111,6 +110,12 @@ namespace MobileShopAPI.Data
                 entity.Property(e => e.Url)
                     .HasColumnName("url")
                     .HasComment("url hình ảnh");
+                entity.HasOne(e=> e.Product)
+                    .WithMany(p=>p.Images)
+                    .HasForeignKey(d=>d.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_images_product");
+
             });
 
             modelBuilder.Entity<Order>(entity =>
@@ -250,26 +255,7 @@ namespace MobileShopAPI.Data
                     .HasConstraintName("fk_product_AspNetUsers");
             });
 
-            modelBuilder.Entity<ProductImg>(entity =>
-            {
-                entity.ToTable("productImg");
 
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.ImageId).HasColumnName("imageId");
-
-                entity.Property(e => e.ProductId).HasColumnName("productId");
-
-                entity.HasOne(d => d.Image)
-                    .WithMany(p => p.ProductImgs)
-                    .HasForeignKey(d => d.ImageId)
-                    .HasConstraintName("fk_productImg_image");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.ProductImgs)
-                    .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("fk_productImg_product");
-            });
 
             modelBuilder.Entity<Size>(entity =>
             {
