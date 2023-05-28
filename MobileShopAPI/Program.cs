@@ -44,6 +44,7 @@ builder.Services.AddAuthentication(options =>
 //Inject services
 builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddTransient<IMailService, SendGridMailService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IColorService, ColorService>();
