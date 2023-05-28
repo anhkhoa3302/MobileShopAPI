@@ -41,7 +41,9 @@ namespace MobileShopAPI.Controllers
                 var result = await _userService.LoginUserAsync(model);
                 if (result.isSuccess)
                 {
-                    await _mailService.SendEmailAsync(model.Email, "New login", "New login");
+                    string message = "<h1>New login noticed</h1>"
+                        +"<p>New login to your account at " + DateTime.Now + "</p>";
+                    await _mailService.SendEmailAsync(model.Email, "New login", message);
                     return Ok(result); //Status code: 200
                 }
                     
