@@ -1,20 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.EntityFrameworkCore;
 using MobileShopAPI.Data;
-using MobileShopAPI.Helpers;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
+using MobileShopAPI.ViewModel;
 
 namespace MobileShopAPI.Services
 {
     public interface IBrandService
     {
-        List<Brand> GetAll();
+        Task<List<Brand>> GetAll();
 
-        Brand GetById(long id);
+        Task<Brand> GetById(long id);
 
-        Task<BrandResponse> Add(Brand brand);
+        Task<BrandResponse> Add(BrandViewModel brand);
 
-        Task<BrandResponse> Update(Brand brand);
+        Task<BrandResponse> Update(long id,BrandViewModel brand);
 
         Task<BrandResponse> Delete(long id);
     }
@@ -27,7 +27,7 @@ namespace MobileShopAPI.Services
         {
             _context = context;
         }
-        public async Task<BrandResponse> Add(Brand brand)
+        public async Task<BrandResponse> Add(BrandViewModel brand)
         {
             var _brand = new Brand
             {
@@ -37,36 +37,23 @@ namespace MobileShopAPI.Services
                 CreatedDate = null
             };
             _context.Add(_brand);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return new BrandResponse
             {
                 Message = "New Brand Added!",
                 isSuccess = true
             };
-            //return new Brand
-            //{
-            //    Id = _brand.Id,
-            //    Name = _brand.Name,
-            //    Description = _brand.Description,
-            //    ImageUrl = _brand.ImageUrl,
-            //    CreatedDate = _brand.CreatedDate
-            //};
-
-            //_context.Brands.Add(brand);
-            //_context.SaveChangesAsync();
-
-            //return CreatedAtAction(nameof(GetBrand), new { id = brand.Id }, brand);
 
         }
 
         public async Task<BrandResponse> Delete(long id)
         {
-            var brand = _context.Brands.SingleOrDefault(br => br.Id == id);
+            var brand = await _context.Brands.SingleOrDefaultAsync(br => br.Id == id);
             if(brand != null)
             {
                 _context.Remove(brand);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return new BrandResponse
                 {
@@ -82,44 +69,38 @@ namespace MobileShopAPI.Services
             };
         }
 
-        public List<Brand> GetAll()
+        public async Task<List<Brand>> GetAll()
         {
-            var brands = _context.Brands.Select(br => new Brand
-            {
-                Id = br.Id,
-                Name = br.Name,
-                Description = br.Description,
-                ImageUrl = br.ImageUrl,
-                CreatedDate = br.CreatedDate
-            });
-            return brands.ToList();
+            var brands = await _context.Brands.ToListAsync();
+            return brands;
         }
 
-        public Brand GetById(long id)
+        public async Task<Brand> GetById(long id)
         {
-            var brand = _context.Brands.SingleOrDefault(b => b.Id == id);
+            var brand = await _context.Brands.SingleOrDefaultAsync(b => b.Id == id);
             if(brand != null)
             {
-                return new Brand
-                {
-                    Id = brand.Id,
-                    Name = brand.Name,
-                    Description = brand.Description,
-                    ImageUrl = brand.ImageUrl,
-                    CreatedDate = brand.CreatedDate
-                };
+                return brand;
             }
             return null;
         }
 
-        public async Task<BrandResponse> Update(Brand brand)
+        public async Task<BrandResponse> Update(long id,BrandViewModel brand)
         {
-            var _brand = _context.Brands.SingleOrDefault(br => br.Id == brand.Id);
+            var _brand = await _context.Brands.FindAsync(id);
+
+            if(_brand == null)
+                return new BrandResponse
+                {
+                    Message = "Bad request",
+                    isSuccess = false
+                };
+
             _brand.Name = brand.Name;
             _brand.Description = brand.Description;
             _brand.ImageUrl = brand.ImageUrl;
-            _brand.CreatedDate = brand.CreatedDate;
-            _context.SaveChanges();
+            _brand.UpdatedDate = DateTime.Now;
+            await _context.SaveChangesAsync();
 
             return new BrandResponse
             {

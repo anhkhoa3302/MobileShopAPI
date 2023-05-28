@@ -1,20 +1,21 @@
-﻿using MobileShopAPI.Data;
-using MobileShopAPI.Helpers;
+﻿using Microsoft.EntityFrameworkCore;
+using MobileShopAPI.Data;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
+using MobileShopAPI.ViewModel;
 using System.Drawing.Drawing2D;
 
 namespace MobileShopAPI.Services
 {
     public interface ISizeService
     {
-        List<Size> GetAll();
+        Task<List<Size>> GetAll();
 
-        Size GetById(long id);
+        Task<Size> GetById(long id);
 
-        Task<SizeResponse> Add(Size size);
+        Task<SizeResponse> Add(SizeViewModel size);
 
-        Task<SizeResponse> Update(Size size);
+        Task<SizeResponse> Update(long id,SizeViewModel size);
 
         Task<SizeResponse> Delete(long id);
 
@@ -26,15 +27,15 @@ namespace MobileShopAPI.Services
             {
                 _context = context;
             }
-            public async Task<SizeResponse> Add(Size size)
+            public async Task<SizeResponse> Add(SizeViewModel size)
             {
                 var _size = new Size
                 {
                     SizeName = size.SizeName,
-                    CreatedDate = null
+                    Description = size.Description
                 };
                 _context.Add(_size);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return new SizeResponse
                 {
@@ -42,72 +43,61 @@ namespace MobileShopAPI.Services
                     isSuccess = true
                 };
 
-                //return new Size
-                //{
-                //    Id = _size.Id,
-                //    SizeName = _size.SizeName,
-                //    CreatedDate = _size.CreatedDate
-                //};
             }
 
-            public async Task<SizeResponse> Delete(long id)
+            public async Task<List<Size>> GetAll()
             {
-                var size = _context.Sizes.SingleOrDefault(br => br.Id == id);
+                var sizes = await _context.Sizes.ToListAsync();
+                return sizes;
+            }
+
+            public async Task<Size> GetById(long id)
+            {
+                var size = await _context.Sizes.FindAsync(id);
                 if (size != null)
                 {
-                    _context.Remove(size);
-                    _context.SaveChanges();
-
-                    return new SizeResponse
-                    {
-                        Message = "This Size Deleted",
-                        isSuccess = true
-                    };
-                }
-
-                return new SizeResponse
-                {
-                    Message = "Delete Fail",
-                    isSuccess = false
-                };
-            }
-
-            public List<Size> GetAll()
-            {
-                var sizes = _context.Sizes.Select(br => new Size
-                {
-                    Id = br.Id,
-                    SizeName = br.SizeName,
-                    CreatedDate = br.CreatedDate
-                });
-                return sizes.ToList();
-            }
-
-            public Size GetById(long id)
-            {
-                var size = _context.Sizes.SingleOrDefault(b => b.Id == id);
-                if (size != null)
-                {
-                    return new Size
-                    {
-                        Id = size.Id,
-                        SizeName = size.SizeName,
-                        CreatedDate = size.CreatedDate
-                    };
+                    return size;
                 }
                 return null;
             }
 
-            public async Task<SizeResponse> Update(Size size)
+            public async Task<SizeResponse> Update(long id,SizeViewModel size)
             {
-                var _size = _context.Sizes.SingleOrDefault(br => br.Id == size.Id);
+                var _size = await _context.Sizes.FindAsync(id);
+                if (_size == null)
+                    return new SizeResponse
+                    {
+                        Message = "Size not found!",
+                        isSuccess = false
+                    };
                 _size.SizeName = size.SizeName;
-                _size.CreatedDate = size.CreatedDate;
+                _size.Description = size.Description;
+                _size.UpdatedDate = DateTime.Now;
                 _context.SaveChanges();
 
                 return new SizeResponse
                 {
                     Message = "This Size Updated!",
+                    isSuccess = true
+                };
+            }
+            public async Task<SizeResponse> Delete(long id)
+            {
+                var size = await _context.Sizes.FindAsync(id);
+
+                if (size == null)
+                    return new SizeResponse
+                    {
+                        Message = "Delete Fail",
+                        isSuccess = false
+                    };
+
+                _context.Remove(size);
+                await _context.SaveChangesAsync();
+
+                return new SizeResponse
+                {
+                    Message = "This Size Deleted",
                     isSuccess = true
                 };
             }

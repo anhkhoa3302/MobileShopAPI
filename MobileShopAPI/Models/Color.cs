@@ -12,7 +12,9 @@ namespace MobileShopAPI.Models
 
         public long Id { get; set; }
         public string ColorName { get; set; } = null!;
+        public string HexValue { get; set; } = null!;
         public DateTime? CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }
     }

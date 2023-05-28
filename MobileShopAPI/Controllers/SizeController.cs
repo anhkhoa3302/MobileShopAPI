@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
 using MobileShopAPI.Services;
+using MobileShopAPI.ViewModel;
 
 namespace MobileShopAPI.Controllers
 {
@@ -15,29 +16,29 @@ namespace MobileShopAPI.Controllers
         {
             _sizeService = sizeService;
         }
-
-        [HttpGet]
-        public IActionResult GetAll()
+        // api/Size/getAll
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                return Ok(_sizeService.GetAll());
+                return Ok(await _sizeService.GetAll());
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
-        [HttpGet("{id}")]
-        public IActionResult GetById(long id)
+        // api/Size/getById/{id}
+        [HttpGet("getById/{id}")]
+        public async Task<IActionResult> GetById(long id)
         {
             try
             {
-                var data = _sizeService.GetById(id);
+                var data = await _sizeService.GetById(id);
                 if (data != null)
                 {
-                    return Ok(_sizeService.GetById(id));
+                    return Ok(data);
                 }
                 else
                 {
@@ -49,14 +50,33 @@ namespace MobileShopAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(long id, Size size)
+        // api/Size/add
+        [HttpPost("add")]
+        public async Task<IActionResult> Add(SizeViewModel size)
         {
-            if (id != size.Id)
+            try
             {
-                return BadRequest();
+                //return Ok(_sizeService.Add(size));
+
+                if (ModelState.IsValid)
+                {
+                    var result = await _sizeService.Add(size);
+                    if (result.isSuccess)
+                        return Ok(result); //Status code: 200
+                    return BadRequest(result);//Status code: 404
+                }
+
+                return BadRequest("Some properies are not valid");//Status code: 404
             }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+        // api/Size/update/{id}
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(long id, SizeViewModel size)
+        {
             try
             {
                 //_sizeService.Update(size);
@@ -64,7 +84,7 @@ namespace MobileShopAPI.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var result = await _sizeService.Update(size);
+                    var result = await _sizeService.Update(id,size);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -76,8 +96,8 @@ namespace MobileShopAPI.Controllers
                 return BadRequest("Some properies are not valid");//Status code: 404
             }
         }
-
-        [HttpDelete("{id}")]
+        // api/Size/delete/{id}
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(long id)
         {
             try
@@ -100,27 +120,6 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Add(Size size)
-        {
-            try
-            {
-                //return Ok(_sizeService.Add(size));
-
-                if (ModelState.IsValid)
-                {
-                    var result = await _sizeService.Add(size);
-                    if (result.isSuccess)
-                        return Ok(result); //Status code: 200
-                    return BadRequest(result);//Status code: 404
-                }
-
-                return BadRequest("Some properies are not valid");//Status code: 404
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
+ 
     }
 }

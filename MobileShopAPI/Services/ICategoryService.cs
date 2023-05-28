@@ -1,21 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MobileShopAPI.Data;
-using MobileShopAPI.Helpers;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
+using MobileShopAPI.ViewModel;
 using System.Drawing.Drawing2D;
 
 namespace MobileShopAPI.Services
 {
     public interface ICategoryService
     {
-        List<Category> GetAll();
+        Task<List<Category>> GetAll();
 
-        Category GetById(long id);
+        Task<Category> GetById(long id);
 
-        Task<CategoryResponse> Add(Category cate);
+        Task<CategoryResponse> Add(CategoryViewModel cate);
 
-        Task<CategoryResponse> Update(Category cate);
+        Task<CategoryResponse> Update(long id,CategoryViewModel cate);
 
         Task<CategoryResponse> Delete(long id);
     }
@@ -28,7 +28,7 @@ namespace MobileShopAPI.Services
         {
             _context = context;
         }
-        public async Task<CategoryResponse> Add(Category cate)
+        public async Task<CategoryResponse> Add(CategoryViewModel cate)
         {
             var _cate = new Category
             {
@@ -38,30 +38,22 @@ namespace MobileShopAPI.Services
                 CreatedDate = null
             };
             _context.Add(_cate);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return new CategoryResponse
             {
                 Message = "New Category Added!",
                 isSuccess = true
             };
-            //return new Category
-            //{
-            //    Id = _cate.Id,
-            //    Name = _cate.Name,
-            //    Description = _cate.Description,
-            //    ImageUrl = _cate.ImageUrl,
-            //    CreatedDate = _cate.CreatedDate
-            //};
         }
 
         public async Task<CategoryResponse> Delete(long id)
         {
-            var cate = _context.Categories.SingleOrDefault(br => br.Id == id);
+            var cate = await _context.Categories.SingleOrDefaultAsync(br => br.Id == id);
             if (cate != null)
             {
                 _context.Remove(cate);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return new CategoryResponse
                 {
@@ -77,44 +69,36 @@ namespace MobileShopAPI.Services
             };
         }
 
-        public List<Category> GetAll()
+        public async Task<List<Category>> GetAll()
         {
-            var cates = _context.Categories.Select(br => new Category
-            {
-                Id = br.Id,
-                Name = br.Name,
-                Description = br.Description,
-                ImageUrl = br.ImageUrl,
-                CreatedDate = br.CreatedDate
-            });
-            return cates.ToList();
+            var categories = await _context.Categories.ToListAsync();
+            return categories;
         }
 
-        public Category GetById(long id)
+        public async Task<Category> GetById(long id)
         {
-            var cate = _context.Categories.SingleOrDefault(b => b.Id == id);
+            var cate = await _context.Categories.FindAsync(id);
             if (cate != null)
             {
-                return new Category
-                {
-                    Id = cate.Id,
-                    Name = cate.Name,
-                    Description = cate.Description,
-                    ImageUrl = cate.ImageUrl,
-                    CreatedDate = cate.CreatedDate
-                };
+                return cate;
             }
             return null;
         }
 
-        public async Task<CategoryResponse> Update(Category cate)
+        public async Task<CategoryResponse> Update(long id, CategoryViewModel cate)
         {
-            var _cate = _context.Categories.SingleOrDefault(br => br.Id == cate.Id);
+            var _cate = await _context.Categories.FindAsync(id);
+            if(_cate == null)
+                return new CategoryResponse
+                {
+                    Message = "Category not found!",
+                    isSuccess = false
+                };
             _cate.Name = cate.Name;
             _cate.Description = cate.Description;
             _cate.ImageUrl = cate.ImageUrl;
-            _cate.CreatedDate = cate.CreatedDate;
-            _context.SaveChanges();
+            _cate.UpdatedDate = DateTime.Now;
+            await _context.SaveChangesAsync();
 
             return new CategoryResponse
             {

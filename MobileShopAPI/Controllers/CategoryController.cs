@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
 using MobileShopAPI.Services;
+using MobileShopAPI.ViewModel;
 
 namespace MobileShopAPI.Controllers
 {
@@ -16,12 +17,12 @@ namespace MobileShopAPI.Controllers
             _cateService = cateService;
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                return Ok(_cateService.GetAll());
+                return Ok(await _cateService.GetAll());
             }
             catch
             {
@@ -29,15 +30,15 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(long id)
+        [HttpGet("getById/{id}")]
+        public async Task<IActionResult> GetById(long id)
         {
             try
             {
-                var data = _cateService.GetById(id);
+                var data = await _cateService.GetById(id);
                 if (data != null)
                 {
-                    return Ok(_cateService.GetById(id));
+                    return Ok(data);
                 }
                 else
                 {
@@ -49,19 +50,35 @@ namespace MobileShopAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(long id, Category cate)
+        [HttpPost("add")]
+        public async Task<IActionResult> Add(CategoryViewModel cate)
         {
-            if (id != cate.Id)
+            try
             {
-                return BadRequest();
+                //return Ok(_cateService.Add(cate));
+                if (ModelState.IsValid)
+                {
+                    var result = await _cateService.Add(cate);
+                    if (result.isSuccess)
+                        return Ok(result); //Status code: 200
+                    return BadRequest(result);//Status code: 404
+                }
+
+                return BadRequest("Some properies are not valid");//Status code: 404
             }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(long id, CategoryViewModel cate)
+        {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _cateService.Update(cate);
+                    var result = await _cateService.Update(id,cate);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -74,7 +91,7 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(long id)
         {
             try
@@ -90,28 +107,6 @@ namespace MobileShopAPI.Controllers
                     return BadRequest(result);//Status code: 404
                 }
                 return BadRequest();
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Add(Category cate)
-        {
-            try
-            {
-                //return Ok(_cateService.Add(cate));
-                if (ModelState.IsValid)
-                {
-                    var result = await _cateService.Add(cate);
-                    if (result.isSuccess)
-                        return Ok(result); //Status code: 200
-                    return BadRequest(result);//Status code: 404
-                }
-
-                return BadRequest("Some properies are not valid");//Status code: 404
             }
             catch
             {

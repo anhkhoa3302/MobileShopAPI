@@ -1,20 +1,21 @@
-﻿using MobileShopAPI.Data;
-using MobileShopAPI.Helpers;
+﻿using Microsoft.EntityFrameworkCore;
+using MobileShopAPI.Data;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
+using MobileShopAPI.ViewModel;
 using System.Drawing.Drawing2D;
 
 namespace MobileShopAPI.Services
 {
     public interface IColorService
     {
-        List<Color> GetAll();
+        Task<List<Color>> GetAll();
 
-        Color GetById(long id);
+        Task<Color> GetById(long id);
 
-        Task<ColorResponse> Add(Color color);
+        Task<ColorResponse> Add(ColorViewModel color);
 
-        Task<ColorResponse> Update(Color color);
+        Task<ColorResponse> Update(long id,ColorViewModel color);
 
         Task<ColorResponse> Delete(long id);
     }
@@ -27,15 +28,16 @@ namespace MobileShopAPI.Services
         {
             _context = context;
         }
-        public async Task<ColorResponse> Add(Color color)
+        public async Task<ColorResponse> Add(ColorViewModel color)
         {
             var _color = new Color
             {
                 ColorName = color.ColorName,
-                CreatedDate = color.CreatedDate
+                HexValue = color.HexValue
             };
+
             _context.Add(_color);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
 
             return new ColorResponse
@@ -43,21 +45,15 @@ namespace MobileShopAPI.Services
                 Message = "New Color Added!",
                 isSuccess = true
             };
-            //return new Color
-            //{
-            //    Id = _color.Id,
-            //    ColorName = _color.ColorName,
-            //    CreatedDate = _color.CreatedDate
-            //};
         }
 
         public async Task<ColorResponse> Delete(long id)
         {
-            var color = _context.Colors.SingleOrDefault(br => br.Id == id);
+            var color = await _context.Colors.FindAsync(id);
             if (color != null)
             {
                 _context.Remove(color);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return new ColorResponse
                 {
@@ -73,42 +69,39 @@ namespace MobileShopAPI.Services
             };
         }
 
-        public List<Color> GetAll()
+        public async Task<List<Color>> GetAll()
         {
-            var colors = _context.Colors.Select(br => new Color
-            {
-                Id = br.Id,
-                ColorName = br.ColorName,
-                CreatedDate = br.CreatedDate
-            });
-            return colors.ToList();
+            var colors = await _context.Colors.ToListAsync();
+            return colors;
         }
 
-        public Color GetById(long id)
+        public async Task<Color> GetById(long id)
         {
-            var color = _context.Colors.SingleOrDefault(b => b.Id == id);
+            var color = await _context.Colors.FindAsync(id);
             if (color != null)
             {
-                return new Color
-                {
-                    Id = color.Id,
-                    ColorName = color.ColorName,
-                    CreatedDate = color.CreatedDate
-                };
+                return color;
             }
             return null;
         }
 
-        public async Task<ColorResponse> Update(Color color)
+        public async Task<ColorResponse> Update(long id,ColorViewModel color)
         {
-            var _color = _context.Colors.SingleOrDefault(br => br.Id == color.Id);
+            var _color = await _context.Colors.FindAsync(id);
+            if(color == null)
+                return new ColorResponse
+                {
+                    Message = "Not found!",
+                    isSuccess = false
+                };
             _color.ColorName = color.ColorName;
-            _color.CreatedDate = color.CreatedDate;
-            _context.SaveChanges();
+            _color.HexValue = color.HexValue;
+            _color.UpdatedDate = DateTime.Now;
+            await _context.SaveChangesAsync();
 
             return new ColorResponse
             {
-                Message = "This Color Updated!",
+                Message = "This Color is Updated!",
                 isSuccess = true
             };
         }

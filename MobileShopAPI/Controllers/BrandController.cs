@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
 using MobileShopAPI.Services;
+using MobileShopAPI.ViewModel;
 
 namespace MobileShopAPI.Controllers
 {
@@ -16,12 +17,13 @@ namespace MobileShopAPI.Controllers
             _brandService = brandService;
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
+        // api/brand/getAll
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                return Ok(_brandService.GetAll());
+                return Ok(await _brandService.GetAll());
             }
             catch
             {
@@ -29,15 +31,16 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(long id)
+        // api/brand/getById/{id}
+        [HttpGet("getById/{id}")]
+        public async Task<IActionResult> GetById(long id)
         {
             try
             {
-                var data = _brandService.GetById(id);
+                var data = await _brandService.GetById(id);
                 if (data != null)
                 {
-                    return Ok(_brandService.GetById(id));
+                    return Ok(data);
                 }
                 else
                 {
@@ -49,19 +52,29 @@ namespace MobileShopAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(long id, Brand brand)
+        // api/brand/add
+        [HttpPost("add")]
+        public async Task<IActionResult> Add(BrandViewModel brand)
         {
-            if (id != brand.Id)
+            if (ModelState.IsValid)
             {
-                return BadRequest();
+                var result = await _brandService.Add(brand);
+                if (result.isSuccess)
+                    return Ok(result); //Status code: 200
+                return BadRequest(result);//Status code: 404
             }
+
+            return BadRequest("Some properies are not valid");//Status code: 404
+        }
+        // api/brand/update/{id}
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(long id, BrandViewModel brand)
+        {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _brandService.Update(brand);
+                    var result = await _brandService.Update(id,brand);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -73,8 +86,8 @@ namespace MobileShopAPI.Controllers
                 return BadRequest("Some properies are not valid");//Status code: 404
             }
         }
-
-        [HttpDelete("{id}")]
+        // api/brand/delete/{id}
+        [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(long id)
         {
             try
@@ -92,20 +105,6 @@ namespace MobileShopAPI.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Add(Brand brand)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _brandService.Add(brand);
-                if (result.isSuccess)
-                    return Ok(result); //Status code: 200
-                return BadRequest(result);//Status code: 404
-            }
-
-            return BadRequest("Some properies are not valid");//Status code: 404
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MobileShopAPI.Helpers;
 using MobileShopAPI.Services;
+using MobileShopAPI.ViewModel;
 
 namespace MobileShopAPI.Controllers
 {

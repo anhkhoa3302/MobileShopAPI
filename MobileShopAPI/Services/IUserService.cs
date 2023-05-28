@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using MobileShopAPI.Helpers;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
+using MobileShopAPI.ViewModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
