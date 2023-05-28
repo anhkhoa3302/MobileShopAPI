@@ -23,7 +23,7 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                return Ok(await _brandService.GetAll());
+                return Ok(await _brandService.GetAllAsync());
             }
             catch
             {
@@ -37,7 +37,7 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                var data = await _brandService.GetById(id);
+                var data = await _brandService.GetByIdAsync(id);
                 if (data != null)
                 {
                     return Ok(data);
@@ -58,7 +58,7 @@ namespace MobileShopAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _brandService.Add(brand);
+                var result = await _brandService.AddAsync(brand);
                 if (result.isSuccess)
                     return Ok(result); //Status code: 200
                 return BadRequest(result);//Status code: 404
@@ -74,7 +74,7 @@ namespace MobileShopAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _brandService.Update(id,brand);
+                    var result = await _brandService.UpdateAsync(id,brand);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -94,7 +94,7 @@ namespace MobileShopAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _brandService.Delete(id);
+                    var result = await _brandService.DeleteAsync(id);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404

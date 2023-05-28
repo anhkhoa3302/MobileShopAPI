@@ -1,20 +1,22 @@
-﻿using MobileShopAPI.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MobileShopAPI.Data;
 using MobileShopAPI.Models;
+using MobileShopAPI.ViewModel;
 using System.Numerics;
 
 namespace MobileShopAPI.Services
 {
     public interface IImageService
     {
-        List<Image> GetAll();
+        Task<List<Image>> GetByProductIdAsync(long productId);
 
-        Image GetById(long id);
+        Task<Image?> GetCoverAsync(long productId);
 
-        Image Add(Image image);
+        Task AddImageAsync(long productId,ImageViewModel image);
 
-        void Update(Image image);
+        Task UpdateAsync(ImageViewModel image);
 
-        void Delete(long id);
+        Task DeleteAsync(long id);
     }
 
     public class ImageService : IImageService
@@ -25,77 +27,53 @@ namespace MobileShopAPI.Services
         {
             _context = context;
         }
-        public Image Add(Image image)
+        public async Task AddImageAsync(long productId,ImageViewModel image)
         {
             var _image = new Image
             {
                 Id = image.Id,
                 Url = image.Url,
                 IsCover = image.IsCover,
-                ProductId = image.ProductId,
-                CreatedDate = image.CreatedDate
+                ProductId = productId
             };
             _context.Add(_image);
-            _context.SaveChanges();
-
-            return _image;
-            //return new Image
-            //{
-            //    Id = _image.Id,
-            //    Url = _image.Url,
-            //    IsCover = _image.IsCover,
-            //    CreatedDate = _image.CreatedDate
-            //};
+            await _context.SaveChangesAsync();
         }
 
-        public void Delete(long id)
+        public async Task DeleteAsync(long id)
         {
-            var image = _context.Images.SingleOrDefault(img => img.Id == id);
+            var image = await _context.Images.FindAsync(id);
             if (image != null)
             {
                 _context.Remove(image);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public List<Image> GetAll()
+        public async Task<List<Image>> GetByProductIdAsync(long productId)
         {
-            var images = _context.Images.Select(img => new Image
-            {
-                Id = img.Id,
-                Url = img.Url,
-                IsCover = img.IsCover,
-                ProductId = img.ProductId,
-                CreatedDate = img.CreatedDate
-            });
-            return images.ToList();
+            var images = await _context.Images.Where(s => s.ProductId == productId).ToListAsync();
+            return images;
         }
 
-        public Image? GetById(long id)
+        public async Task<Image?> GetCoverAsync(long productId)
         {
-            var image = _context.Images.SingleOrDefault(img => img.Id == id);
+            var image = await _context.Images.Where(s=>s.IsCover == true && s.ProductId == productId).SingleOrDefaultAsync();
             if (image != null)
             {
-                return new Image
-                {
-                    Id = image.Id,
-                    Url = image.Url,
-                    IsCover = image.IsCover,
-                    ProductId = image.ProductId,
-                    CreatedDate = image.CreatedDate
-                };
+                return image;
             }
             return null;
         }
 
-        public void Update(Image image)
+        public async Task UpdateAsync(ImageViewModel image)
         {
-            var _image = _context.Images.SingleOrDefault(img => img.Id == image.Id);
-            _image.Id = image.Id;
+            var _image = await _context.Images.FindAsync(image.Id);
+            if (_image == null)
+                return;
             _image.Url = image.Url;
             _image.IsCover = image.IsCover;
-            _image.ProductId = image.ProductId;
-            _image.CreatedDate = image.CreatedDate;
+            _image.UpdatedDate = DateTime.Now;
             _context.SaveChanges();
         }
     }

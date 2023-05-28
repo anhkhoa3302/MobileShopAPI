@@ -22,7 +22,7 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                return Ok(await _cateService.GetAll());
+                return Ok(await _cateService.GetAllAsync());
             }
             catch
             {
@@ -35,7 +35,7 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                var data = await _cateService.GetById(id);
+                var data = await _cateService.GetByIdAsync(id);
                 if (data != null)
                 {
                     return Ok(data);
@@ -55,10 +55,10 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                //return Ok(_cateService.Add(cate));
+                //return Ok(_cateService.AddImageAsync(cate));
                 if (ModelState.IsValid)
                 {
-                    var result = await _cateService.Add(cate);
+                    var result = await _cateService.AddAsync(cate);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -78,7 +78,7 @@ namespace MobileShopAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _cateService.Update(id,cate);
+                    var result = await _cateService.UpdateAsync(id,cate);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -96,12 +96,12 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                //_cateService.Delete(id);
+                //_cateService.DeleteAsync(id);
                 //return Ok();
 
                 if (ModelState.IsValid)
                 {
-                    var result = await _cateService.Delete(id);
+                    var result = await _cateService.DeleteAsync(id);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404

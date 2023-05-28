@@ -15,6 +15,7 @@ namespace MobileShopAPI.Models
         /// </summary>
         public bool? IsCover { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
         public long ProductId { get; set; }
 

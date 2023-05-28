@@ -9,15 +9,15 @@ namespace MobileShopAPI.Services
 {
     public interface ICategoryService
     {
-        Task<List<Category>> GetAll();
+        Task<List<Category>> GetAllAsync();
 
-        Task<Category> GetById(long id);
+        Task<Category?> GetByIdAsync(long id);
 
-        Task<CategoryResponse> Add(CategoryViewModel cate);
+        Task<CategoryResponse> AddAsync(CategoryViewModel cate);
 
-        Task<CategoryResponse> Update(long id,CategoryViewModel cate);
+        Task<CategoryResponse> UpdateAsync(long id,CategoryViewModel cate);
 
-        Task<CategoryResponse> Delete(long id);
+        Task<CategoryResponse> DeleteAsync(long id);
     }
 
     public class CategoryService : ICategoryService
@@ -28,7 +28,7 @@ namespace MobileShopAPI.Services
         {
             _context = context;
         }
-        public async Task<CategoryResponse> Add(CategoryViewModel cate)
+        public async Task<CategoryResponse> AddAsync(CategoryViewModel cate)
         {
             var _cate = new Category
             {
@@ -47,7 +47,7 @@ namespace MobileShopAPI.Services
             };
         }
 
-        public async Task<CategoryResponse> Delete(long id)
+        public async Task<CategoryResponse> DeleteAsync(long id)
         {
             var cate = await _context.Categories.SingleOrDefaultAsync(br => br.Id == id);
             if (cate != null)
@@ -64,18 +64,18 @@ namespace MobileShopAPI.Services
 
             return new CategoryResponse
             {
-                Message = "Delete Fail",
+                Message = "DeleteAsync Fail",
                 isSuccess = false
             };
         }
 
-        public async Task<List<Category>> GetAll()
+        public async Task<List<Category>> GetAllAsync()
         {
             var categories = await _context.Categories.ToListAsync();
             return categories;
         }
 
-        public async Task<Category> GetById(long id)
+        public async Task<Category?> GetByIdAsync(long id)
         {
             var cate = await _context.Categories.FindAsync(id);
             if (cate != null)
@@ -85,7 +85,7 @@ namespace MobileShopAPI.Services
             return null;
         }
 
-        public async Task<CategoryResponse> Update(long id, CategoryViewModel cate)
+        public async Task<CategoryResponse> UpdateAsync(long id, CategoryViewModel cate)
         {
             var _cate = await _context.Categories.FindAsync(id);
             if(_cate == null)

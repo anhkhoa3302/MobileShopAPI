@@ -9,15 +9,15 @@ namespace MobileShopAPI.Services
 {
     public interface IColorService
     {
-        Task<List<Color>> GetAll();
+        Task<List<Color>> GetAllAsync();
 
-        Task<Color> GetById(long id);
+        Task<Color?> GetByIdAsync(long id);
 
-        Task<ColorResponse> Add(ColorViewModel color);
+        Task<ColorResponse> AddAsync(ColorViewModel color);
 
-        Task<ColorResponse> Update(long id,ColorViewModel color);
+        Task<ColorResponse> UpdateAsync(long id,ColorViewModel color);
 
-        Task<ColorResponse> Delete(long id);
+        Task<ColorResponse> DeleteAsync(long id);
     }
 
     public class ColorService : IColorService
@@ -28,7 +28,7 @@ namespace MobileShopAPI.Services
         {
             _context = context;
         }
-        public async Task<ColorResponse> Add(ColorViewModel color)
+        public async Task<ColorResponse> AddAsync(ColorViewModel color)
         {
             var _color = new Color
             {
@@ -47,7 +47,7 @@ namespace MobileShopAPI.Services
             };
         }
 
-        public async Task<ColorResponse> Delete(long id)
+        public async Task<ColorResponse> DeleteAsync(long id)
         {
             var color = await _context.Colors.FindAsync(id);
             if (color != null)
@@ -64,18 +64,18 @@ namespace MobileShopAPI.Services
 
             return new ColorResponse
             {
-                Message = "Delete Fail",
+                Message = "DeleteAsync Fail",
                 isSuccess = false
             };
         }
 
-        public async Task<List<Color>> GetAll()
+        public async Task<List<Color>> GetAllAsync()
         {
             var colors = await _context.Colors.ToListAsync();
             return colors;
         }
 
-        public async Task<Color> GetById(long id)
+        public async Task<Color?> GetByIdAsync(long id)
         {
             var color = await _context.Colors.FindAsync(id);
             if (color != null)
@@ -85,10 +85,10 @@ namespace MobileShopAPI.Services
             return null;
         }
 
-        public async Task<ColorResponse> Update(long id,ColorViewModel color)
+        public async Task<ColorResponse> UpdateAsync(long id,ColorViewModel color)
         {
             var _color = await _context.Colors.FindAsync(id);
-            if(color == null)
+            if(_color == null)
                 return new ColorResponse
                 {
                     Message = "Not found!",

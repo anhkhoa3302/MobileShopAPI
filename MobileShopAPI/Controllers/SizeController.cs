@@ -22,7 +22,7 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                return Ok(await _sizeService.GetAll());
+                return Ok(await _sizeService.GetAllAsync());
             }
             catch
             {
@@ -35,7 +35,7 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                var data = await _sizeService.GetById(id);
+                var data = await _sizeService.GetByIdAsync(id);
                 if (data != null)
                 {
                     return Ok(data);
@@ -56,11 +56,11 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                //return Ok(_sizeService.Add(size));
+                //return Ok(_sizeService.AddImageAsync(size));
 
                 if (ModelState.IsValid)
                 {
-                    var result = await _sizeService.Add(size);
+                    var result = await _sizeService.AddAsync(size);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -79,12 +79,12 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                //_sizeService.Update(size);
+                //_sizeService.UpdateAsync(size);
                 //return NoContent();
 
                 if (ModelState.IsValid)
                 {
-                    var result = await _sizeService.Update(id,size);
+                    var result = await _sizeService.UpdateAsync(id,size);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -102,12 +102,12 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                //_sizeService.Delete(id);
+                //_sizeService.DeleteAsync(id);
                 //return Ok();
 
                 if (ModelState.IsValid)
                 {
-                    var result = await _sizeService.Delete(id);
+                    var result = await _sizeService.DeleteAsync(id);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404

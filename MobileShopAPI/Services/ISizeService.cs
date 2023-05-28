@@ -9,15 +9,15 @@ namespace MobileShopAPI.Services
 {
     public interface ISizeService
     {
-        Task<List<Size>> GetAll();
+        Task<List<Size>> GetAllAsync();
 
-        Task<Size> GetById(long id);
+        Task<Size?> GetByIdAsync(long id);
 
-        Task<SizeResponse> Add(SizeViewModel size);
+        Task<SizeResponse> AddAsync(SizeViewModel size);
 
-        Task<SizeResponse> Update(long id,SizeViewModel size);
+        Task<SizeResponse> UpdateAsync(long id,SizeViewModel size);
 
-        Task<SizeResponse> Delete(long id);
+        Task<SizeResponse> DeleteAsync(long id);
 
         public class SizeService : ISizeService
         {
@@ -27,7 +27,7 @@ namespace MobileShopAPI.Services
             {
                 _context = context;
             }
-            public async Task<SizeResponse> Add(SizeViewModel size)
+            public async Task<SizeResponse> AddAsync(SizeViewModel size)
             {
                 var _size = new Size
                 {
@@ -45,13 +45,13 @@ namespace MobileShopAPI.Services
 
             }
 
-            public async Task<List<Size>> GetAll()
+            public async Task<List<Size>> GetAllAsync()
             {
                 var sizes = await _context.Sizes.ToListAsync();
                 return sizes;
             }
 
-            public async Task<Size> GetById(long id)
+            public async Task<Size?> GetByIdAsync(long id)
             {
                 var size = await _context.Sizes.FindAsync(id);
                 if (size != null)
@@ -61,7 +61,7 @@ namespace MobileShopAPI.Services
                 return null;
             }
 
-            public async Task<SizeResponse> Update(long id,SizeViewModel size)
+            public async Task<SizeResponse> UpdateAsync(long id,SizeViewModel size)
             {
                 var _size = await _context.Sizes.FindAsync(id);
                 if (_size == null)
@@ -81,14 +81,14 @@ namespace MobileShopAPI.Services
                     isSuccess = true
                 };
             }
-            public async Task<SizeResponse> Delete(long id)
+            public async Task<SizeResponse> DeleteAsync(long id)
             {
                 var size = await _context.Sizes.FindAsync(id);
 
                 if (size == null)
                     return new SizeResponse
                     {
-                        Message = "Delete Fail",
+                        Message = "DeleteAsync Fail",
                         isSuccess = false
                     };
 

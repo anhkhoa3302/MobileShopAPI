@@ -22,7 +22,7 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                return Ok(await _colorService.GetAll());
+                return Ok(await _colorService.GetAllAsync());
             }
             catch
             {
@@ -35,7 +35,7 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                var data = await _colorService.GetById(id);
+                var data = await _colorService.GetByIdAsync(id);
                 if (data != null)
                 {
                     return Ok(data);
@@ -57,7 +57,7 @@ namespace MobileShopAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _colorService.Add(color);
+                    var result = await _colorService.AddAsync(color);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -76,7 +76,7 @@ namespace MobileShopAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _colorService.Update(id,color);
+                    var result = await _colorService.UpdateAsync(id,color);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -96,7 +96,7 @@ namespace MobileShopAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _colorService.Delete(id);
+                    var result = await _colorService.DeleteAsync(id);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404

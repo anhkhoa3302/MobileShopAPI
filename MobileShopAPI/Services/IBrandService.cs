@@ -8,15 +8,15 @@ namespace MobileShopAPI.Services
 {
     public interface IBrandService
     {
-        Task<List<Brand>> GetAll();
+        Task<List<Brand>> GetAllAsync();
 
-        Task<Brand> GetById(long id);
+        Task<Brand?> GetByIdAsync(long id);
 
-        Task<BrandResponse> Add(BrandViewModel brand);
+        Task<BrandResponse> AddAsync(BrandViewModel brand);
 
-        Task<BrandResponse> Update(long id,BrandViewModel brand);
+        Task<BrandResponse> UpdateAsync(long id,BrandViewModel brand);
 
-        Task<BrandResponse> Delete(long id);
+        Task<BrandResponse> DeleteAsync(long id);
     }
 
     public class BrandService : IBrandService
@@ -27,7 +27,7 @@ namespace MobileShopAPI.Services
         {
             _context = context;
         }
-        public async Task<BrandResponse> Add(BrandViewModel brand)
+        public async Task<BrandResponse> AddAsync(BrandViewModel brand)
         {
             var _brand = new Brand
             {
@@ -47,7 +47,7 @@ namespace MobileShopAPI.Services
 
         }
 
-        public async Task<BrandResponse> Delete(long id)
+        public async Task<BrandResponse> DeleteAsync(long id)
         {
             var brand = await _context.Brands.SingleOrDefaultAsync(br => br.Id == id);
             if(brand != null)
@@ -64,18 +64,18 @@ namespace MobileShopAPI.Services
 
             return new BrandResponse
             {
-                Message = "Delete Fail !!!",
+                Message = "DeleteAsync Fail !!!",
                 isSuccess = false
             };
         }
 
-        public async Task<List<Brand>> GetAll()
+        public async Task<List<Brand>> GetAllAsync()
         {
             var brands = await _context.Brands.ToListAsync();
             return brands;
         }
 
-        public async Task<Brand> GetById(long id)
+        public async Task<Brand?> GetByIdAsync(long id)
         {
             var brand = await _context.Brands.SingleOrDefaultAsync(b => b.Id == id);
             if(brand != null)
@@ -85,7 +85,7 @@ namespace MobileShopAPI.Services
             return null;
         }
 
-        public async Task<BrandResponse> Update(long id,BrandViewModel brand)
+        public async Task<BrandResponse> UpdateAsync(long id,BrandViewModel brand)
         {
             var _brand = await _context.Brands.FindAsync(id);
 
