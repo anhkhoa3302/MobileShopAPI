@@ -1,3 +1,4 @@
+using EmailService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -43,12 +44,14 @@ builder.Services.AddAuthentication(options =>
 
 //Inject services
 builder.Services.AddScoped<IUserService,UserService>();
-builder.Services.AddTransient<IMailService, SendGridMailService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<ISizeService, ISizeService.SizeService>();
+var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 
 builder.Services.AddControllers();

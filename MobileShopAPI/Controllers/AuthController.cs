@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using EmailService;
 
 namespace MobileShopAPI.Controllers
 {
@@ -10,11 +11,9 @@ namespace MobileShopAPI.Controllers
     public class AuthController : ControllerBase
     {
         private IUserService _userService;
-        private IMailService _mailService;
-        public AuthController(IUserService userService,IMailService mailService)
+        public AuthController(IUserService userService,IEmailSender mailService)
         {
             _userService = userService;
-            _mailService = mailService;
         }
 
         // api/auth/register
@@ -41,13 +40,58 @@ namespace MobileShopAPI.Controllers
                 var result = await _userService.LoginUserAsync(model);
                 if (result.isSuccess)
                 {
-                    string message = "<h1>New login noticed</h1>"
-                        +"<p>New login to your account at " + DateTime.Now + "</p>";
-                    await _mailService.SendEmailAsync(model.Email, "New login", message);
                     return Ok(result); //Status code: 200
                 }
                     
                 return BadRequest(result);//Status code: 404
+            }
+            return BadRequest("Some properies are not valid");//Status code: 404
+        }
+
+        // api/auth/confirmEmail
+        [HttpGet("confirmEmail")]
+        public async Task<IActionResult> ConfirmEmailAsync(string userId, string token)
+        {
+            if(string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
+            {
+                return BadRequest("Not Found");
+            }
+            var result = await _userService.ConfirmEmailAsync(userId, token);
+            if(result.isSuccess)
+            {
+                return Ok(result);//200
+            }
+            return BadRequest(result);//400
+        }
+
+        // api/auth/forgetPassword
+        [HttpPost("forgetPassword")]
+        public async Task<IActionResult> ForgetPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest("Not Found");
+            }
+            var result = await _userService.ForgetPasswordAsync(email);
+            if (result.isSuccess)
+            {
+                return Ok(result);//200
+            }
+            return BadRequest(result);//400
+        }
+
+        // api/auth/resetPassword
+        [HttpPost("resetPassword")]
+        public async Task<IActionResult> ResetPassword([FromForm]ResetPasswordViewModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                var result = await _userService.ResetPasswordAsync(model);
+                if(result.isSuccess)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
             }
             return BadRequest("Some properies are not valid");//Status code: 404
         }
