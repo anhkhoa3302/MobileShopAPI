@@ -45,6 +45,11 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddTransient<IMailService, SendGridMailService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IColorService, ColorService>();
+builder.Services.AddScoped<ISizeService, ISizeService.SizeService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
