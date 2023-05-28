@@ -32,6 +32,7 @@ namespace MobileShopAPI.Services
                 Id = image.Id,
                 Url = image.Url,
                 IsCover = image.IsCover,
+                ProductId = image.ProductId,
                 CreatedDate = image.CreatedDate
             };
             _context.Add(_image);
@@ -47,7 +48,7 @@ namespace MobileShopAPI.Services
             //};
         }
 
-        public void Delete(BigInteger id)
+        public void Delete(long id)
         {
             var image = _context.Images.SingleOrDefault(img => img.Id == id);
             if (image != null)
@@ -57,11 +58,6 @@ namespace MobileShopAPI.Services
             }
         }
 
-        public void Delete(long id)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<Image> GetAll()
         {
             var images = _context.Images.Select(img => new Image
@@ -69,12 +65,13 @@ namespace MobileShopAPI.Services
                 Id = img.Id,
                 Url = img.Url,
                 IsCover = img.IsCover,
+                ProductId = img.ProductId,
                 CreatedDate = img.CreatedDate
             });
             return images.ToList();
         }
 
-        public Image? GetById(BigInteger id)
+        public Image? GetById(long id)
         {
             var image = _context.Images.SingleOrDefault(img => img.Id == id);
             if (image != null)
@@ -84,15 +81,11 @@ namespace MobileShopAPI.Services
                     Id = image.Id,
                     Url = image.Url,
                     IsCover = image.IsCover,
+                    ProductId = image.ProductId,
                     CreatedDate = image.CreatedDate
                 };
             }
             return null;
-        }
-
-        public Image GetById(long id)
-        {
-            throw new NotImplementedException();
         }
 
         public void Update(Image image)
@@ -101,6 +94,7 @@ namespace MobileShopAPI.Services
             _image.Id = image.Id;
             _image.Url = image.Url;
             _image.IsCover = image.IsCover;
+            _image.ProductId = image.ProductId;
             _image.CreatedDate = image.CreatedDate;
             _context.SaveChanges();
         }
