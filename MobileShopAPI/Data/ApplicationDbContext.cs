@@ -216,9 +216,9 @@ namespace MobileShopAPI.Data
 
                 entity.Property(e => e.Stock).HasColumnName("stock");
 
-                entity.Property(e => e.UpdateDate)
+                entity.Property(e => e.UpdatedDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("updateDate");
+                    .HasColumnName("updatedDate");
 
                 entity.Property(e => e.UserId)
                     .HasMaxLength(450)

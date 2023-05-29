@@ -419,7 +419,7 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("total");
 
-                    b.Property<DateTime?>("UpdateDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime")
                         .HasColumnName("updateDate");
 
@@ -527,7 +527,7 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("stock");
 
-                    b.Property<DateTime?>("UpdateDate")
+                    b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime")
                         .HasColumnName("updateDate");
 

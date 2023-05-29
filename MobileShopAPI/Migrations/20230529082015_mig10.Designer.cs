@@ -12,8 +12,8 @@ using MobileShopAPI.Data;
 namespace MobileShopAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230527020410_mig4")]
-    partial class mig4
+    [Migration("20230529082015_mig10")]
+    partial class mig10
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -276,6 +276,9 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("name");
 
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("brand", (string)null);
@@ -311,6 +314,9 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("name");
 
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("category", (string)null);
@@ -337,6 +343,13 @@ namespace MobileShopAPI.Migrations
                         .HasColumnName("createdDate")
                         .HasDefaultValueSql("(sysdatetime())");
 
+                    b.Property<string>("HexValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("color", (string)null);
@@ -357,7 +370,7 @@ namespace MobileShopAPI.Migrations
                         .HasColumnName("createdDate")
                         .HasDefaultValueSql("(sysdatetime())");
 
-                    b.Property<bool?>("IsCover")
+                    b.Property<bool>("IsCover")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasColumnName("isCover")
@@ -366,6 +379,9 @@ namespace MobileShopAPI.Migrations
 
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)")
@@ -402,7 +418,7 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("total");
 
-                    b.Property<DateTime?>("UpdatedDate")
+                    b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime")
                         .HasColumnName("updateDate");
 
@@ -512,7 +528,7 @@ namespace MobileShopAPI.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime")
-                        .HasColumnName("updateDate");
+                        .HasColumnName("updatedDate");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -550,11 +566,17 @@ namespace MobileShopAPI.Migrations
                         .HasColumnName("createdDate")
                         .HasDefaultValueSql("(sysdatetime())");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SizeName")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("sizeName");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

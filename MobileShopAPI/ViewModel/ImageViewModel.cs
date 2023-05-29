@@ -2,7 +2,6 @@
 {
     public class ImageViewModel
     {
-        public long Id { get; set; }
         /// <summary>
         /// url hình ảnh
         /// </summary>
@@ -10,6 +9,6 @@
         /// <summary>
         /// hình ảnh là ảnh bìa
         /// </summary>
-        public bool? IsCover { get; set; }
+        public bool IsCover { get; set; }
     }
 }

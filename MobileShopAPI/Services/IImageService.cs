@@ -14,7 +14,7 @@ namespace MobileShopAPI.Services
 
         Task AddImageAsync(long productId,ImageViewModel image);
 
-        Task UpdateAsync(ImageViewModel image);
+        //Task UpdateAsync(ImageViewModel image);
 
         Task DeleteAsync(long id);
     }
@@ -31,12 +31,11 @@ namespace MobileShopAPI.Services
         {
             var _image = new Image
             {
-                Id = image.Id,
                 Url = image.Url,
                 IsCover = image.IsCover,
                 ProductId = productId
             };
-            _context.Add(_image);
+            _context.Images.Add(_image);
             await _context.SaveChangesAsync();
         }
 
@@ -66,15 +65,15 @@ namespace MobileShopAPI.Services
             return null;
         }
 
-        public async Task UpdateAsync(ImageViewModel image)
-        {
-            var _image = await _context.Images.FindAsync(image.Id);
-            if (_image == null)
-                return;
-            _image.Url = image.Url;
-            _image.IsCover = image.IsCover;
-            _image.UpdatedDate = DateTime.Now;
-            _context.SaveChanges();
-        }
+        //public async Task UpdateAsync(ImageViewModel image)
+        //{
+        //    var _image = await _context.Images.FindAsync(image.Id);
+        //    if (_image == null)
+        //        return;
+        //    _image.Url = image.Url;
+        //    _image.IsCover = image.IsCover;
+        //    _image.UpdatedDate = DateTime.Now;
+        //    _context.SaveChanges();
+        //}
     }
 }

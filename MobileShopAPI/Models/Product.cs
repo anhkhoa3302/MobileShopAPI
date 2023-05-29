@@ -21,7 +21,7 @@ namespace MobileShopAPI.Models
         public long CategoryId { get; set; }
         public long BrandId { get; set; }
         public DateTime? CreatedDate { get; set; }
-        public DateTime? UpdateDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
         public string UserId { get; set; } = null!;
         /// <summary>
         /// part of primaryKey
