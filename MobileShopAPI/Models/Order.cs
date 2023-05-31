@@ -7,7 +7,7 @@ namespace MobileShopAPI.Models
     {
         public Order()
         {
-            OrderDetails = new HashSet<OrderDetail>();
+            ProductOrders = new HashSet<ProductOrder>();
             Transactions = new HashSet<Transaction>();
         }
 
@@ -17,9 +17,17 @@ namespace MobileShopAPI.Models
         public string UserId { get; set; } = null!;
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdateDate { get; set; }
+        public string PhoneNumber { get; set; } = null!;
+        public string UserFullName { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string Address { get; set; } = null!;
+        /// <summary>
+        /// 1 = trả hết, 2 = đặt cọc
+        /// </summary>
+        public int? Type { get; set; }
 
         public virtual ApplicationUser User { get; set; } = null!;
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual ICollection<ProductOrder> ProductOrders { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }
