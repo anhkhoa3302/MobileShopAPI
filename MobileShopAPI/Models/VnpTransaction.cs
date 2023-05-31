@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace MobileShopAPI.Models
 {
-    public partial class Transaction
+    public partial class VnpTransaction
     {
         public string Id { get; set; } = null!;
         public string UserId { get; set; } = null!;

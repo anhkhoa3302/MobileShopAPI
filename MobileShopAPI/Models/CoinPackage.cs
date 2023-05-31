@@ -7,7 +7,7 @@ namespace MobileShopAPI.Models
     {
         public CoinPackage()
         {
-            Transactions = new HashSet<Transaction>();
+            Transactions = new HashSet<VnpTransaction>();
         }
 
         public string Id { get; set; } = null!;
@@ -22,6 +22,6 @@ namespace MobileShopAPI.Models
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
-        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<VnpTransaction> Transactions { get; set; }
     }
 }

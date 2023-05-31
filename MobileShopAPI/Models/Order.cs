@@ -8,7 +8,7 @@ namespace MobileShopAPI.Models
         public Order()
         {
             ProductOrders = new HashSet<ProductOrder>();
-            Transactions = new HashSet<Transaction>();
+            Transactions = new HashSet<VnpTransaction>();
         }
 
         public string Id { get; set; } = null!;
@@ -28,6 +28,6 @@ namespace MobileShopAPI.Models
 
         public virtual ApplicationUser User { get; set; } = null!;
         public virtual ICollection<ProductOrder> ProductOrders { get; set; }
-        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<VnpTransaction> Transactions { get; set; }
     }
 }
