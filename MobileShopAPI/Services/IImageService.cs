@@ -8,13 +8,9 @@ namespace MobileShopAPI.Services
 {
     public interface IImageService
     {
-        Task<List<Image>> GetByProductIdAsync(long productId);
+        Task AddAsync(long productId,ImageViewModel image);
 
-        Task<Image?> GetCoverAsync(long productId);
-
-        Task AddImageAsync(long productId,ImageViewModel image);
-
-        //Task UpdateAsync(ImageViewModel image);
+        Task UpdateAsync(ImageViewModel image);
 
         Task DeleteAsync(long id);
     }
@@ -27,7 +23,7 @@ namespace MobileShopAPI.Services
         {
             _context = context;
         }
-        public async Task AddImageAsync(long productId,ImageViewModel image)
+        public async Task AddAsync(long productId,ImageViewModel image)
         {
             var _image = new Image
             {
@@ -49,31 +45,15 @@ namespace MobileShopAPI.Services
             }
         }
 
-        public async Task<List<Image>> GetByProductIdAsync(long productId)
+        public async Task UpdateAsync(ImageViewModel image)
         {
-            var images = await _context.Images.Where(s => s.ProductId == productId).ToListAsync();
-            return images;
+            var _image = await _context.Images.FindAsync(image.Id);
+            if (_image == null)
+                return;
+            _image.IsCover = image.IsCover;
+            _image.UpdatedDate = DateTime.Now;
+            _context.Images.Update(_image);
+            await _context.SaveChangesAsync();
         }
-
-        public async Task<Image?> GetCoverAsync(long productId)
-        {
-            var image = await _context.Images.Where(s=>s.IsCover == true && s.ProductId == productId).SingleOrDefaultAsync();
-            if (image != null)
-            {
-                return image;
-            }
-            return null;
-        }
-
-        //public async Task UpdateAsync(ImageViewModel image)
-        //{
-        //    var _image = await _context.Images.FindAsync(image.Id);
-        //    if (_image == null)
-        //        return;
-        //    _image.Url = image.Url;
-        //    _image.IsCover = image.IsCover;
-        //    _image.UpdatedDate = DateTime.Now;
-        //    _context.SaveChanges();
-        //}
     }
 }

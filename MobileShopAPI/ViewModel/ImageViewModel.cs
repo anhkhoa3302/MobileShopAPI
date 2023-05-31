@@ -2,6 +2,7 @@
 {
     public class ImageViewModel
     {
+        public long Id { get; set; }
         /// <summary>
         /// url hình ảnh
         /// </summary>

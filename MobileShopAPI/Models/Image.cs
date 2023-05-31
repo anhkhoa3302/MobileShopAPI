@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace MobileShopAPI.Models
 {
     public partial class Image
     {
-        public long Id { get; set; }
+        public long? Id { get; set; }
         /// <summary>
         /// url hình ảnh
         /// </summary>
@@ -18,7 +19,6 @@ namespace MobileShopAPI.Models
         public DateTime? UpdatedDate { get; set; }
 
         public long ProductId { get; set; }
-
         public virtual Product Product { get; set; } = null!;
     }
 }

@@ -55,7 +55,6 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                //return Ok(_cateService.AddImageAsync(cate));
                 if (ModelState.IsValid)
                 {
                     var result = await _cateService.AddAsync(cate);

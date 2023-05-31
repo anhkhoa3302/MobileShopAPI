@@ -56,7 +56,6 @@ namespace MobileShopAPI.Controllers
         {
             try
             {
-                //return Ok(_sizeService.AddImageAsync(size));
 
                 if (ModelState.IsValid)
                 {

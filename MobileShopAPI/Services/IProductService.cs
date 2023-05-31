@@ -9,7 +9,7 @@ namespace MobileShopAPI.Services
 {
     public interface IProductService
     {
-        Task<List<ProductViewModel>> GetAllProductWithCoverAsync();
+        Task<List<Product>> GetAllProductWithCoverAsync();
         //Task<ProductViewModel> GetProductDetailAsync(string productId);
 
         Task<ProductResponse> CreateProductAsync(ProductViewModel model);
@@ -45,20 +45,21 @@ namespace MobileShopAPI.Services
             await _context.SaveChangesAsync();
 
             bool hasCover = false;
-            foreach(var item in model.Images)
-            {
-                var image = new ImageViewModel();
-                if (hasCover)
+            if(model.Images != null)
+                foreach(var item in model.Images)
                 {
-                    image.IsCover = false;
+                    var image = new ImageViewModel();
+                    if (hasCover)
+                    {
+                        image.IsCover = false;
+                    }
+                    if ((bool)item.IsCover)
+                    {
+                        hasCover = true;
+                    }
+                    image.Url = item.Url;
+                    await _imageService.AddAsync(product.Id, image);
                 }
-                if ((bool)item.IsCover)
-                {
-                    hasCover = true;
-                }
-                image.Url = item.Url;
-                await _imageService.AddImageAsync(product.Id, image);
-            }
 
             return new ProductResponse
             {
@@ -67,39 +68,13 @@ namespace MobileShopAPI.Services
             };
         }
 
-        public async Task<List<ProductViewModel>> GetAllProductWithCoverAsync()
+        public async Task<List<Product>> GetAllProductWithCoverAsync()
         {
-            var productList = await _context.Products.Include(p => p.Images).ToListAsync();
-            List<ProductViewModel> result = new List<ProductViewModel>();
+            var productList = await _context.Products
+                .Include(p => p.Images)
+                .ToListAsync();
 
-
-            foreach (var item in productList)
-            {
-                var temp = new ProductViewModel
-                {
-                    Name = item.Name,
-                    Description = item.Description,
-                    Stock = item.Stock,
-                    Price = item.Price,
-                    Status = item.Status,
-                    CategoryId = item.CategoryId,
-                    BrandId = item.BrandId,
-                    UserId = item.UserId,
-                    SizeId = item.SizeId,
-                    ColorId = item.ColorId
-                };
-                foreach(var image in item.Images)
-                {
-                    var productImg = new ImageViewModel
-                    {
-                        Url = image.Url,
-                        IsCover = image.IsCover
-                    };
-                    temp.Images.Add(productImg);
-                }
-                result.Add(temp);
-            }
-            return result;
+            return productList;
         }
 
         //public async Task<ProductViewModel> GetProductDetailAsync(string productId)
