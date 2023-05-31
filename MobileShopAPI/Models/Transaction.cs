@@ -21,8 +21,10 @@ namespace MobileShopAPI.Models
         public string? VnpOrderType { get; set; }
         public string? VnpTxnRef { get; set; }
         public string? VnpSecureHash { get; set; }
+        public string? PackageId { get; set; }
 
         public virtual Order? Order { get; set; }
+        public virtual CoinPackage? Package { get; set; }
         public virtual ApplicationUser User { get; set; } = null!;
     }
 }

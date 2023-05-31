@@ -12,9 +12,10 @@ namespace MobileShopAPI.Models
 
         public long Id { get; set; }
         public string SizeName { get; set; } = null!;
-        public string? Description { get; set;}
         public DateTime? CreatedDate { get; set; }
+        public string? Description { get; set; }
         public DateTime? UpdatedDate { get; set; }
+
         public virtual ICollection<Product> Products { get; set; }
     }
 }
