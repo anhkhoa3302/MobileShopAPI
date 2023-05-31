@@ -28,7 +28,7 @@ namespace MobileShopAPI.Data
         public virtual DbSet<ShippingAddress> ShippingAddresses { get; set; } = null!;
         public virtual DbSet<Size> Sizes { get; set; } = null!;
         public virtual DbSet<SubscriptionPackage> SubscriptionPackages { get; set; } = null!;
-        public virtual DbSet<Transaction> Transactions { get; set; } = null!;
+        public virtual DbSet<VnpTransaction> Transactions { get; set; } = null!;
         public virtual DbSet<UserRating> UserRatings { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -626,9 +626,9 @@ namespace MobileShopAPI.Data
             });
 
 
-            modelBuilder.Entity<Transaction>(entity =>
+            modelBuilder.Entity<VnpTransaction>(entity =>
             {
-                entity.ToTable("transaction");
+                entity.ToTable("vnp_transaction");
 
                 entity.HasIndex(e => e.OrderId, "IX_transaction_orderId");
 

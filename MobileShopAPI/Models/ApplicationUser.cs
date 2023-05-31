@@ -12,7 +12,7 @@ namespace MobileShopAPI.Models
             Products = new HashSet<Product>();
             Reports = new HashSet<Report>();
             ShippingAddresses = new HashSet<ShippingAddress>();
-            Transactions = new HashSet<Transaction>();
+            Transactions = new HashSet<VnpTransaction>();
             UserRatings = new HashSet<UserRating>();
             InternalTransactions = new HashSet<InternalTransaction>();
             ActiveSubscriptions = new HashSet<ActiveSubscription>();
@@ -35,7 +35,7 @@ namespace MobileShopAPI.Models
 
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Product> Products { get; set; }
-        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<VnpTransaction> Transactions { get; set; }
         public virtual ICollection<UserRating> UserRatings { get; set; }
         public virtual ICollection<ActiveSubscription> ActiveSubscriptions { get; set; }
         public virtual ICollection<InternalTransaction> InternalTransactions { get; set; }
