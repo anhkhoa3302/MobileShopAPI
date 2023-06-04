@@ -5,11 +5,6 @@ namespace MobileShopAPI.Models
 {
     public partial class Image
     {
-        public Image()
-        {
-            ProductImgs = new HashSet<ProductImg>();
-        }
-
         public long Id { get; set; }
         /// <summary>
         /// url hình ảnh
@@ -18,9 +13,11 @@ namespace MobileShopAPI.Models
         /// <summary>
         /// hình ảnh là ảnh bìa
         /// </summary>
-        public bool? IsCover { get; set; }
+        public bool IsCover { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public long ProductId { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
-        public virtual ICollection<ProductImg> ProductImgs { get; set; }
+        public virtual Product Product { get; set; } = null!;
     }
 }

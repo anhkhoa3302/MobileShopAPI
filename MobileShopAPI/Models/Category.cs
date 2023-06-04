@@ -18,6 +18,7 @@ namespace MobileShopAPI.Models
         /// </summary>
         public string? ImageUrl { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
         public virtual ICollection<Product> Products { get; set; }
     }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MobileShopAPI.Helpers
+namespace MobileShopAPI.ViewModel
 {
     public class LoginViewModel
     {

@@ -11,16 +11,24 @@ namespace MobileShopAPI.Data
         {
 
         }
+        public virtual DbSet<ActiveSubscription> ActiveSubscriptions { get; set; } = null!;
         public virtual DbSet<Brand> Brands { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
+        public virtual DbSet<CoinAction> CoinActions { get; set; } = null!;
+        public virtual DbSet<CoinPackage> CoinPackages { get; set; } = null!;
         public virtual DbSet<Color> Colors { get; set; } = null!;
+        public virtual DbSet<Evidence> Evidences { get; set; } = null!;
         public virtual DbSet<Image> Images { get; set; } = null!;
+        public virtual DbSet<InternalTransaction> InternalTransactions { get; set; } = null!;
         public virtual DbSet<Order> Orders { get; set; } = null!;
-        public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
-        public virtual DbSet<ProductImg> ProductImgs { get; set; } = null!;
+        public virtual DbSet<ProductOrder> ProductOrders { get; set; } = null!;
+        public virtual DbSet<Report> Reports { get; set; } = null!;
+        public virtual DbSet<ReportCategory> ReportCategories { get; set; } = null!;
+        public virtual DbSet<ShippingAddress> ShippingAddresses { get; set; } = null!;
         public virtual DbSet<Size> Sizes { get; set; } = null!;
-        public virtual DbSet<Transaction> Transactions { get; set; } = null!;
+        public virtual DbSet<SubscriptionPackage> SubscriptionPackages { get; set; } = null!;
+        public virtual DbSet<VnpTransaction> Transactions { get; set; } = null!;
         public virtual DbSet<UserRating> UserRatings { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +39,47 @@ namespace MobileShopAPI.Data
                 entity.Property(e => e.Status)
                     .HasDefaultValueSql("((0))");
             });
+
+            modelBuilder.Entity<ActiveSubscription>(entity =>
+            {
+                entity.ToTable("active_subscription");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ActivatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("activatedDate")
+                    .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.ExpiredDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("expiredDate");
+
+                entity.Property(e => e.SpId).HasColumnName("sp_id");
+
+                entity.Property(e => e.UsedPost)
+                    .HasColumnName("usedPost")
+                    .HasDefaultValueSql("((0))")
+                    .HasComment("Số lượng bài đăng đã sử dụng");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(450)
+                    .HasColumnName("userId");
+
+                entity.HasOne(d => d.Sp)
+                    .WithMany(p => p.ActiveSubscriptions)
+                    .HasForeignKey(d => d.SpId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_active_subcription_subscription_package");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.ActiveSubscriptions)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_active_subcription_AspNetUsers");
+            });
+
+
 
             modelBuilder.Entity<Brand>(entity =>
             {
@@ -76,6 +125,66 @@ namespace MobileShopAPI.Data
                     .HasColumnName("name");
             });
 
+            modelBuilder.Entity<CoinAction>(entity =>
+            {
+                entity.ToTable("coin_action");
+
+                entity.HasComment("Actions on website using coin");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ActionName)
+                    .HasMaxLength(255)
+                    .HasColumnName("action_name");
+
+                entity.Property(e => e.CaCoinAmount).HasColumnName("ca_coin_amount");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("createdDate")
+                    .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.Property(e => e.UpdatedDate)
+                    .HasColumnType("date")
+                    .HasColumnName("updatedDate");
+            });
+
+            modelBuilder.Entity<CoinPackage>(entity =>
+            {
+                entity.ToTable("coin_package");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(400)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.CoinAmount).HasColumnName("coin_amount");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("createdDate")
+                    .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.Property(e => e.PackageName)
+                    .HasMaxLength(255)
+                    .HasColumnName("package_name");
+
+                entity.Property(e => e.PackageValue).HasColumnName("package_value");
+
+                entity.Property(e => e.UpdatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("updatedDate");
+
+                entity.Property(e => e.ValueUnit)
+                    .HasMaxLength(10)
+                    .HasColumnName("value_unit")
+                    .HasDefaultValueSql("('VND')")
+                    .HasComment("vnđ,...v.v");
+            });
+
             modelBuilder.Entity<Color>(entity =>
             {
                 entity.ToTable("color");
@@ -90,11 +199,37 @@ namespace MobileShopAPI.Data
                     .HasColumnType("datetime")
                     .HasColumnName("createdDate")
                     .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.HexValue).HasDefaultValueSql("(N'')");
+            });
+
+            modelBuilder.Entity<Evidence>(entity =>
+            {
+                entity.ToTable("evidence");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("createdDate")
+                    .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.ImageUrl).HasColumnName("image_url");
+
+                entity.Property(e => e.ReportId).HasColumnName("reportId");
+
+                entity.HasOne(d => d.Report)
+                    .WithMany(p => p.Evidences)
+                    .HasForeignKey(d => d.ReportId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_evidence_Report");
             });
 
             modelBuilder.Entity<Image>(entity =>
             {
                 entity.ToTable("image");
+
+                entity.HasIndex(e => e.ProductId, "IX_image_ProductId");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -105,26 +240,88 @@ namespace MobileShopAPI.Data
 
                 entity.Property(e => e.IsCover)
                     .HasColumnName("isCover")
-                    .HasDefaultValueSql("((0))")
                     .HasComment("hình ảnh là ảnh bìa");
+
+                entity.Property(e => e.ProductId).HasDefaultValueSql("(CONVERT([bigint],(0)))");
 
                 entity.Property(e => e.Url)
                     .HasColumnName("url")
                     .HasComment("url hình ảnh");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.Images)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("fk_images_product");
+            });
+
+            modelBuilder.Entity<InternalTransaction>(entity =>
+            {
+                entity.ToTable("internal_transaction");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.CoinActionId).HasColumnName("coinActionId");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("createdDate")
+                    .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.ItAmount).HasColumnName("it_amount");
+
+                entity.Property(e => e.ItInfo).HasColumnName("it_info");
+
+                entity.Property(e => e.ItSecureHash)
+                    .HasColumnType("datetime")
+                    .HasColumnName("it_secureHash");
+
+                entity.Property(e => e.SpId).HasColumnName("spId");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(450)
+                    .HasColumnName("userId");
+
+                entity.HasOne(d => d.CoinAction)
+                    .WithMany(p => p.InternalTransactions)
+                    .HasForeignKey(d => d.CoinActionId)
+                    .HasConstraintName("fk_internal_transaction_coin_action");
+
+                entity.HasOne(d => d.Sp)
+                    .WithMany(p => p.InternalTransactions)
+                    .HasForeignKey(d => d.SpId)
+                    .HasConstraintName("fk_internal_transaction_subscription_package");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.InternalTransactions)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_internal_transaction_AspNetUsers");
             });
 
             modelBuilder.Entity<Order>(entity =>
             {
                 entity.ToTable("order");
 
+                entity.HasIndex(e => e.UserId, "IX_order_userId");
+
                 entity.Property(e => e.Id)
                     .HasMaxLength(400)
                     .HasColumnName("id");
+
+                entity.Property(e => e.Address).HasColumnName("address");
 
                 entity.Property(e => e.CreatedDate)
                     .HasColumnType("datetime")
                     .HasColumnName("createdDate")
                     .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.Email)
+                    .HasMaxLength(255)
+                    .HasColumnName("email");
+
+                entity.Property(e => e.PhoneNumber)
+                    .HasMaxLength(15)
+                    .HasColumnName("phoneNumber");
 
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
@@ -132,13 +329,19 @@ namespace MobileShopAPI.Data
 
                 entity.Property(e => e.Total).HasColumnName("total");
 
+                entity.Property(e => e.Type)
+                    .HasColumnName("type")
+                    .HasComment("1 = trả hết, 2 = đặt cọc");
+
                 entity.Property(e => e.UpdateDate)
                     .HasColumnType("datetime")
                     .HasColumnName("updateDate");
 
-                entity.Property(e => e.UserId)
-                    .HasMaxLength(450)
-                    .HasColumnName("userId");
+                entity.Property(e => e.UserFullName)
+                    .HasMaxLength(255)
+                    .HasColumnName("userFullName");
+
+                entity.Property(e => e.UserId).HasColumnName("userId");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Orders)
@@ -147,38 +350,20 @@ namespace MobileShopAPI.Data
                     .HasConstraintName("fk_order_AspNetUsers");
             });
 
-            modelBuilder.Entity<OrderDetail>(entity =>
-            {
-                entity.ToTable("orderDetail");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.OrderId)
-                    .HasMaxLength(400)
-                    .HasColumnName("orderId");
-
-                entity.Property(e => e.ProductId).HasColumnName("productId");
-
-                entity.Property(e => e.Quantity).HasColumnName("quantity");
-
-                entity.Property(e => e.TotalPrice).HasColumnName("totalPrice");
-
-                entity.HasOne(d => d.Order)
-                    .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.OrderId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_orderDetail_UserOrder");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.OrderDetails)
-                    .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_orderDetail_product");
-            });
 
             modelBuilder.Entity<Product>(entity =>
             {
                 entity.ToTable("product");
+
+                entity.HasIndex(e => e.BrandId, "IX_product_brandId");
+
+                entity.HasIndex(e => e.CategoryId, "IX_product_categoryId");
+
+                entity.HasIndex(e => e.ColorId, "IX_product_colorId");
+
+                entity.HasIndex(e => e.SizeId, "IX_product_sizeId");
+
+                entity.HasIndex(e => e.UserId, "IX_product_userId");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -203,6 +388,10 @@ namespace MobileShopAPI.Data
 
                 entity.Property(e => e.Price).HasColumnName("price");
 
+                entity.Property(e => e.Priorities)
+                    .HasColumnName("priorities")
+                    .HasDefaultValueSql("((0))");
+
                 entity.Property(e => e.SizeId)
                     .HasColumnName("sizeId")
                     .HasComment("part of primaryKey");
@@ -215,9 +404,11 @@ namespace MobileShopAPI.Data
                     .HasColumnType("datetime")
                     .HasColumnName("updateDate");
 
-                entity.Property(e => e.UserId)
-                    .HasMaxLength(450)
-                    .HasColumnName("userId");
+                entity.Property(e => e.UpdatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("updatedDate");
+
+                entity.Property(e => e.UserId).HasColumnName("userId");
 
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Products)
@@ -250,25 +441,142 @@ namespace MobileShopAPI.Data
                     .HasConstraintName("fk_product_AspNetUsers");
             });
 
-            modelBuilder.Entity<ProductImg>(entity =>
+            modelBuilder.Entity<ProductOrder>(entity =>
             {
-                entity.ToTable("productImg");
+                entity.ToTable("product_order");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.ImageId).HasColumnName("imageId");
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("createdDate")
+                    .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.OrderId)
+                    .HasMaxLength(400)
+                    .HasColumnName("orderId");
 
                 entity.Property(e => e.ProductId).HasColumnName("productId");
 
-                entity.HasOne(d => d.Image)
-                    .WithMany(p => p.ProductImgs)
-                    .HasForeignKey(d => d.ImageId)
-                    .HasConstraintName("fk_productImg_image");
+                entity.HasOne(d => d.Order)
+                    .WithMany(p => p.ProductOrders)
+                    .HasForeignKey(d => d.OrderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_product_order_order");
 
                 entity.HasOne(d => d.Product)
-                    .WithMany(p => p.ProductImgs)
+                    .WithMany(p => p.ProductOrders)
                     .HasForeignKey(d => d.ProductId)
-                    .HasConstraintName("fk_productImg_product");
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_product_order_product");
+            });
+
+            modelBuilder.Entity<Report>(entity =>
+            {
+                entity.ToTable("report");
+
+                entity.Property(e => e.Body).HasColumnName("body");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("createdDate")
+                    .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.ReportCategoryId).HasColumnName("reportCategoryId");
+
+                entity.Property(e => e.ReportedProductId).HasColumnName("reportedProductId");
+
+                entity.Property(e => e.ReportedUserId)
+                    .HasMaxLength(450)
+                    .HasColumnName("reportedUserId");
+
+                entity.Property(e => e.Subject)
+                    .HasMaxLength(255)
+                    .HasColumnName("subject");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(450)
+                    .HasColumnName("userId")
+                    .HasComment("user id of user who sent the report");
+
+                entity.HasOne(d => d.ReportCategory)
+                    .WithMany(p => p.Reports)
+                    .HasForeignKey(d => d.ReportCategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_Report_report_category");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Reports)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_Report_AspNetUsers");
+            });
+
+            modelBuilder.Entity<ReportCategory>(entity =>
+            {
+                entity.ToTable("report_category");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("createdDate")
+                    .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.UpdatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("updatedDate");
+            });
+
+            modelBuilder.Entity<ShippingAddress>(entity =>
+            {
+                entity.ToTable("shipping_address");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.AddressDetail)
+                    .HasMaxLength(100)
+                    .HasColumnName("address_detail")
+                    .HasComment("house number, district name");
+
+                entity.Property(e => e.AddressName)
+                    .HasMaxLength(255)
+                    .HasColumnName("address_name");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("createdDate")
+                    .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.IsDefault)
+                    .HasColumnName("isDefault")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.PhoneNumber)
+                    .HasMaxLength(15)
+                    .HasColumnName("phone_number");
+
+                entity.Property(e => e.UpdatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("updatedDate");
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(450)
+                    .HasColumnName("userId");
+
+                entity.Property(e => e.WardId).HasColumnName("wardId");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.ShippingAddresses)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_shipping_address_AspNetUsers");
             });
 
             modelBuilder.Entity<Size>(entity =>
@@ -287,9 +595,44 @@ namespace MobileShopAPI.Data
                     .HasColumnName("sizeName");
             });
 
-            modelBuilder.Entity<Transaction>(entity =>
+            modelBuilder.Entity<SubscriptionPackage>(entity =>
             {
-                entity.ToTable("transaction");
+                entity.ToTable("subscription_package");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("createdDate")
+                    .HasDefaultValueSql("(sysdatetime())");
+
+                entity.Property(e => e.Description).HasColumnName("description");
+
+                entity.Property(e => e.ExpiredIn)
+                    .HasColumnName("expiredIn")
+                    .HasComment("Số ngày sử dụng");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(255)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.PostAmout)
+                    .HasColumnName("postAmout")
+                    .HasComment("Số lượng được tin đăng khi mua gói");
+
+                entity.Property(e => e.UpdatedDate)
+                    .HasColumnType("date")
+                    .HasColumnName("updatedDate");
+            });
+
+
+            modelBuilder.Entity<VnpTransaction>(entity =>
+            {
+                entity.ToTable("vnp_transaction");
+
+                entity.HasIndex(e => e.OrderId, "IX_transaction_orderId");
+
+                entity.HasIndex(e => e.UserId, "IX_transaction_userId");
 
                 entity.Property(e => e.Id)
                     .HasMaxLength(400)
@@ -299,9 +642,11 @@ namespace MobileShopAPI.Data
                     .HasMaxLength(400)
                     .HasColumnName("orderId");
 
-                entity.Property(e => e.UserId)
-                    .HasMaxLength(450)
-                    .HasColumnName("userId");
+                entity.Property(e => e.PackageId)
+                    .HasMaxLength(400)
+                    .HasColumnName("packageId");
+
+                entity.Property(e => e.UserId).HasColumnName("userId");
 
                 entity.Property(e => e.VnpAmount).HasColumnName("vnp_Amount");
 
@@ -352,6 +697,11 @@ namespace MobileShopAPI.Data
                     .HasForeignKey(d => d.OrderId)
                     .HasConstraintName("fk_transaction_order");
 
+                entity.HasOne(d => d.Package)
+                    .WithMany(p => p.Transactions)
+                    .HasForeignKey(d => d.PackageId)
+                    .HasConstraintName("fk_vnp_transaction_coin_package");
+
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.UserId)
@@ -362,6 +712,10 @@ namespace MobileShopAPI.Data
             modelBuilder.Entity<UserRating>(entity =>
             {
                 entity.ToTable("user_rating");
+
+                entity.HasIndex(e => e.ProductId, "IX_user_rating_productId");
+
+                entity.HasIndex(e => e.UsderId, "IX_user_rating_usderId");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -379,9 +733,7 @@ namespace MobileShopAPI.Data
                     .HasDefaultValueSql("((1))")
                     .HasComment("1,2,3,4,5");
 
-                entity.Property(e => e.UsderId)
-                    .HasMaxLength(450)
-                    .HasColumnName("usderId");
+                entity.Property(e => e.UsderId).HasColumnName("usderId");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.UserRatings)

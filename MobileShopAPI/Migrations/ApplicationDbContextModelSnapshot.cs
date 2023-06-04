@@ -155,6 +155,51 @@ namespace MobileShopAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MobileShopAPI.Models.ActiveSubscription", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("ActivatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("activatedDate")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<DateTime?>("ExpiredDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("expiredDate");
+
+                    b.Property<long>("SpId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("sp_id");
+
+                    b.Property<int?>("UsedPost")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("usedPost")
+                        .HasDefaultValueSql("((0))")
+                        .HasComment("Số lượng bài đăng đã sử dụng");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SpId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("active_subscription", (string)null);
+                });
+
             modelBuilder.Entity("MobileShopAPI.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -163,7 +208,7 @@ namespace MobileShopAPI.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
+                    b.Property<string>("AvatarUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -224,12 +269,12 @@ namespace MobileShopAPI.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<long?>("UserBalance")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("avatar_url")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -274,6 +319,9 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("name");
 
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("brand", (string)null);
@@ -309,9 +357,101 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("name");
 
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("category", (string)null);
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.CoinAction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("ActionName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("action_name");
+
+                    b.Property<int?>("CaCoinAmount")
+                        .HasColumnType("int")
+                        .HasColumnName("ca_coin_amount");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("createdDate")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("description");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("date")
+                        .HasColumnName("updatedDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("coin_action", (string)null);
+
+                    b.HasComment("Actions on website using coin");
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.CoinPackage", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)")
+                        .HasColumnName("id");
+
+                    b.Property<long?>("CoinAmount")
+                        .HasColumnType("bigint")
+                        .HasColumnName("coin_amount");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("createdDate")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("PackageName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("package_name");
+
+                    b.Property<long>("PackageValue")
+                        .HasColumnType("bigint")
+                        .HasColumnName("package_value");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updatedDate");
+
+                    b.Property<string>("ValueUnit")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
+                        .HasColumnName("value_unit")
+                        .HasDefaultValueSql("('VND')")
+                        .HasComment("vnđ,...v.v");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("coin_package", (string)null);
                 });
 
             modelBuilder.Entity("MobileShopAPI.Models.Color", b =>
@@ -335,9 +475,49 @@ namespace MobileShopAPI.Migrations
                         .HasColumnName("createdDate")
                         .HasDefaultValueSql("(sysdatetime())");
 
+                    b.Property<string>("HexValue")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValueSql("(N'')");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("color", (string)null);
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.Evidence", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("createdDate")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("image_url");
+
+                    b.Property<long>("ReportId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("reportId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("evidence", (string)null);
                 });
 
             modelBuilder.Entity("MobileShopAPI.Models.Image", b =>
@@ -355,12 +535,18 @@ namespace MobileShopAPI.Migrations
                         .HasColumnName("createdDate")
                         .HasDefaultValueSql("(sysdatetime())");
 
-                    b.Property<bool?>("IsCover")
-                        .ValueGeneratedOnAdd()
+                    b.Property<bool>("IsCover")
                         .HasColumnType("bit")
                         .HasColumnName("isCover")
-                        .HasDefaultValueSql("((0))")
                         .HasComment("hình ảnh là ảnh bìa");
+
+                    b.Property<long>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValueSql("(CONVERT([bigint],(0)))");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)")
@@ -369,7 +555,58 @@ namespace MobileShopAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex(new[] { "ProductId" }, "IX_image_ProductId");
+
                     b.ToTable("image", (string)null);
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.InternalTransaction", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("id");
+
+                    b.Property<long?>("CoinActionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("coinActionId");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("createdDate")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<int?>("ItAmount")
+                        .HasColumnType("int")
+                        .HasColumnName("it_amount");
+
+                    b.Property<string>("ItInfo")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("it_info");
+
+                    b.Property<DateTime?>("ItSecureHash")
+                        .HasColumnType("datetime")
+                        .HasColumnName("it_secureHash");
+
+                    b.Property<long?>("SpId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("spId");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoinActionId");
+
+                    b.HasIndex("SpId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("internal_transaction", (string)null);
                 });
 
             modelBuilder.Entity("MobileShopAPI.Models.Order", b =>
@@ -379,11 +616,28 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("nvarchar(400)")
                         .HasColumnName("id");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("address");
+
                     b.Property<DateTime?>("CreatedDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
                         .HasColumnName("createdDate")
                         .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)")
+                        .HasColumnName("phoneNumber");
 
                     b.Property<int?>("Status")
                         .ValueGeneratedOnAdd()
@@ -395,57 +649,31 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("total");
 
+                    b.Property<int?>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("type")
+                        .HasComment("1 = trả hết, 2 = đặt cọc");
+
                     b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime")
                         .HasColumnName("updateDate");
 
+                    b.Property<string>("UserFullName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("userFullName");
+
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("userId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_order_userId");
 
                     b.ToTable("order", (string)null);
-                });
-
-            modelBuilder.Entity("MobileShopAPI.Models.OrderDetail", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<string>("OrderId")
-                        .IsRequired()
-                        .HasMaxLength(400)
-                        .HasColumnType("nvarchar(400)")
-                        .HasColumnName("orderId");
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("productId");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int")
-                        .HasColumnName("quantity");
-
-                    b.Property<long?>("TotalPrice")
-                        .HasColumnType("bigint")
-                        .HasColumnName("totalPrice");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("orderDetail", (string)null);
                 });
 
             modelBuilder.Entity("MobileShopAPI.Models.Product", b =>
@@ -490,6 +718,12 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("price");
 
+                    b.Property<int?>("Priorities")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("priorities")
+                        .HasDefaultValueSql("((0))");
+
                     b.Property<long>("SizeId")
                         .HasColumnType("bigint")
                         .HasColumnName("sizeId")
@@ -507,28 +741,31 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("updateDate");
 
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updatedDate");
+
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("userId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BrandId");
+                    b.HasIndex(new[] { "BrandId" }, "IX_product_brandId");
 
-                    b.HasIndex("CategoryId");
+                    b.HasIndex(new[] { "CategoryId" }, "IX_product_categoryId");
 
-                    b.HasIndex("ColorId");
+                    b.HasIndex(new[] { "ColorId" }, "IX_product_colorId");
 
-                    b.HasIndex("SizeId");
+                    b.HasIndex(new[] { "SizeId" }, "IX_product_sizeId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_product_userId");
 
                     b.ToTable("product", (string)null);
                 });
 
-            modelBuilder.Entity("MobileShopAPI.Models.ProductImg", b =>
+            modelBuilder.Entity("MobileShopAPI.Models.ProductOrder", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -537,9 +774,17 @@ namespace MobileShopAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
 
-                    b.Property<long>("ImageId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("imageId");
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("createdDate")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)")
+                        .HasColumnName("orderId");
 
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint")
@@ -547,11 +792,161 @@ namespace MobileShopAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId");
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("productImg", (string)null);
+                    b.ToTable("product_order", (string)null);
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.Report", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("body");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("createdDate")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<long>("ReportCategoryId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("reportCategoryId");
+
+                    b.Property<long?>("ReportedProductId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("reportedProductId");
+
+                    b.Property<string>("ReportedUserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("reportedUserId");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("subject");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("userId")
+                        .HasComment("user id of user who sent the report");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportCategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("report", (string)null);
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.ReportCategory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("createdDate")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updatedDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("report_category", (string)null);
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.ShippingAddress", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("AddressDetail")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("address_detail")
+                        .HasComment("house number, district name");
+
+                    b.Property<string>("AddressName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("address_name");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("createdDate")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<bool?>("IsDefault")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasColumnName("isDefault")
+                        .HasDefaultValueSql("((0))");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)")
+                        .HasColumnName("phone_number");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updatedDate");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("userId");
+
+                    b.Property<int>("WardId")
+                        .HasColumnType("int")
+                        .HasColumnName("wardId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("shipping_address", (string)null);
                 });
 
             modelBuilder.Entity("MobileShopAPI.Models.Size", b =>
@@ -569,18 +964,112 @@ namespace MobileShopAPI.Migrations
                         .HasColumnName("createdDate")
                         .HasDefaultValueSql("(sysdatetime())");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SizeName")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("sizeName");
 
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("size", (string)null);
                 });
 
-            modelBuilder.Entity("MobileShopAPI.Models.Transaction", b =>
+            modelBuilder.Entity("MobileShopAPI.Models.SubscriptionPackage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("createdDate")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("description");
+
+                    b.Property<int>("ExpiredIn")
+                        .HasColumnType("int")
+                        .HasColumnName("expiredIn")
+                        .HasComment("Số ngày sử dụng");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("name");
+
+                    b.Property<int>("PostAmout")
+                        .HasColumnType("int")
+                        .HasColumnName("postAmout")
+                        .HasComment("Số lượng được tin đăng khi mua gói");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("date")
+                        .HasColumnName("updatedDate");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("subscription_package", (string)null);
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.UserRating", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("comment");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasColumnName("createdDate")
+                        .HasDefaultValueSql("(sysdatetime())");
+
+                    b.Property<long>("ProductId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("productId");
+
+                    b.Property<short>("Rating")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint")
+                        .HasColumnName("rating")
+                        .HasDefaultValueSql("((1))")
+                        .HasComment("1,2,3,4,5");
+
+                    b.Property<string>("UsderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("usderId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "ProductId" }, "IX_user_rating_productId");
+
+                    b.HasIndex(new[] { "UsderId" }, "IX_user_rating_usderId");
+
+                    b.ToTable("user_rating", (string)null);
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.VnpTransaction", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(400)
@@ -592,9 +1081,13 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("nvarchar(400)")
                         .HasColumnName("orderId");
 
+                    b.Property<string>("PackageId")
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)")
+                        .HasColumnName("packageId");
+
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("userId");
 
@@ -661,56 +1154,13 @@ namespace MobileShopAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("PackageId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "OrderId" }, "IX_transaction_orderId");
 
-                    b.ToTable("transaction", (string)null);
-                });
+                    b.HasIndex(new[] { "UserId" }, "IX_transaction_userId");
 
-            modelBuilder.Entity("MobileShopAPI.Models.UserRating", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
-
-                    b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("comment");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("createdDate")
-                        .HasDefaultValueSql("(sysdatetime())");
-
-                    b.Property<long>("ProductId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("productId");
-
-                    b.Property<short>("Rating")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint")
-                        .HasColumnName("rating")
-                        .HasDefaultValueSql("((1))")
-                        .HasComment("1,2,3,4,5");
-
-                    b.Property<string>("UsderId")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)")
-                        .HasColumnName("usderId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UsderId");
-
-                    b.ToTable("user_rating", (string)null);
+                    b.ToTable("vnp_transaction", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -764,6 +1214,73 @@ namespace MobileShopAPI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MobileShopAPI.Models.ActiveSubscription", b =>
+                {
+                    b.HasOne("MobileShopAPI.Models.SubscriptionPackage", "Sp")
+                        .WithMany("ActiveSubscriptions")
+                        .HasForeignKey("SpId")
+                        .IsRequired()
+                        .HasConstraintName("fk_active_subcription_subscription_package");
+
+                    b.HasOne("MobileShopAPI.Models.ApplicationUser", "User")
+                        .WithMany("ActiveSubscriptions")
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("fk_active_subcription_AspNetUsers");
+
+                    b.Navigation("Sp");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.Evidence", b =>
+                {
+                    b.HasOne("MobileShopAPI.Models.Report", "Report")
+                        .WithMany("Evidences")
+                        .HasForeignKey("ReportId")
+                        .IsRequired()
+                        .HasConstraintName("fk_evidence_Report");
+
+                    b.Navigation("Report");
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.Image", b =>
+                {
+                    b.HasOne("MobileShopAPI.Models.Product", "Product")
+                        .WithMany("Images")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_images_product");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.InternalTransaction", b =>
+                {
+                    b.HasOne("MobileShopAPI.Models.CoinAction", "CoinAction")
+                        .WithMany("InternalTransactions")
+                        .HasForeignKey("CoinActionId")
+                        .HasConstraintName("fk_internal_transaction_coin_action");
+
+                    b.HasOne("MobileShopAPI.Models.SubscriptionPackage", "Sp")
+                        .WithMany("InternalTransactions")
+                        .HasForeignKey("SpId")
+                        .HasConstraintName("fk_internal_transaction_subscription_package");
+
+                    b.HasOne("MobileShopAPI.Models.ApplicationUser", "User")
+                        .WithMany("InternalTransactions")
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("fk_internal_transaction_AspNetUsers");
+
+                    b.Navigation("CoinAction");
+
+                    b.Navigation("Sp");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MobileShopAPI.Models.Order", b =>
                 {
                     b.HasOne("MobileShopAPI.Models.ApplicationUser", "User")
@@ -773,25 +1290,6 @@ namespace MobileShopAPI.Migrations
                         .HasConstraintName("fk_order_AspNetUsers");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MobileShopAPI.Models.OrderDetail", b =>
-                {
-                    b.HasOne("MobileShopAPI.Models.Order", "Order")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId")
-                        .IsRequired()
-                        .HasConstraintName("fk_orderDetail_UserOrder");
-
-                    b.HasOne("MobileShopAPI.Models.Product", "Product")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("ProductId")
-                        .IsRequired()
-                        .HasConstraintName("fk_orderDetail_product");
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("MobileShopAPI.Models.Product", b =>
@@ -837,41 +1335,51 @@ namespace MobileShopAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MobileShopAPI.Models.ProductImg", b =>
+            modelBuilder.Entity("MobileShopAPI.Models.ProductOrder", b =>
                 {
-                    b.HasOne("MobileShopAPI.Models.Image", "Image")
-                        .WithMany("ProductImgs")
-                        .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("MobileShopAPI.Models.Order", "Order")
+                        .WithMany("ProductOrders")
+                        .HasForeignKey("OrderId")
                         .IsRequired()
-                        .HasConstraintName("fk_productImg_image");
+                        .HasConstraintName("fk_product_order_order");
 
                     b.HasOne("MobileShopAPI.Models.Product", "Product")
-                        .WithMany("ProductImgs")
+                        .WithMany("ProductOrders")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_productImg_product");
+                        .HasConstraintName("fk_product_order_product");
 
-                    b.Navigation("Image");
+                    b.Navigation("Order");
 
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("MobileShopAPI.Models.Transaction", b =>
+            modelBuilder.Entity("MobileShopAPI.Models.Report", b =>
                 {
-                    b.HasOne("MobileShopAPI.Models.Order", "Order")
-                        .WithMany("Transactions")
-                        .HasForeignKey("OrderId")
-                        .HasConstraintName("fk_transaction_order");
+                    b.HasOne("MobileShopAPI.Models.ReportCategory", "ReportCategory")
+                        .WithMany("Reports")
+                        .HasForeignKey("ReportCategoryId")
+                        .IsRequired()
+                        .HasConstraintName("fk_Report_report_category");
 
                     b.HasOne("MobileShopAPI.Models.ApplicationUser", "User")
-                        .WithMany("Transactions")
+                        .WithMany("Reports")
                         .HasForeignKey("UserId")
                         .IsRequired()
-                        .HasConstraintName("fk_transaction_AspNetUsers");
+                        .HasConstraintName("fk_Report_AspNetUsers");
 
-                    b.Navigation("Order");
+                    b.Navigation("ReportCategory");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.ShippingAddress", b =>
+                {
+                    b.HasOne("MobileShopAPI.Models.ApplicationUser", "User")
+                        .WithMany("ShippingAddresses")
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("fk_shipping_address_AspNetUsers");
 
                     b.Navigation("User");
                 });
@@ -895,11 +1403,44 @@ namespace MobileShopAPI.Migrations
                     b.Navigation("Usder");
                 });
 
+            modelBuilder.Entity("MobileShopAPI.Models.VnpTransaction", b =>
+                {
+                    b.HasOne("MobileShopAPI.Models.Order", "Order")
+                        .WithMany("Transactions")
+                        .HasForeignKey("OrderId")
+                        .HasConstraintName("fk_transaction_order");
+
+                    b.HasOne("MobileShopAPI.Models.CoinPackage", "Package")
+                        .WithMany("Transactions")
+                        .HasForeignKey("PackageId")
+                        .HasConstraintName("fk_vnp_transaction_coin_package");
+
+                    b.HasOne("MobileShopAPI.Models.ApplicationUser", "User")
+                        .WithMany("Transactions")
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("fk_transaction_AspNetUsers");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Package");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MobileShopAPI.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("ActiveSubscriptions");
+
+                    b.Navigation("InternalTransactions");
+
                     b.Navigation("Orders");
 
                     b.Navigation("Products");
+
+                    b.Navigation("Reports");
+
+                    b.Navigation("ShippingAddresses");
 
                     b.Navigation("Transactions");
 
@@ -916,35 +1457,57 @@ namespace MobileShopAPI.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("MobileShopAPI.Models.CoinAction", b =>
+                {
+                    b.Navigation("InternalTransactions");
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.CoinPackage", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+
             modelBuilder.Entity("MobileShopAPI.Models.Color", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("MobileShopAPI.Models.Image", b =>
-                {
-                    b.Navigation("ProductImgs");
-                });
-
             modelBuilder.Entity("MobileShopAPI.Models.Order", b =>
                 {
-                    b.Navigation("OrderDetails");
+                    b.Navigation("ProductOrders");
 
                     b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("MobileShopAPI.Models.Product", b =>
                 {
-                    b.Navigation("OrderDetails");
+                    b.Navigation("Images");
 
-                    b.Navigation("ProductImgs");
+                    b.Navigation("ProductOrders");
 
                     b.Navigation("UserRatings");
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.Report", b =>
+                {
+                    b.Navigation("Evidences");
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.ReportCategory", b =>
+                {
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("MobileShopAPI.Models.Size", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("MobileShopAPI.Models.SubscriptionPackage", b =>
+                {
+                    b.Navigation("ActiveSubscriptions");
+
+                    b.Navigation("InternalTransactions");
                 });
 #pragma warning restore 612, 618
         }
