@@ -65,7 +65,7 @@ namespace MobileShopAPI.Controllers
         }
         // api/auth/confirmChangeEmail
         [HttpGet("confirmChangeEmail")]
-        public async Task<IActionResult> ConfirmChangePassword(string userId, string newEmail, string token)
+        public async Task<IActionResult> ConfirmChangeEmail(string userId, string newEmail, string token)
         {
             if (ModelState.IsValid)
             {
