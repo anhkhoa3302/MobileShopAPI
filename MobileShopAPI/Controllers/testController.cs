@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MobileShopAPI.Helpers;
 using System.Security.Claims;
 
 namespace MobileShopAPI.Controllers
@@ -28,6 +29,13 @@ namespace MobileShopAPI.Controllers
 
             var confirmEmailUrl = $"{baseUrl}/api/auth/confirmEmail";
             return baseUrl;
+        }
+
+        [HttpGet]
+        [Route("getUniqueString")]
+        public string GetUniqueString()
+        {
+            return StringIdGenerator.GenerateUniqueId();
         }
     }
 }
