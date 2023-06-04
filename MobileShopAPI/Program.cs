@@ -49,6 +49,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<ISizeService, ISizeService.SizeService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IReportCategoryService, ReportCategoryService>();
 
 builder.Services.AddScoped<IUserManagerService, UserManagerService>();
 //Email Service
