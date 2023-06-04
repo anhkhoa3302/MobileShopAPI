@@ -51,7 +51,8 @@ builder.Services.AddScoped<ISizeService, ISizeService.SizeService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICoinActionService, ICoinActionService.CoinActionService>();
 builder.Services.AddScoped<ICoinPackageService, CoinPackageService>();
-
+builder.Services.AddScoped<IReportCategoryService, ReportCategoryService>();
+builder.Services.AddScoped<IUserManagerService, UserManagerService>();
 //Email Service
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);

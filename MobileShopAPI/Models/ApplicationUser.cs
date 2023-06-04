@@ -23,6 +23,10 @@ namespace MobileShopAPI.Models
         public string? MiddleName { get; set; }
         [PersonalData]
         public string? LastName { get; set; }
+        /// <summary>
+        /// active = 0
+        /// banned = 1
+        /// </summary>
         [PersonalData]
         public int? Status { get; set; }
         [PersonalData]
@@ -30,8 +34,13 @@ namespace MobileShopAPI.Models
         [PersonalData]
         public long? UserBalance { get; set; }
         [PersonalData]
+        public string? Description { get; set; }
+        [PersonalData]
         [Column("createdDate")]
         public DateTime? CreatedDate { get; set; }
+        [PersonalData]
+        [Column("updateddDate")]
+        public DateTime? UpdatedDate { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; }
         public virtual ICollection<Product> Products { get; set; }
