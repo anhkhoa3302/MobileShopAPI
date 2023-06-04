@@ -1,4 +1,6 @@
-﻿using Org.BouncyCastle.Utilities.Encoders;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using Org.BouncyCastle.Utilities.Encoders;
+using System.Text;
 
 namespace MobileShopAPI.Helpers
 {
@@ -8,7 +10,8 @@ namespace MobileShopAPI.Helpers
         {
             long uniqueNumber = DateTime.Now.Ticks;
             string uniqueString = Convert.ToBase64String(BitConverter.GetBytes(uniqueNumber));
-            return uniqueString;
+            string validString = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(uniqueString));
+            return validString;
         }
     }
 }
