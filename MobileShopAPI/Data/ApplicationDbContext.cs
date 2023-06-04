@@ -38,6 +38,9 @@ namespace MobileShopAPI.Data
             {
                 entity.Property(e => e.Status)
                     .HasDefaultValueSql("((0))");
+                entity.Property(e => e.CreatedDate)
+                .HasColumnType("datetime")
+                .HasDefaultValueSql("(sysdatetime())");
             });
 
             modelBuilder.Entity<ActiveSubscription>(entity =>
@@ -251,6 +254,7 @@ namespace MobileShopAPI.Data
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.Images)
                     .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_images_product");
             });
 
