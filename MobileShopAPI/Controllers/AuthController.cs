@@ -15,7 +15,7 @@ namespace MobileShopAPI.Controllers
         {
             _userService = userService;
         }
-
+        
         // api/auth/register
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
