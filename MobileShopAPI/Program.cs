@@ -49,6 +49,8 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<ISizeService, ISizeService.SizeService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICoinActionService, ICoinActionService.CoinActionService>();
+builder.Services.AddScoped<ICoinPackageService, CoinPackageService>();
 
 //Email Service
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
