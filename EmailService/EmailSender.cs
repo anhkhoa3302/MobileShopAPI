@@ -15,10 +15,10 @@ namespace EmailService
         {
             _emailConfig = emailConfig;
         }
-        public void SendEmail(Message message)
+        public async Task SendEmail(Message message)
         {
             var emailMessage = CreateEmailMessage(message);
-            Send(emailMessage);
+            await Send(emailMessage);
         }
 
         private MimeMessage CreateEmailMessage(Message message)
@@ -30,7 +30,7 @@ namespace EmailService
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html) { Text = message.Body };
             return emailMessage;
         }
-        private void Send(MimeMessage mailMessage)
+        private async Task Send(MimeMessage mailMessage)
         {
             using (var client = new SmtpClient())
             {
@@ -40,7 +40,7 @@ namespace EmailService
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
                     client.Authenticate(_emailConfig.Email, _emailConfig.Password);
 
-                    client.Send(mailMessage);
+                    await client.SendAsync(mailMessage);
                 }
                 catch
                 {

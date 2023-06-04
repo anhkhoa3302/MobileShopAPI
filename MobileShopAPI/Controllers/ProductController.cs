@@ -23,7 +23,7 @@ namespace MobileShopAPI.Controllers
             return Ok(productList);
         }
 
-        [HttpGet("getDetail")]
+        [HttpGet("getDetail/{productId}")]
         public async Task<IActionResult> ProductDetail(long productId)
         {
             var product = await _productService.GetProductDetailAsync(productId);
@@ -46,7 +46,7 @@ namespace MobileShopAPI.Controllers
             return BadRequest("Some properties are not valid");
         }
 
-        [HttpPut("edit")]
+        [HttpPut("edit/{productId}")]
         public async Task<IActionResult> Edit(long productId,ProductViewModel model)
         {
             if (ModelState.IsValid)
@@ -63,7 +63,7 @@ namespace MobileShopAPI.Controllers
         }
 
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete/{productId}")]
         public async Task<IActionResult> Delete(long productId)
         {
             if (ModelState.IsValid)
