@@ -19,16 +19,57 @@ namespace MobileShopAPI.Controllers
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAll() 
         {
-            var productList = await _productService.GetAllProductWithCoverAsync();
+            var productList = await _productService.GetAllProductAsync();
             return Ok(productList);
         }
-        [HttpPost("createProduct")]
+
+        [HttpGet("getDetail")]
+        public async Task<IActionResult> ProductDetail(long productId)
+        {
+            var product = await _productService.GetProductDetailAsync(productId);
+            if(product == null) { return BadRequest("Product not found"); }
+            return Ok(product);
+        }
+        [HttpPost("create")]
         public async Task<IActionResult> Create(ProductViewModel model)
         {
             if(ModelState.IsValid)
             {
                 var result = await _productService.CreateProductAsync(model);
                 if(result.isSuccess)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+
+            return BadRequest("Some properties are not valid");
+        }
+
+        [HttpPut("edit")]
+        public async Task<IActionResult> Edit(long productId,ProductViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _productService.EditProductAsync(productId,model);
+                if (result.isSuccess)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+
+            return BadRequest("Some properties are not valid");
+        }
+
+
+        [HttpDelete("delete")]
+        public async Task<IActionResult> Delete(long productId)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _productService.DeleteProductAsync(productId);
+                if (result.isSuccess)
                 {
                     return Ok(result);
                 }

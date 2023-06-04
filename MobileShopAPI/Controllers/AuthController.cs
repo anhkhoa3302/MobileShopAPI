@@ -63,6 +63,21 @@ namespace MobileShopAPI.Controllers
             }
             return BadRequest(result);//400
         }
+        // api/auth/confirmChangeEmail
+        [HttpGet("confirmChangeEmail")]
+        public async Task<IActionResult> ConfirmChangeEmail(string userId, string newEmail, string token)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.ConfirmResetEmailAsync(userId, newEmail, token);
+                if (result.isSuccess)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+            return BadRequest("Some properies are not valid");//Status code: 404
+        }
 
         // api/auth/forgetPassword
         [HttpPost("forgetPassword")]
@@ -95,5 +110,22 @@ namespace MobileShopAPI.Controllers
             }
             return BadRequest("Some properies are not valid");//Status code: 404
         }
+
+        // api/auth/changeEmail
+        [HttpPost("changeEmail")]
+        public async Task<IActionResult> ChangePassword([FromForm] ResetEmailViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.ResetEmailAsync(model);
+                if (result.isSuccess)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+            return BadRequest("Some properies are not valid");//Status code: 404
+        }
+
     }
 }

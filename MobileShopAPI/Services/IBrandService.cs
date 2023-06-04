@@ -77,7 +77,7 @@ namespace MobileShopAPI.Services
 
         public async Task<Brand?> GetByIdAsync(long id)
         {
-            var brand = await _context.Brands.SingleOrDefaultAsync(b => b.Id == id);
+            var brand = await _context.Brands.Include(p=>p.Products).SingleOrDefaultAsync(b => b.Id == id);
             if(brand != null)
             {
                 return brand;
