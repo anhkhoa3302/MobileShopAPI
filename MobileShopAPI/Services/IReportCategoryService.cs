@@ -76,7 +76,9 @@ namespace MobileShopAPI.Services
 
         public async Task<ReportCategory?> GetByIdAsync(long id)
         {
-            var reportCategory = await _context.ReportCategories.SingleOrDefaultAsync(rc => rc.Id == id);
+            var reportCategory = await _context
+                .ReportCategories
+                .SingleOrDefaultAsync(rc => rc.Id == id);
             if (reportCategory != null)
             {
                 return reportCategory;
