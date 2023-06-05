@@ -23,7 +23,8 @@ namespace MobileShopAPI.Services
         Task<UserManagerResponse> ForgetPasswordAsync(string email);
 
         Task<UserManagerResponse> ResetPasswordAsync(ResetPasswordViewModel model);
-
+        Task<UserManagerResponse> ResetEmailAsync(ResetEmailViewModel model);
+        Task<UserManagerResponse> ConfirmResetEmailAsync(string userId, string newEmail,string token);
     }
 
 
@@ -62,7 +63,7 @@ namespace MobileShopAPI.Services
             var user = new ApplicationUser
             {
                 Email = model.Email,
-                UserName = model.Email
+                UserName = model.UserName.Trim()
             };
             var result = await _userManager.CreateAsync(user,model.Password);
 
@@ -99,13 +100,13 @@ namespace MobileShopAPI.Services
 
         public async Task<UserManagerResponse> LoginUserAsync(LoginViewModel model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByNameAsync(model.Username);
 
             if(user == null)
             {
                 return new UserManagerResponse
                 {
-                    Message = "There is no user with this email address",
+                    Message = "There is no user with this user name",
                     isSuccess = false
                 };
             }
@@ -124,7 +125,7 @@ namespace MobileShopAPI.Services
             //Claim array
             var claim = new[]
             {
-                new Claim("Email", model.Email),
+                new Claim("Email", user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id)
             };
 
@@ -146,7 +147,7 @@ namespace MobileShopAPI.Services
             string mailBody = "<h1>New login noticed</h1>"
                             + "<p>New login to your account at " + DateTime.Now + "</p>";
 
-            Message message = new Message(new string[] { model.Email }, "New login noticed", mailBody);
+            Message message = new Message(new string[] { user.Email }, "New login noticed", mailBody);
             _emailSender.SendEmail(message);
             //===
             return new UserManagerResponse
@@ -254,6 +255,73 @@ namespace MobileShopAPI.Services
                 return new UserManagerResponse
                 {
                     Message = "Password has been reset successfully!",
+                    isSuccess = true
+                };
+
+            return new UserManagerResponse
+            {
+                Message = "Something went wrong",
+                isSuccess = false,
+                Errors = result.Errors.Select(e => e.Description)
+            };
+        }
+
+        public async Task<UserManagerResponse> ResetEmailAsync(ResetEmailViewModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return new UserManagerResponse
+                {
+                    Message = "User not found!",
+                    isSuccess = false
+                };
+
+            var result = await _userManager.CheckPasswordAsync(user, model.Password);
+
+            if (!result)
+            {
+                return new UserManagerResponse
+                {
+                    Message = "Wrong password",
+                    isSuccess = false
+                };
+            }
+
+            var token = await _userManager.GenerateChangeEmailTokenAsync(user,model.NewEmail);
+            var validChangeEmailToken = EncodeToken(token);
+
+            var url = $"{_configuration["AppUrl"]}/api/auth/confirmChangeEmail?userId={user.Id}&newEmail={model.NewEmail}&token={validChangeEmailToken}";
+
+            string mailBody = "<h4>Confirm your new email</h4>"
+                + $"<p>Please <a href='{url}'>click here</a> to confirm your new email</p>";
+
+            Message message = new Message(new string[] { model.NewEmail }, "Reset Email", mailBody);
+            _emailSender.SendEmail(message);
+
+            return new UserManagerResponse
+            {
+                Message = "Reset email URL has been sent successfully",
+                isSuccess = true
+            };
+        }
+
+        public async Task<UserManagerResponse> ConfirmResetEmailAsync(string userId,string newEmail,string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return new UserManagerResponse
+                {
+                    Message = "User not found!",
+                    isSuccess = false
+                };
+            }
+            var originalToken = DecodeToken(token);
+            var result = await _userManager.ChangeEmailAsync(user, newEmail, originalToken);
+            if (result.Succeeded)
+                return new UserManagerResponse
+                {
+                    Message = "Email has been reset successfully!",
                     isSuccess = true
                 };
 

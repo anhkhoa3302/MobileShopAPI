@@ -14,6 +14,7 @@ namespace MobileShopAPI.Models
         public long Id { get; set; }
         public string Name { get; set; } = null!;
         public string? Description { get; set; }
+        public long Price { get; set; }
         /// <summary>
         /// Số lượng được tin đăng khi mua gói
         /// </summary>

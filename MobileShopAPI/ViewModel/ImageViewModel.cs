@@ -11,5 +11,18 @@
         /// hình ảnh là ảnh bìa
         /// </summary>
         public bool IsCover { get; set; }
+
+
+        /// <summary>
+        /// Biến này chỉ được sử dụng khi chỉnh sửa sản phẩm
+        /// Nếu đặt là true, hình ảnh này sẽ bị xóa
+        /// </summary>
+        public bool IsDeleted { get; set; }
+
+        /// <summary>
+        /// Biến này chỉ được sử dụng khi chỉnh sửa sản phẩm
+        /// Đặt là true để đánh dấu hình ảnh được thêm mới
+        /// </summary>
+        public bool IsNewlyAdded { get; set; }
     }
 }

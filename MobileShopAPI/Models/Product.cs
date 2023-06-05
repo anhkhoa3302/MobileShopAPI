@@ -17,6 +17,12 @@ namespace MobileShopAPI.Models
         public string? Description { get; set; }
         public int Stock { get; set; }
         public long Price { get; set; }
+        /// <summary>
+        /// default = 0
+        /// out of stock = 1
+        /// hiden = 2
+        /// soft deleted = 3
+        /// </summary>
         public int? Status { get; set; }
         public long CategoryId { get; set; }
         public long BrandId { get; set; }
