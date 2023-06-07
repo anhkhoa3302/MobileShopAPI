@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MobileShopAPI.ViewModel;
+using System;
 using System.Collections.Generic;
 
 namespace MobileShopAPI.Models
@@ -18,14 +19,16 @@ namespace MobileShopAPI.Models
         public int Stock { get; set; }
         public long Price { get; set; }
         /// <summary>
-        /// default = 0
+        /// in stock = 0
         /// out of stock = 1
-        /// hiden = 2
+        /// unapproved = 2
         /// soft deleted = 3
         /// </summary>
         public int? Status { get; set; }
         public long CategoryId { get; set; }
         public long BrandId { get; set; }
+
+        public bool isHidden { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string UserId { get; set; } = null!;

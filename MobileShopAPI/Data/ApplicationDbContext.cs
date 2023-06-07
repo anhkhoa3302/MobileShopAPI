@@ -400,7 +400,9 @@ namespace MobileShopAPI.Data
                     .HasColumnName("sizeId")
                     .HasComment("part of primaryKey");
 
-                entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasDefaultValueSql("((2))");
 
                 entity.Property(e => e.Stock).HasColumnName("stock");
 
@@ -443,6 +445,8 @@ namespace MobileShopAPI.Data
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_product_AspNetUsers");
+
+                entity.Property(d => d.isHidden).HasDefaultValue(true);
             });
 
             modelBuilder.Entity<ProductOrder>(entity =>

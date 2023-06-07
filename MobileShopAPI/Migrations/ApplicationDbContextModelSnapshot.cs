@@ -739,8 +739,10 @@ namespace MobileShopAPI.Migrations
                         .HasComment("part of primaryKey");
 
                     b.Property<int?>("Status")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("status");
+                        .HasColumnName("status")
+                        .HasDefaultValueSql("((2))");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int")
@@ -758,6 +760,11 @@ namespace MobileShopAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("userId");
+
+                    b.Property<bool>("isHidden")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.HasKey("Id");
 
