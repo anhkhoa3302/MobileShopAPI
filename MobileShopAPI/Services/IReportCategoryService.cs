@@ -78,6 +78,7 @@ namespace MobileShopAPI.Services
         {
             var reportCategory = await _context
                 .ReportCategories
+                .Include(rc => rc.Reports)
                 .SingleOrDefaultAsync(rc => rc.Id == id);
             if (reportCategory != null)
             {

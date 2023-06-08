@@ -53,6 +53,7 @@ builder.Services.AddScoped<ICoinActionService, ICoinActionService.CoinActionServ
 builder.Services.AddScoped<ICoinPackageService, CoinPackageService>();
 builder.Services.AddScoped<IReportCategoryService, ReportCategoryService>();
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IEvidenceService, EvidenceService>();
 builder.Services.AddScoped<IUserManagerService, UserManagerService>();
 
 
@@ -68,8 +69,29 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
+
+//Test API
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:3000"); // add the allowed origins  
+                      });
+});
+//builder.Services.AddResponseCaching();
+//builder.Services.AddControllers();
+//app.UseHttpsRedirection();
+//app.UseStaticFiles();
+//app.UseRouting();
+//End - Test API
 
 var app = builder.Build();
+
+app.UseCors(MyAllowSpecificOrigins);//Test API
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -23,10 +23,12 @@ namespace MobileShopAPI.Services
     public class ReportService : IReportService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IEvidenceService _evidenceService;
 
-        public ReportService(ApplicationDbContext context)
+        public ReportService(ApplicationDbContext context, IEvidenceService evidenceService)
         {
             _context = context;
+            _evidenceService = evidenceService;
         }
         public async Task<ReportResponse> AddAsync(ReportViewModel report)
         {
@@ -42,6 +44,15 @@ namespace MobileShopAPI.Services
             };
             _context.Add(_report);
             await _context.SaveChangesAsync();
+
+            if (report.Evidences != null)
+                foreach (var item in report.Evidences)
+                {
+                    var evidence = new EvidenceViewModel();
+                    evidence.ImageUrl = item.ImageUrl;
+                    evidence.ReportId = item.ReportId;
+                    await _evidenceService.AddAsync(_report.Id, evidence);
+                }
 
             return new ReportResponse
             {

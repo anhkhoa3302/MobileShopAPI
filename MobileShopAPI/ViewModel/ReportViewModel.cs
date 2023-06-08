@@ -21,5 +21,7 @@ namespace MobileShopAPI.ViewModel
 
         [Required]
         public long ReportCategoryId { get; set; }
+
+        public List<EvidenceViewModel>? Evidences { get; set; }
     }
 }
