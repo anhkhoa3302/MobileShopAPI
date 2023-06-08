@@ -75,8 +75,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseCors(MyAllowSpecificOrigins);//Test API
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
