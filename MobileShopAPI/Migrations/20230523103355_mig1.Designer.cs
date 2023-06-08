@@ -228,7 +228,7 @@ namespace MobileShopAPI.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("Username")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 

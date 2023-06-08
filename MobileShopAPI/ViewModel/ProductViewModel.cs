@@ -11,13 +11,14 @@ namespace MobileShopAPI.ViewModel
         public int Stock { get; set; }
         [Required]
         public long Price { get; set; }
-        public int? Status { get; set; }
+        public int Status { get; set; }
+        public bool isHidden { get; set; }
         [Required]
         public long CategoryId { get; set; }
         [Required]
         public long BrandId { get; set; }
         [Required]
-        public string UserId { get; set; } = null!;
+        public string? UserId { get; set; }
         [Required]
         /// <summary>
         /// part of primaryKey
@@ -30,5 +31,6 @@ namespace MobileShopAPI.ViewModel
         public long ColorId { get; set; }
 
         public List<ImageViewModel>? Images { get; set; }
+
     }
 }

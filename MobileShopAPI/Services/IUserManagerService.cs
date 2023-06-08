@@ -10,10 +10,10 @@ namespace MobileShopAPI.Services
 {
     public interface IUserManagerService
     {
-        Task<List<ApplicationUser>> GetAllUserAsync();
-        Task<ApplicationUser?> GetUserProfileAsync(string userId);
+        Task<List<UserViewModel>> GetAllUserAsync();
+        Task<UserViewModel?> GetUserProfileAsync(string userId);
 
-        Task<UserManagerResponse?> UpdateUserProfileAsync(string userId,UpdateUserProfileViewModel model);
+        Task<UserViewModel?> UpdateUserProfileAsync(string userId,UpdateUserProfileViewModel model);
 
         Task<UserManagerResponse?> BanUser(string userId);
 
@@ -49,40 +49,87 @@ namespace MobileShopAPI.Services
                 isSuccess = true
             };
         }
-        public async Task<List<ApplicationUser>> GetAllUserAsync()
+        public async Task<List<UserViewModel>> GetAllUserAsync()
         {
             var userList = await _context.Users.ToListAsync();
-            return userList;
+
+            var userViewList = new List<UserViewModel>();
+
+            foreach(var user in userList)
+            {
+                var temp = new UserViewModel
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    MiddleName = user.LastName,
+                    LastName = user.LastName,
+                    Description = user.Description,
+                    Status = user.Status,
+                    AvatarUrl = user.AvatarUrl,
+                    UserBalance = user.UserBalance,
+                    CreatedDate = user.CreatedDate,
+                    UpdatedDate = user.UpdatedDate
+                };
+                userViewList.Add(temp);
+            }
+
+
+            return userViewList;
         }
 
-        public async Task<ApplicationUser?> GetUserProfileAsync(string userId)
+        public async Task<UserViewModel?> GetUserProfileAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) { return null; }
-            return user;
+
+            var userView = new UserViewModel
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                MiddleName = user.LastName,
+                LastName = user.LastName,
+                Description = user.Description,
+                Status = user.Status,
+                AvatarUrl = user.AvatarUrl,
+                UserBalance = user.UserBalance,
+                CreatedDate = user.CreatedDate,
+                UpdatedDate = user.UpdatedDate
+            };
+            return userView;
         }
 
-        public async Task<UserManagerResponse?> UpdateUserProfileAsync(string userId, UpdateUserProfileViewModel model)
+        public async Task<UserViewModel?> UpdateUserProfileAsync(string userId, UpdateUserProfileViewModel model)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
-                return new UserManagerResponse
-                {
-                    Message = "User not found",
-                    isSuccess = false
-                };
+                return null;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
             user.MiddleName = model.MiddleName;
             user.AvatarUrl = model.AvatarUrl;
             user.Description = model.Description;
             user.PhoneNumber = model.PhoneNumber;
+            user.UpdatedDate = DateTime.Now;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
-            return new UserManagerResponse
+            return new UserViewModel
             {
-                Message = "User profile has been updated successfully",
-                isSuccess = true
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                MiddleName = user.LastName,
+                LastName = user.LastName,
+                Description = user.Description,
+                Status = user.Status,
+                AvatarUrl = user.AvatarUrl,
+                UserBalance = user.UserBalance,
+                CreatedDate = user.CreatedDate,
+                UpdatedDate = user.UpdatedDate
             };
         }
     }
