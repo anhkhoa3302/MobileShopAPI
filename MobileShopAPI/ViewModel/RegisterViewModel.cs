@@ -5,7 +5,7 @@ namespace MobileShopAPI.ViewModel
     public class RegisterViewModel
     {
         [Required]
-        public string UserName { get; set; } = null!;
+        public string Username { get; set; } = null!;
 
         [Required]
         [EmailAddress]

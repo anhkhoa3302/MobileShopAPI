@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using MobileShopAPI.Data;
 using MobileShopAPI.Models;
 using MobileShopAPI.Services;
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -41,6 +43,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
 //Inject services
 builder.Services.AddScoped<IUserService,UserService>();
 builder.Services.AddScoped<IImageService, ImageService>();
@@ -69,25 +72,6 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
-
-
-//Test API
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:3000"); // add the allowed origins  
-                      });
-});
-//builder.Services.AddResponseCaching();
-//builder.Services.AddControllers();
-//app.UseHttpsRedirection();
-//app.UseStaticFiles();
-//app.UseRouting();
-//End - Test API
 
 var app = builder.Build();
 

@@ -403,6 +403,12 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("description");
 
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("status")
+                        .HasDefaultValueSql("((1))");
+
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("date")
                         .HasColumnName("updatedDate");
@@ -444,6 +450,12 @@ namespace MobileShopAPI.Migrations
                     b.Property<long>("PackageValue")
                         .HasColumnType("bigint")
                         .HasColumnName("package_value");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("status")
+                        .HasDefaultValueSql("((1))");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime")
@@ -739,8 +751,10 @@ namespace MobileShopAPI.Migrations
                         .HasComment("part of primaryKey");
 
                     b.Property<int?>("Status")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("status");
+                        .HasColumnName("status")
+                        .HasDefaultValueSql("((2))");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int")
@@ -758,6 +772,11 @@ namespace MobileShopAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("userId");
+
+                    b.Property<bool>("isHidden")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.HasKey("Id");
 
@@ -798,6 +817,9 @@ namespace MobileShopAPI.Migrations
                     b.Property<long>("ProductId")
                         .HasColumnType("bigint")
                         .HasColumnName("productId");
+
+                    b.Property<int>("quantity")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -840,6 +862,12 @@ namespace MobileShopAPI.Migrations
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("reportedUserId");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("status")
+                        .HasDefaultValueSql("((0))");
 
                     b.Property<string>("Subject")
                         .IsRequired()
@@ -1027,6 +1055,12 @@ namespace MobileShopAPI.Migrations
 
                     b.Property<long>("Price")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("Status")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("status")
+                        .HasDefaultValueSql("((1))");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("date")

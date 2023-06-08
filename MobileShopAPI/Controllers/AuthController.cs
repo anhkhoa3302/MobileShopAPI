@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
 using EmailService;
+using Swashbuckle.Swagger.Annotations;
 
 namespace MobileShopAPI.Controllers
 {
@@ -15,7 +16,11 @@ namespace MobileShopAPI.Controllers
         {
             _userService = userService;
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         // api/auth/register
         [HttpPost("register")]
         public async Task<IActionResult> RegisterAsync(RegisterViewModel model)
@@ -97,7 +102,7 @@ namespace MobileShopAPI.Controllers
 
         // api/auth/resetPassword
         [HttpPost("resetPassword")]
-        public async Task<IActionResult> ResetPassword([FromForm]ResetPasswordViewModel model)
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if(ModelState.IsValid)
             {
@@ -113,7 +118,7 @@ namespace MobileShopAPI.Controllers
 
         // api/auth/changeEmail
         [HttpPost("changeEmail")]
-        public async Task<IActionResult> ChangePassword([FromForm] ResetEmailViewModel model)
+        public async Task<IActionResult> ChangePassword(ResetEmailViewModel model)
         {
             if (ModelState.IsValid)
             {
