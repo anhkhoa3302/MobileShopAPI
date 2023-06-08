@@ -274,7 +274,7 @@ namespace MobileShopAPI.Migrations
                     b.Property<long?>("UserBalance")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("Username")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 

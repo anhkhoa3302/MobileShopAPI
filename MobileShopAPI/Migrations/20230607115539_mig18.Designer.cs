@@ -12,8 +12,8 @@ using MobileShopAPI.Data;
 namespace MobileShopAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230604054209_mig14")]
-    partial class mig14
+    [Migration("20230607115539_mig18")]
+    partial class mig18
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -223,6 +223,9 @@ namespace MobileShopAPI.Migrations
                         .HasColumnName("createdDate")
                         .HasDefaultValueSql("(sysdatetime())");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -273,10 +276,14 @@ namespace MobileShopAPI.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("updateddDate");
+
                     b.Property<long?>("UserBalance")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -754,6 +761,11 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("userId");
 
+                    b.Property<bool>("isHidden")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
                     b.HasKey("Id");
 
                     b.HasIndex(new[] { "BrandId" }, "IX_product_brandId");
@@ -1019,6 +1031,9 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("postAmout")
                         .HasComment("Số lượng được tin đăng khi mua gói");
+
+                    b.Property<long>("Price")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("date")
