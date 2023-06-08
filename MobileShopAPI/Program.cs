@@ -49,10 +49,13 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IColorService, ColorService>();
 builder.Services.AddScoped<ISizeService, ISizeService.SizeService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IShippingAddressService, ShippingAddressService>();
 builder.Services.AddScoped<ICoinActionService, ICoinActionService.CoinActionService>();
 builder.Services.AddScoped<ICoinPackageService, CoinPackageService>();
 builder.Services.AddScoped<IReportCategoryService, ReportCategoryService>();
 builder.Services.AddScoped<IUserManagerService, UserManagerService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductOrderService, ProductOrderService>();
 //Email Service
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);
