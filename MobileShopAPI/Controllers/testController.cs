@@ -13,10 +13,12 @@ namespace MobileShopAPI.Controllers
 
         [HttpGet("AuthorizeTest")]
         [Authorize]
-        public async Task<IActionResult> AuthTest()
+        public IActionResult AuthTest()
         {
             var user = User.FindFirst(ClaimTypes.NameIdentifier);
-            return Ok(user.Value);
+            if(user!=null)
+                return Ok(user.Value);
+            return BadRequest();
         }
 
         [HttpGet]

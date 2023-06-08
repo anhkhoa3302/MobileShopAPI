@@ -34,11 +34,7 @@ namespace MobileShopAPI.Controllers
         {
             var result = await _userManagerService.UpdateUserProfileAsync(userId, model);
             if (result == null) { return BadRequest(); }
-            if(result.isSuccess)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
+            return Ok(result);
         }
         [HttpPost("ban")]
         public async Task<IActionResult> BanUser(string userId)
