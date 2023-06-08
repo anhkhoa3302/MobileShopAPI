@@ -17,6 +17,12 @@ namespace MobileShopAPI.Models
         public string ActionName { get; set; } = null!;
         public string? Description { get; set; }
         public int? CaCoinAmount { get; set; }
+        /// <summary>
+        ///  0 = inactive
+        ///  1 = active (default)
+        ///  2 = soft deleted
+        /// </summary>
+        public int Status { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
