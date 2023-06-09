@@ -4,12 +4,15 @@ using MobileShopAPI.Helpers;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.ViewModel;
+using System.Collections.Immutable;
 
 namespace MobileShopAPI.Services
 {
     public interface IReportService
     {
         Task<List<Report>> GetAllAsync();
+
+        Task<List<Report>> GetAllReportOfUserAsync(string userId);
 
         Task<Report?> GetByIdAsync(long id);
 
@@ -51,7 +54,7 @@ namespace MobileShopAPI.Services
                     var evidence = new EvidenceViewModel();
                     evidence.ImageUrl = item.ImageUrl;
                     evidence.ReportId = item.ReportId;
-                    await _evidenceService.AddAsync(_report.Id, evidence);
+                    await _evidenceService.AddAsync(_report.Id, evidence);//Method of EvidenceService
                 }
 
             return new ReportResponse
@@ -65,34 +68,47 @@ namespace MobileShopAPI.Services
         public async Task<ReportResponse> DeleteAsync(long id)
         {
             var report = await _context.Reports.SingleOrDefaultAsync(report => report.Id == id);
-            if (report != null)
+            if (report == null)
             {
-                _context.Remove(report);
-                await _context.SaveChangesAsync();
-
                 return new ReportResponse
                 {
-                    Message = "This report Deleted",
-                    isSuccess = true
+                    Message = "Report not found!",
+                    isSuccess = false
                 };
             }
 
+            if (report.Evidences != null)
+                foreach (var item in report.Evidences)
+                {
+                    await _evidenceService.DeleteAsync(id, item.Id);//Method of EvidenceService
+                }
+
+            _context.Reports.Remove(report);
+            await _context.SaveChangesAsync();
+
+
             return new ReportResponse
             {
-                Message = "DeleteAsync Fail !!!",
-                isSuccess = false
+                Message = "Report has been deleted!",
+                isSuccess = true
             };
         }
 
         public async Task<List<Report>> GetAllAsync()
         {
-            var reports = await _context.Reports.ToListAsync();
+            var reports = await _context.Reports.Include(r => r.Evidences).ToListAsync();
             return reports;
+        }
+
+        public async Task<List<Report>> GetAllReportOfUserAsync(string userId)
+        {
+            var reportOfUser = await _context.Reports.Where(r => r.UserId == userId).Include(r => r.Evidences).ToListAsync();
+            return reportOfUser;
         }
 
         public async Task<Report?> GetByIdAsync(long id)
         {
-            var report = await _context.Reports.SingleOrDefaultAsync(report => report.Id == id);
+            var report = await _context.Reports.Include(r => r.Evidences).SingleOrDefaultAsync(report => report.Id == id);
             if (report != null)
             {
                 return report;
@@ -116,6 +132,12 @@ namespace MobileShopAPI.Services
             _report.ReportedProductId = report.ReportedProductId;
             _report.ReportCategoryId = report.ReportCategoryId;
             await _context.SaveChangesAsync();
+
+            if (report.Evidences != null)
+                foreach (var item in report.Evidences)
+                {
+                    await _evidenceService.UpdateAsync(id, item);//Method of EvidenceService
+                }
 
             return new ReportResponse
             {

@@ -30,6 +30,27 @@ namespace MobileShopAPI.Controllers
             }
         }
 
+        [HttpGet("getAllReportOfUser/{userId}")]
+        public async Task<IActionResult> GetAllReportOfUser(string userId)
+        {
+            try
+            {
+                var data = await _reportService.GetAllReportOfUserAsync(userId);
+                if (data != null)
+                {
+                    return Ok(data);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         // api/report/getById/{id}
         [HttpGet("getById/{id}")]
         public async Task<IActionResult> GetById(long id)
