@@ -15,7 +15,7 @@ namespace EmailService
         {
             _emailConfig = emailConfig;
         }
-        public async Task SendEmail(Message message)
+        public async Task SendEmailAsync(Message message)
         {
             var emailMessage = CreateEmailMessage(message);
             await Send(emailMessage);
