@@ -58,11 +58,7 @@ namespace MobileShopAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = User.FindFirst(ClaimTypes.NameIdentifier);
-                //if (user != null)
-                //    return Ok(user.Value);
-
-                var result = await _spService.AddAsync(sp, user.Value);
+                var result = await _spService.AddAsync(sp);
                 if (result.isSuccess)
                     return Ok(result); //Status code: 200
                 return BadRequest(result);//Status code: 404
@@ -90,6 +86,28 @@ namespace MobileShopAPI.Controllers
                 return BadRequest("Some properies are not valid");//Status code: 404
             }
         }
+
+        // api/SubscriptionPackage/updateStatus/{id}
+        [HttpPut("updateStatus/{id}")]
+        public async Task<IActionResult> UpdateStatus(long id, SubscriptionPackageStatusViewModel sp)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _spService.UpdateStatusAsync(id, sp);
+                    if (result.isSuccess)
+                        return Ok(result); //Status code: 200
+                    return BadRequest(result);//Status code: 404
+                }
+                return BadRequest();
+            }
+            catch
+            {
+                return BadRequest("Some properies are not valid");//Status code: 404
+            }
+        }
+
         // api/SubscriptionPackage/delete/{id}
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(long id)

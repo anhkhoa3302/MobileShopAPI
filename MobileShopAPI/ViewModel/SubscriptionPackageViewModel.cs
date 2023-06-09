@@ -16,12 +16,5 @@ namespace MobileShopAPI.ViewModel
         /// Số ngày sử dụng
         /// </summary>
         public int ExpiredIn { get; set; }
-
-        /// <summary>
-        ///  0 = inactive
-        ///  1 = active (default)
-        ///  2 = soft deleted
-        /// </summary>
-        public int Status { get; set; }
     }
 }

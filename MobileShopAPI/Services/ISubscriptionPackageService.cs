@@ -15,9 +15,12 @@ namespace MobileShopAPI.Services
 
         Task<SubscriptionPackage?> GetByIdAsync(long id);
 
-        Task<SubscriptionPackageResponse> AddAsync(SubscriptionPackageViewModel sp, string usrId);
+        Task<SubscriptionPackageResponse> AddAsync(SubscriptionPackageViewModel sp);
 
         Task<SubscriptionPackageResponse> UpdateAsync(long id, SubscriptionPackageViewModel sp);
+
+        Task<SubscriptionPackageResponse> UpdateStatusAsync(long id, SubscriptionPackageStatusViewModel sp);
+
 
         Task<SubscriptionPackageResponse> DeleteAsync(long id);
     }
@@ -30,7 +33,7 @@ namespace MobileShopAPI.Services
         {
             _context = context;
         }
-        public async Task<SubscriptionPackageResponse> AddAsync(SubscriptionPackageViewModel sp, string usrId)
+        public async Task<SubscriptionPackageResponse> AddAsync(SubscriptionPackageViewModel sp)
         {
             var _sp = new SubscriptionPackage
             {
@@ -39,44 +42,10 @@ namespace MobileShopAPI.Services
                 Price = sp.Price,
                 PostAmout = sp.PostAmout,
                 ExpiredIn = sp.ExpiredIn,
+                Status = 1,
                 CreatedDate = null
             };
             _context.Add(_sp);
-            await _context.SaveChangesAsync();
-
-            // Thêm Active Subscription
-            var _as = new ActiveSubscription
-            {
-                UsedPost = 1,
-                ExpiredDate = null,
-                ActivatedDate = DateTime.Now,
-                SpId = _context.SubscriptionPackages.Max(p => p.Id),
-                UserId = usrId
-            };
-            _context.Add(_as);
-
-            await _context.SaveChangesAsync();
-
-
-            // Thêm Internal Transaction
-            var SubPacID = _context.SubscriptionPackages.Max(p => p.Id);
-
-            var SP = _context.SubscriptionPackages.Include(p => p.InternalTransactions).Where(sp => sp.Id == SubPacID).FirstOrDefault();
-
-            var CA = _context.CoinActions.Include(p => p.InternalTransactions).Where(sp => sp.Id == 1).FirstOrDefault();
-
-            var _it = new InternalTransaction
-            {
-                Id = StringIdGenerator.GenerateUniqueId(),
-                UserId = usrId,
-                CoinActionId = 1,
-                SpId = SubPacID,
-                ItAmount = SP.PostAmout,
-                ItInfo = CA.Description,
-                ItSecureHash = null,
-                CreatedDate = null
-            };
-            _context.Add(_it);
             await _context.SaveChangesAsync();
 
             return new SubscriptionPackageResponse
@@ -146,6 +115,28 @@ namespace MobileShopAPI.Services
             return new SubscriptionPackageResponse
             {
                 Message = "This Subscription Package Updated!",
+                isSuccess = true
+            };
+        }
+
+        public async Task<SubscriptionPackageResponse> UpdateStatusAsync(long id, SubscriptionPackageStatusViewModel sp)
+        {
+            var _sp = await _context.SubscriptionPackages.FindAsync(id);
+
+            if (_sp == null)
+                return new SubscriptionPackageResponse
+                {
+                    Message = "Bad request",
+                    isSuccess = false
+                };
+
+            _sp.Status = sp.Status;
+            _sp.UpdatedDate = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            return new SubscriptionPackageResponse
+            {
+                Message = "This Status Updated!",
                 isSuccess = true
             };
         }
