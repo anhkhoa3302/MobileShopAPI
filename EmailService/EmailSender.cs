@@ -18,7 +18,8 @@ namespace EmailService
         public async Task SendEmailAsync(Message message)
         {
             var emailMessage = CreateEmailMessage(message);
-            await Send(emailMessage);
+            //Uncomment later
+            //await Send(emailMessage);
         }
 
         private MimeMessage CreateEmailMessage(Message message)

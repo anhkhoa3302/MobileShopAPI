@@ -11,7 +11,17 @@ namespace MobileShopAPI.ViewModel
         public int Stock { get; set; }
         [Required]
         public long Price { get; set; }
+        /// <summary>
+        /// in stock = 0
+        /// out of stock = 1
+        /// unapproved = 2
+        /// soft deleted = 3
+        /// User can not modify this value
+        /// </summary>
         public int Status { get; set; }
+        /// <summary>
+        /// Product is hidden if true
+        /// </summary>
         public bool isHidden { get; set; }
         [Required]
         public long CategoryId { get; set; }
@@ -20,16 +30,12 @@ namespace MobileShopAPI.ViewModel
         [Required]
         public string? UserId { get; set; }
         [Required]
-        /// <summary>
-        /// part of primaryKey
-        /// </summary>
         public long SizeId { get; set; }
         [Required]
-        /// <summary>
-        /// part of primaryKey
-        /// </summary>
         public long ColorId { get; set; }
-
+        /// <summary>
+        /// Images list of this product
+        /// </summary>
         public List<ImageViewModel>? Images { get; set; }
 
     }

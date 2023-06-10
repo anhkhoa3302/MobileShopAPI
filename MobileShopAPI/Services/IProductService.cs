@@ -15,9 +15,9 @@ namespace MobileShopAPI.Services
 
         Task<ProductResponse> ApproveProduct(long productId);
 
-        Task<Object?> GetProductDetailAsync(long productId);
+        Task<ProductDetailViewModel?> GetProductDetailAsync(long productId);
 
-        Task<Object?> GetNoneHiddenProductDetailAsync(long productId);
+        Task<ProductDetailViewModel?> GetNoneHiddenProductDetailAsync(long productId);
 
         Task<ProductResponse> CreateProductAsync(ProductViewModel model);
 
@@ -236,7 +236,7 @@ namespace MobileShopAPI.Services
             return productList;
         }
 
-        public async Task<object?> GetNoneHiddenProductDetailAsync(long productId)
+        public async Task<ProductDetailViewModel?> GetNoneHiddenProductDetailAsync(long productId)
         {
             var product = await _context.Products.AsNoTracking().Where(p => p.Id == productId)
                 .Where(p => p.isHidden == false && (p.Status == 0 || p.Status == 1))
@@ -267,7 +267,7 @@ namespace MobileShopAPI.Services
                 UpdatedDate = user.UpdatedDate
             };
 
-            var returnValue = new
+            var returnValue = new ProductDetailViewModel
             {
                 Product = product,
                 User = userView
@@ -277,7 +277,7 @@ namespace MobileShopAPI.Services
             return returnValue;
         }
 
-        public async Task<Object?> GetProductDetailAsync(long productId)
+        public async Task<ProductDetailViewModel?> GetProductDetailAsync(long productId)
         {
             var product = await _context.Products.AsNoTracking().Where(p=>p.Id == productId)
                 .Include(p => p.Images)
@@ -307,7 +307,7 @@ namespace MobileShopAPI.Services
                 UpdatedDate = user.UpdatedDate
             };
 
-            var returnValue = new
+            var returnValue = new ProductDetailViewModel
             {
                 Product = product,
                 User = userView
