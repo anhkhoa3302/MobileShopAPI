@@ -11,7 +11,13 @@ namespace MobileShopAPI.Models
         }
 
         public long Id { get; set; }
+        /// <summary>
+        /// Name of report category
+        /// </summary>
         public string Name { get; set; } = null!;
+        /// <summary>
+        /// Description of report category
+        /// </summary>
         public string? Description { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }

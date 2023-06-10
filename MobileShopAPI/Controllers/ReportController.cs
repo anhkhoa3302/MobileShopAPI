@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MobileShopAPI.Models;
+using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
 
@@ -16,8 +18,14 @@ namespace MobileShopAPI.Controllers
             _reportService = reportService;
         }
 
-        // api/report/getAll
+        /// <summary>
+        /// Get all report
+        /// </summary>
+        /// <response code ="200">Get all report</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getAll")]
+        [ProducesResponseType(typeof(List<Report>), 200)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -30,7 +38,18 @@ namespace MobileShopAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Get all report of user by userid
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <remarks>Get Id of user"</remarks>
+        /// <response code ="200">Report infos</response>
+        /// <response code ="400">Report of user not found</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getAllReportOfUser/{userId}")]
+        [ProducesResponseType(typeof(Report), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllReportOfUser(string userId)
         {
             try
@@ -51,8 +70,18 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        // api/report/getById/{id}
+        /// <summary>
+        /// Get report detail
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks>Get Id of user</remarks>
+        /// <response code ="200">Report infos</response>
+        /// <response code ="400">Report not found</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getById/{id}")]
+        [ProducesResponseType(typeof(Report), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetById(long id)
         {
             try
@@ -72,8 +101,20 @@ namespace MobileShopAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-        // api/report/add
+
+        /// <summary>
+        /// Add report
+        /// </summary>
+        /// <param name="report"></param>
+        /// <remarks>Add report of user</remarks>
+        /// <returns></returns>
+        /// <response code ="200">Report has been added successfully</response>
+        /// <response code ="404">Report has missing/invalid values</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpPost("add")]
+        [ProducesResponseType(typeof(ReportResponse), 200)]
+        [ProducesResponseType(typeof(ReportResponse), 404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Add(ReportViewModel report)
         {
             if (ModelState.IsValid)
@@ -86,8 +127,21 @@ namespace MobileShopAPI.Controllers
 
             return BadRequest("Some properies are not valid");//Status code: 404
         }
-        // api/report/update/{id}
+
+        /// <summary>
+        /// update report
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="report"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">Report has been updated successfully</response>
+        /// <response code ="404">Report has missing/invalid values</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpPut("update/{id}")]
+        [ProducesResponseType(typeof(ReportResponse), 200)]
+        [ProducesResponseType(typeof(ReportResponse), 404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Update(long id, ReportViewModel report)
         {
             try
@@ -106,8 +160,20 @@ namespace MobileShopAPI.Controllers
                 return BadRequest("Some properies are not valid");//Status code: 404
             }
         }
-        // api/report/delete/{id}
+
+        /// <summary>
+        /// delete report
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks>delete report and evidence<remarks>
+        /// <returns></returns>
+        /// <response code ="200">Report has been deleted successfully</response>
+        /// <response code ="404">Something went wrong</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpDelete("delete/{id}")]
+        [ProducesResponseType(typeof(ReportResponse), 200)]
+        [ProducesResponseType(typeof(ReportResponse), 404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Delete(long id)
         {
             try

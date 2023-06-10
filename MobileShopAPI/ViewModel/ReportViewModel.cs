@@ -13,9 +13,15 @@ namespace MobileShopAPI.ViewModel
         [Required]
         public string ReportedUserId { get; set; } = null!;
 
+        /// <summary>
+        /// ProductId of product that being reported
+        /// </summary>
         [Required] 
         public long ReportedProductId { get; set; }
 
+        /// <summary>
+        /// user id of user who sent the report
+        /// </summary>
         [Required]
         public string UserId { get; set; } = null!;
 

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MobileShopAPI.Models;
+using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
 
@@ -16,8 +18,14 @@ namespace MobileShopAPI.Controllers
             _categoryService = categoryService;
         }
 
-        // api/reportcategory/getAll
+        /// <summary>
+        /// Get all report category
+        /// </summary>
+        /// <response code ="200">Get all report category</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getAll")]
+        [ProducesResponseType(typeof(List<ReportCategory>), 200)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -30,8 +38,18 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        // api/reportcategory/getById/{id}
+        /// <summary>
+        /// Get report category detail
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks>Get Id of report category"</remarks>
+        /// <response code ="200">Report category infos</response>
+        /// <response code ="400">Report category not found</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getById/{id}")]
+        [ProducesResponseType(typeof(ReportCategory), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetById(long id)
         {
             try
@@ -51,8 +69,20 @@ namespace MobileShopAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-        // api/reportcategory/add
+
+        /// <summary>
+        /// Add report category
+        /// </summary>
+        /// <param name="reportCategory"></param>
+        /// <remarks>Add report category</remarks>
+        /// <returns></returns>
+        /// <response code ="200">Report category has been added successfully</response>
+        /// <response code ="404">Report category has missing/invalid values</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpPost("add")]
+        [ProducesResponseType(typeof(ReportCategoryResponse), 200)]
+        [ProducesResponseType(typeof(ReportCategoryResponse), 404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Add(ReportCategoryViewModel reportCategory)
         {
             if (ModelState.IsValid)
@@ -65,8 +95,21 @@ namespace MobileShopAPI.Controllers
 
             return BadRequest("Some properies are not valid");//Status code: 404
         }
-        // api/reportcategory/update/{id}
+
+        /// <summary>
+        /// update report category
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="reportCategory"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">Report category has been updated successfully</response>
+        /// <response code ="404">Report category has missing/invalid values</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpPut("update/{id}")]
+        [ProducesResponseType(typeof(ReportCategoryResponse), 200)]
+        [ProducesResponseType(typeof(ReportCategoryResponse), 404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Update(long id, ReportCategoryViewModel reportCategory)
         {
             try
@@ -85,8 +128,19 @@ namespace MobileShopAPI.Controllers
                 return BadRequest("Some properies are not valid");//Status code: 404
             }
         }
-        // api/reportcategory/delete/{id}
+
+        /// <summary>
+        /// delete report category
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks>delete report catgory<remarks>
+        /// <response code ="200">Report category has been deleted successfully</response>
+        /// <response code ="404">Something went wrong</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpDelete("delete/{id}")]
+        [ProducesResponseType(typeof(ReportCategoryResponse), 200)]
+        [ProducesResponseType(typeof(ReportCategoryResponse), 404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Delete(long id)
         {
             try
