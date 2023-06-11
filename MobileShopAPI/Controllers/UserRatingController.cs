@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MobileShopAPI.Models;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
 
@@ -8,21 +7,22 @@ namespace MobileShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandController : ControllerBase
+    public class UserRatingController : ControllerBase
     {
-        private readonly IBrandService _brandService;
+        private readonly IUserRatingService _userRatingService;
 
-        public BrandController(IBrandService brandService)
+        public UserRatingController(IUserRatingService userRatingService)
         {
-            _brandService = brandService;
+            _userRatingService = userRatingService;
         }
-        // api/brand/getAll
+
+        // api/UserRating/getAll
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAll()
         {
             try
             {
-                return Ok(await _brandService.GetAllAsync());
+                return Ok(await _userRatingService.GetAllAsync());
             }
             catch
             {
@@ -30,13 +30,13 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        // api/brand/getById/{id}
+        // api/UserRating/getById/{id}
         [HttpGet("getById/{id}")]
         public async Task<IActionResult> GetById(long id)
         {
             try
             {
-                var data = await _brandService.GetByIdAsync(id);
+                var data = await _userRatingService.GetByIdAsync(id);
                 if (data != null)
                 {
                     return Ok(data);
@@ -51,13 +51,36 @@ namespace MobileShopAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-        // api/brand/add
+
+        // api/UserRating/getByUserId/{id}
+        [HttpGet("getByUserId/{id}")]
+        public async Task<IActionResult> GetByUserId(string id)
+        {
+            try
+            {
+                var data = await _userRatingService.GetAllRatingOfUserAsync(id);
+                if (data != null)
+                {
+                    return Ok(data);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        // api/UserRating/add
         [HttpPost("add")]
-        public async Task<IActionResult> Add(BrandViewModel brand)
+        public async Task<IActionResult> Add(UserRatingViewModel userRating)
         {
             if (ModelState.IsValid)
             {
-                var result = await _brandService.AddAsync(brand);
+                var result = await _userRatingService.AddAsync(userRating);
                 if (result.isSuccess)
                     return Ok(result); //Status code: 200
                 return BadRequest(result);//Status code: 404
@@ -65,15 +88,15 @@ namespace MobileShopAPI.Controllers
 
             return BadRequest("Some properies are not valid");//Status code: 404
         }
-        // api/brand/update/{id}
+        // api/UserRating/update/{id}
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> Update(long id, BrandViewModel brand)
+        public async Task<IActionResult> Update(long id, UserRatingViewModel userRating)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _brandService.UpdateAsync(id,brand);
+                    var result = await _userRatingService.UpdateAsync(id, userRating);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -85,7 +108,7 @@ namespace MobileShopAPI.Controllers
                 return BadRequest("Some properies are not valid");//Status code: 404
             }
         }
-        // api/brand/delete/{id}
+        // api/UserRating/delete/{id}
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(long id)
         {
@@ -93,9 +116,9 @@ namespace MobileShopAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _brandService.DeleteAsync(id);
+                    var result = await _userRatingService.DeleteAsync(id);
                     if (result.isSuccess)
-                        return Ok(result); //Status code: 200
+                        return Ok(result); //Status code: 200 ...
                     return BadRequest(result);//Status code: 404
                 }
                 return BadRequest();
@@ -104,6 +127,14 @@ namespace MobileShopAPI.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        [HttpGet("getEverageRating")]
+        public async Task<float> getEverageRating(long id)
+        {
+            var result = await _userRatingService.getEverageRatingAsync(id);
+
+            return result;
         }
     }
 }

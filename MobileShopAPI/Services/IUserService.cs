@@ -80,7 +80,7 @@ namespace MobileShopAPI.Services
                 + $"<p>Please <a href='{url}'>click here</a> to confirm your email!</p>";
 
                 Message message = new Message(new string[] { model.Email }, "Email Confirmation", mailBody);
-                await _emailSender.SendEmail(message);
+                await _emailSender.SendEmailAsync(message);
 
                 return new UserManagerResponse
                 {
@@ -157,7 +157,7 @@ namespace MobileShopAPI.Services
                             + "<p>New login to your account at " + DateTime.Now + "</p>";
 
             Message message = new Message(new string[] { user.Email }, "New login noticed", mailBody);
-            await _emailSender.SendEmail(message);
+            await _emailSender.SendEmailAsync(message);
             //===
             return new UserManagerResponse
             {
@@ -216,7 +216,7 @@ namespace MobileShopAPI.Services
                 + $"<p>Please <a href='{url}'>click here</a> to reset your password</p>";
 
             Message message = new Message(new string[] { email }, "Reset Password", mailBody);
-            await _emailSender.SendEmail(message);
+            await _emailSender.SendEmailAsync(message);
 
             return new UserManagerResponse
             {
@@ -305,7 +305,7 @@ namespace MobileShopAPI.Services
                 + $"<p>Please <a href='{url}'>click here</a> to confirm your new email</p>";
 
             Message message = new Message(new string[] { model.NewEmail }, "Reset Email", mailBody);
-            await _emailSender.SendEmail(message);
+            await _emailSender.SendEmailAsync(message);
 
             return new UserManagerResponse
             {

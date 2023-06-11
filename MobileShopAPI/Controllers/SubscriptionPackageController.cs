@@ -1,28 +1,29 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MobileShopAPI.Models;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Security.Claims;
 
 namespace MobileShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandController : ControllerBase
+    public class SubscriptionPackageController : ControllerBase
     {
-        private readonly IBrandService _brandService;
+        private readonly ISubscriptionPackageService _spService;
 
-        public BrandController(IBrandService brandService)
+        public SubscriptionPackageController(ISubscriptionPackageService spService)
         {
-            _brandService = brandService;
+            _spService = spService;
         }
-        // api/brand/getAll
+
+        // api/SubscriptionPackage/getAll
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAll()
         {
             try
             {
-                return Ok(await _brandService.GetAllAsync());
+                return Ok(await _spService.GetAllAsync());
             }
             catch
             {
@@ -30,13 +31,13 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        // api/brand/getById/{id}
+        // api/SubscriptionPackage/getById/{id}
         [HttpGet("getById/{id}")]
         public async Task<IActionResult> GetById(long id)
         {
             try
             {
-                var data = await _brandService.GetByIdAsync(id);
+                var data = await _spService.GetByIdAsync(id);
                 if (data != null)
                 {
                     return Ok(data);
@@ -51,13 +52,13 @@ namespace MobileShopAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-        // api/brand/add
+        // api/SubscriptionPackage/add
         [HttpPost("add")]
-        public async Task<IActionResult> Add(BrandViewModel brand)
+        public async Task<IActionResult> Add(SubscriptionPackageViewModel sp)
         {
             if (ModelState.IsValid)
             {
-                var result = await _brandService.AddAsync(brand);
+                var result = await _spService.AddAsync(sp);
                 if (result.isSuccess)
                     return Ok(result); //Status code: 200
                 return BadRequest(result);//Status code: 404
@@ -65,15 +66,15 @@ namespace MobileShopAPI.Controllers
 
             return BadRequest("Some properies are not valid");//Status code: 404
         }
-        // api/brand/update/{id}
+        // api/SubscriptionPackage/update/{id}
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> Update(long id, BrandViewModel brand)
+        public async Task<IActionResult> Update(long id, SubscriptionPackageViewModel sp)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _brandService.UpdateAsync(id,brand);
+                    var result = await _spService.UpdateAsync(id, sp);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404
@@ -85,7 +86,29 @@ namespace MobileShopAPI.Controllers
                 return BadRequest("Some properies are not valid");//Status code: 404
             }
         }
-        // api/brand/delete/{id}
+
+        // api/SubscriptionPackage/updateStatus/{id}
+        [HttpPut("updateStatus/{id}")]
+        public async Task<IActionResult> UpdateStatus(long id, SubscriptionPackageStatusViewModel sp)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var result = await _spService.UpdateStatusAsync(id, sp);
+                    if (result.isSuccess)
+                        return Ok(result); //Status code: 200
+                    return BadRequest(result);//Status code: 404
+                }
+                return BadRequest();
+            }
+            catch
+            {
+                return BadRequest("Some properies are not valid");//Status code: 404
+            }
+        }
+
+        // api/SubscriptionPackage/delete/{id}
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> Delete(long id)
         {
@@ -93,7 +116,7 @@ namespace MobileShopAPI.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var result = await _brandService.DeleteAsync(id);
+                    var result = await _spService.DeleteAsync(id);
                     if (result.isSuccess)
                         return Ok(result); //Status code: 200
                     return BadRequest(result);//Status code: 404

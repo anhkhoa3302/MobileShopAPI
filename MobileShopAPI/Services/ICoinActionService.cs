@@ -35,6 +35,7 @@ namespace MobileShopAPI.Services
                     ActionName = ca.ActionName,
                     Description = ca.Description,
                     CaCoinAmount = ca.CaCoinAmount,
+                    Status = 1,
                     CreatedDate = null,
                     UpdatedDate = null
                 };
@@ -100,6 +101,7 @@ namespace MobileShopAPI.Services
                 _ca.ActionName = ca.ActionName;
                 _ca.Description = ca.Description;
                 _ca.CaCoinAmount = ca.CaCoinAmount;
+                _ca.Status = ca.Status; 
                 _ca.UpdatedDate = DateTime.Now;
                 await _context.SaveChangesAsync();
 
