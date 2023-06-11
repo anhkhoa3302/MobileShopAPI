@@ -22,7 +22,7 @@ namespace MobileShopAPI.Services
 
         Task<OrderResponse> DeleteOrderAsync(string id);
         Task<List<Order>> GetListOrderByUser(string userId);
-        Task<List<Order>> GetListBuyerByUser(string userId);
+        //Task<List<Order>> GetListBuyerByUser(string userId);
 
         
 
@@ -193,44 +193,44 @@ namespace MobileShopAPI.Services
         //    return null;
         //}
 
-        public async Task<List<Order>> GetListBuyerByUser(string userid)
-        {
-            var query = from a in _context.Orders
-                        join cif in _context.ProductOrders on a.Id equals cif.OrderId into result1
-                        from commandInFunction in result1.DefaultIfEmpty()
-                        join f in _context.Products on commandInFunction.ProductId equals f.Id into result2
-                        from function in result2.DefaultIfEmpty()
-                        select new
-                        {
-                            a.Id,
-                            a.UserId,
-                            a.PhoneNumber,
-                            a.UserFullName,
-                            a.Address,
-                            a.Email,
-                            a.Status,
-                            a.Total,
-                            a.Type,
-                            commandInFunction.ProductId
-                        };
+        //public async Task<List<Order>> GetListBuyerByUser(string userid)
+        //{
+        //    var query = from a in _context.Orders
+        //                join cif in _context.ProductOrders on a.Id equals cif.OrderId into result1
+        //                from commandInFunction in result1.DefaultIfEmpty()
+        //                join f in _context.Products on commandInFunction.ProductId equals f.Id into result2
+        //                from function in result2.DefaultIfEmpty()
+        //                select new
+        //                {
+        //                    a.Id,
+        //                    a.UserId,
+        //                    a.PhoneNumber,
+        //                    a.UserFullName,
+        //                    a.Address,
+        //                    a.Email,
+        //                    a.Status,
+        //                    a.Total,
+        //                    a.Type,
+        //                    commandInFunction.ProductId
+        //                };
 
-            query = query.Where(x => x.UserId == userid);
+        //    query = query.Where(x => x.UserId == userid);
 
-            var data = await query.Select(x => new OrderViewModel()
-            {
-                Id = x.Id,
-                UserId = x.UserId,
-                PhoneNumber = x.PhoneNumber,
-                UserFullName = x.UserFullName,
-                Address = x.Address,
-                Email = x.Email,
-                Status = x.Status,
-                Total = x.Total,
-                Type = x.Type,
-            }).ToListAsync();
+        //    var data = await query.Select(x => new OrderViewModel()
+        //    {
+        //        Id = x.Id,
+        //        UserId = x.UserId,
+        //        PhoneNumber = x.PhoneNumber,
+        //        UserFullName = x.UserFullName,
+        //        Address = x.Address,
+        //        Email = x.Email,
+        //        Status = x.Status,
+        //        Total = x.Total,
+        //        Type = x.Type,
+        //    }).ToListAsync();
 
-            return data;
-        }
+        //    return data;
+        //}
         
 
     }

@@ -53,27 +53,27 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        [HttpGet("getListBuyerByUser")]
-        public async Task<IActionResult> GetListBuyerByUser(string id)
-        {
+        //[HttpGet("getListBuyerByUser")]
+        //public async Task<IActionResult> GetListBuyerByUser(string id)
+        //{
             
-            try
-            {
-               var ordeList = await _orderService.GetListBuyerByUser(id);
-                if (ordeList != null)
-                {
-                    return Ok(ordeList);
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
+        //    try
+        //    {
+        //       var ordeList = await _orderService.GetListBuyerByUser(id);
+        //        if (ordeList != null)
+        //        {
+        //            return Ok(ordeList);
+        //        }
+        //        else
+        //        {
+        //            return NotFound();
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError);
+        //    }
+        //}
 
         [HttpPost("create")]
         public async Task<IActionResult> Create(OrderViewModel model)
