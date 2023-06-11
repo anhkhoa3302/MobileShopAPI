@@ -23,23 +23,23 @@ namespace MobileShopAPI.Models
         /// out of stock = 1
         /// unapproved = 2
         /// soft deleted = 3
+        /// User can not modify this value
         /// </summary>
         public int? Status { get; set; }
         public long CategoryId { get; set; }
         public long BrandId { get; set; }
-
+        /// <summary>
+        /// Product is hidden if true
+        /// </summary>
         public bool isHidden { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string UserId { get; set; } = null!;
-        /// <summary>
-        /// part of primaryKey
-        /// </summary>
         public long SizeId { get; set; }
-        /// <summary>
-        /// part of primaryKey
-        /// </summary>
         public long ColorId { get; set; }
+        /// <summary>
+        /// Used for sorting algorithms
+        /// </summary>
         public int? Priorities { get; set; }
         public DateTime? UpdateDate { get; set; }
 

@@ -483,7 +483,12 @@ namespace MobileShopAPI.Data
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_product_order_product");
+                
+
             });
+
+            
+
 
             modelBuilder.Entity<Report>(entity =>
             {

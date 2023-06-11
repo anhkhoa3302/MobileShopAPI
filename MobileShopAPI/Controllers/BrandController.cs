@@ -16,7 +16,6 @@ namespace MobileShopAPI.Controllers
         {
             _brandService = brandService;
         }
-
         // api/brand/getAll
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAll()
