@@ -25,14 +25,14 @@ namespace MobileShopAPI.Controllers
             return Ok(ordeList);
         }
 
-        [HttpGet("getListByUser")]
+        [HttpGet("getListOrderByUser")]
         public async Task<IActionResult> GetListByUser(string id)
         {
             var ordeList = await _orderService.GetListOrderByUser(id);
             return Ok(ordeList);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetOrderDetail")]
         public async Task<IActionResult> GetById(string id)
         { 
             try
@@ -53,6 +53,27 @@ namespace MobileShopAPI.Controllers
             }
         }
 
+        [HttpGet("getListBuyerByUser")]
+        public async Task<IActionResult> GetListBuyerByUser(string id)
+        {
+            
+            try
+            {
+               var ordeList = await _orderService.GetListBuyerByUser(id);
+                if (ordeList != null)
+                {
+                    return Ok(ordeList);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
 
         [HttpPost("create")]
         public async Task<IActionResult> Create(OrderViewModel model)
@@ -70,8 +91,8 @@ namespace MobileShopAPI.Controllers
             return BadRequest("Some properties are not valid");
         }
 
-        [HttpPut("edit/{productId}")]
-        public async Task<IActionResult> Update(string id, OrderViewModel model)
+        [HttpPut("edit/{Id}")]
+        public async Task<IActionResult> Update(string id, OrderUpdateViewModel model)
         {
             if (ModelState.IsValid)
             {

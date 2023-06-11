@@ -18,10 +18,14 @@ namespace MobileShopAPI.Services
      
         Task<OrderResponse> CreateOrderAsync(OrderViewModel model);
 
-        Task<OrderResponse> UpdateOrderAsync(string id, OrderViewModel model);
+        Task<OrderResponse> UpdateOrderAsync(string id, OrderUpdateViewModel model);
 
         Task<OrderResponse> DeleteOrderAsync(string id);
         Task<List<Order>> GetListOrderByUser(string userId);
+        Task<List<Order>> GetListBuyerByUser(string userId);
+
+        
+
     }
     public class OrderService : IOrderService
     {
@@ -36,6 +40,15 @@ namespace MobileShopAPI.Services
         }
         public async Task<OrderResponse> CreateOrderAsync(OrderViewModel model)
         {
+            var dbOrder = await _context.Orders.FindAsync(model.Id);
+            if(dbOrder != null)
+            {
+                return new OrderResponse
+                {
+                    Message = " ID Order has been used",
+                    isSuccess = false
+                };
+            }
             var order = new Order
             {
                 Id = model.Id,
@@ -58,6 +71,7 @@ namespace MobileShopAPI.Services
                 {
                     var product = new ProductOrderViewModel();
                     {
+                        product.Quantity = item.Quantity;
                         product.ProductId = item.ProductId;
                         product.OrderId = item.OrderId;
                     };
@@ -86,9 +100,10 @@ namespace MobileShopAPI.Services
             
         }
 
-        public async Task<OrderResponse> UpdateOrderAsync(string orderId,OrderViewModel model)
+        public async Task<OrderResponse> UpdateOrderAsync(string id,OrderUpdateViewModel model)
         {
-            var order = await _context.Orders.FindAsync(orderId);
+            var order = await _context.Orders.FindAsync(id);
+            
             if (order == null)
             {
                 return new OrderResponse
@@ -104,25 +119,12 @@ namespace MobileShopAPI.Services
             order.Email = model.Email;
             order.UserFullName = model.UserFullName;
             order.Type = model.Type;
+            order.UpdateDate= DateTime.Now;
 
-           
-            _context.Orders.Add(order);
+            _context.Orders.Update(order);
             await _context.SaveChangesAsync();
 
-            if (model.ProductOrder != null)
-            {
-                foreach (var item in model.ProductOrder)
-                {
-                    var product = new ProductOrderViewModel();
-                    {
-                        product.ProductId = item.ProductId;
-                        product.OrderId = item.OrderId;
-                    };
-                    await _productOrderService.AddAsync(order.Id, product.ProductId, product);
-                }
-
-            }
-
+            
             return new OrderResponse
             {
                 Message = "Order has been updated successfully",
@@ -182,6 +184,52 @@ namespace MobileShopAPI.Services
                 }
             }
             return null;
+        }
+
+        //public async Task<List<ProductOrder>> GetListBuyerByUser(string id)
+        //{
+        //    var ProductListbyuser = await _context.Products.Where(x=>x.UserId== id).ToListAsync();
+            
+        //    return null;
+        //}
+
+        public async Task<List<Order>> GetListBuyerByUser(string userid)
+        {
+            var query = from a in _context.Orders
+                        join cif in _context.ProductOrders on a.Id equals cif.OrderId into result1
+                        from commandInFunction in result1.DefaultIfEmpty()
+                        join f in _context.Products on commandInFunction.ProductId equals f.Id into result2
+                        from function in result2.DefaultIfEmpty()
+                        select new
+                        {
+                            a.Id,
+                            a.UserId,
+                            a.PhoneNumber,
+                            a.UserFullName,
+                            a.Address,
+                            a.Email,
+                            a.Status,
+                            a.Total,
+                            a.Type,
+                            commandInFunction.ProductId
+                        };
+
+            query = query.Where(x => x.UserId == userid);
+
+            var data = await query.Select(x => new OrderViewModel()
+            {
+                Id = x.Id,
+                UserId = x.UserId,
+                PhoneNumber = x.PhoneNumber,
+                UserFullName = x.UserFullName,
+                Address = x.Address,
+                Email = x.Email,
+                Status = x.Status,
+                Total = x.Total,
+                Type = x.Type,
+            }).ToListAsync();
+
+            return data;
         }
         
 

@@ -25,8 +25,10 @@ namespace MobileShopAPI.Services
         {
             var _productOrder = new ProductOrder
             {
+                
                 OrderId = orderId,
-                ProductId = productId
+                ProductId = productId,
+                quantity = productOrder.Quantity
             };
             _context.ProductOrders.Add(_productOrder);
             await _context.SaveChangesAsync();
