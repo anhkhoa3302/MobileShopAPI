@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
+using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
 
@@ -17,6 +18,11 @@ namespace MobileShopAPI.Controllers
             _cateService = cateService;
         }
 
+        /// <summary>
+        /// Get all categogies
+        /// </summary>
+        /// <response code ="200">Get all categogies</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAll()
         {
@@ -30,6 +36,15 @@ namespace MobileShopAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Get category detail
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">Category infos</response>
+        /// <response code ="400">Category not found</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getById/{id}")]
         public async Task<IActionResult> GetById(long id)
         {
@@ -50,7 +65,19 @@ namespace MobileShopAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+        /// <summary>
+        /// Add Category
+        /// </summary>
+        /// <param name="cate"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">New Category Added</response>
+        /// <response code ="400">Model has missing/invalid values</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpPost("add")]
+        [ProducesResponseType(typeof(CategoryResponse), 200)]
+        [ProducesResponseType(typeof(CategoryResponse), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Add(CategoryViewModel cate)
         {
             try
@@ -59,18 +86,31 @@ namespace MobileShopAPI.Controllers
                 {
                     var result = await _cateService.AddAsync(cate);
                     if (result.isSuccess)
-                        return Ok(result); //Status code: 200
-                    return BadRequest(result);//Status code: 404
+                        return Ok(result); 
+                    return BadRequest(result);
                 }
 
-                return BadRequest("Some properies are not valid");//Status code: 404
+                return BadRequest("Some properies are not valid");
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+        /// <summary>
+        /// update category
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="cate"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">This Category Updated</response>
+        /// <response code ="400">Model has missing/invalid values</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpPut("update/{id}")]
+        [ProducesResponseType(typeof(CategoryResponse), 200)]
+        [ProducesResponseType(typeof(CategoryResponse), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Update(long id, CategoryViewModel cate)
         {
             try
@@ -79,18 +119,30 @@ namespace MobileShopAPI.Controllers
                 {
                     var result = await _cateService.UpdateAsync(id,cate);
                     if (result.isSuccess)
-                        return Ok(result); //Status code: 200
-                    return BadRequest(result);//Status code: 404
+                        return Ok(result); 
+                    return BadRequest(result);
                 }
                 return BadRequest();
             }
             catch
             {
-                return BadRequest("Some properies are not valid");//Status code: 404
+                return BadRequest("Some properies are not valid");
             }
         }
 
+        /// <summary>
+        /// delete category
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">This Category Deleted</response>
+        /// <response code ="400">Something went wrong</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpDelete("delete/{id}")]
+        [ProducesResponseType(typeof(ProductResponse), 200)]
+        [ProducesResponseType(typeof(ProductResponse), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Delete(long id)
         {
             try
@@ -102,8 +154,8 @@ namespace MobileShopAPI.Controllers
                 {
                     var result = await _cateService.DeleteAsync(id);
                     if (result.isSuccess)
-                        return Ok(result); //Status code: 200
-                    return BadRequest(result);//Status code: 404
+                        return Ok(result); 
+                    return BadRequest(result);
                 }
                 return BadRequest();
             }

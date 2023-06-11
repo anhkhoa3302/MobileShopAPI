@@ -16,6 +16,10 @@ namespace MobileShopAPI.Models
         public long Id { get; set; }
         public string ActionName { get; set; } = null!;
         public string? Description { get; set; }
+
+        /// <summary>
+        /// <example> 10000 or 20000 ....</example>
+        /// </summary>
         public int? CaCoinAmount { get; set; }
         /// <summary>
         ///  0 = inactive

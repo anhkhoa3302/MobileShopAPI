@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
 
@@ -16,7 +17,11 @@ namespace MobileShopAPI.Controllers
             _userRatingService = userRatingService;
         }
 
-        // api/UserRating/getAll
+        /// <summary>
+        /// Get all UserRating
+        /// </summary>
+        /// <response code ="200">Get all UserRaiting</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAll()
         {
@@ -30,7 +35,15 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        // api/UserRating/getById/{id}
+        /// <summary>
+        /// Get UserRaiting detail
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">UserRaiting infos</response>
+        /// <response code ="400">UserRaiting not found</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getById/{id}")]
         public async Task<IActionResult> GetById(long id)
         {
@@ -52,7 +65,15 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        // api/UserRating/getByUserId/{id}
+        /// <summary>
+        /// Get UserRaiting's List
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks> Return UserRaiting's List Of This UserId </remarks>
+        /// <returns></returns>
+        /// <response code ="200">UserRaiting infos</response>
+        /// <response code ="400">UserRaiting not found</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getByUserId/{id}")]
         public async Task<IActionResult> GetByUserId(string id)
         {
@@ -73,9 +94,19 @@ namespace MobileShopAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
-        // api/UserRating/add
+        /// <summary>
+        /// Add UserRaiting
+        /// </summary>
+        /// <param name="userRaiting"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">New User Raiting Added</response>
+        /// <response code ="400">Model has missing/invalid values</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpPost("add")]
+        [ProducesResponseType(typeof(UserRatingResponse), 200)]
+        [ProducesResponseType(typeof(UserRatingResponse), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Add(UserRatingViewModel userRating)
         {
             if (ModelState.IsValid)
@@ -88,8 +119,20 @@ namespace MobileShopAPI.Controllers
 
             return BadRequest("Some properies are not valid");//Status code: 404
         }
-        // api/UserRating/update/{id}
+        /// <summary>
+        /// update User Raiting
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="userRating"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">This User Raiting Updated</response>
+        /// <response code ="400">Model has missing/invalid values</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpPut("update/{id}")]
+        [ProducesResponseType(typeof(UserRatingResponse), 200)]
+        [ProducesResponseType(typeof(UserRatingResponse), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Update(long id, UserRatingViewModel userRating)
         {
             try
@@ -98,18 +141,29 @@ namespace MobileShopAPI.Controllers
                 {
                     var result = await _userRatingService.UpdateAsync(id, userRating);
                     if (result.isSuccess)
-                        return Ok(result); //Status code: 200
-                    return BadRequest(result);//Status code: 404
+                        return Ok(result); 
+                    return BadRequest(result);
                 }
                 return BadRequest();
             }
             catch
             {
-                return BadRequest("Some properies are not valid");//Status code: 404
+                return BadRequest("Some properies are not valid");
             }
         }
-        // api/UserRating/delete/{id}
+        /// <summary>
+        /// delete UserRating
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">This User Raiting Deleted</response>
+        /// <response code ="400">Something went wrong</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpDelete("delete/{id}")]
+        [ProducesResponseType(typeof(UserRatingResponse), 200)]
+        [ProducesResponseType(typeof(UserRatingResponse), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Delete(long id)
         {
             try
@@ -129,6 +183,12 @@ namespace MobileShopAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Get Everage Raiting Of Product
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
         [HttpGet("getEverageRating")]
         public async Task<float> getEverageRating(long id)
         {
