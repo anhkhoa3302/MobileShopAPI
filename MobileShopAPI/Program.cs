@@ -61,8 +61,12 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IReportCategoryService, ReportCategoryService>();
 builder.Services.AddScoped<IEvidenceService, EvidenceService>();
 builder.Services.AddScoped<IUserManagerService, UserManagerService>();
+builder.Services.AddScoped<IUserRatingService, UserRatingService>();
+builder.Services.AddScoped<ISubscriptionPackageService, SubscriptionPackageService>();
+builder.Services.AddScoped<IInternalTransactionService, InternalTransactionService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductOrderService, ProductOrderService>();
+
 //Email Service
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);
