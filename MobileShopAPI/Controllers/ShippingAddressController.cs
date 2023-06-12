@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MobileShopAPI.Models;
+using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
 
@@ -16,14 +18,33 @@ namespace MobileShopAPI.Controllers
            _shippingaddressService = shippingaddressService;
         }
 
+        /// <summary>
+        /// Get all Shipping Address
+        /// </summary>
+        /// <response code ="200">Get all shipping address</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
+
         [HttpGet("getAll")]
+        [ProducesResponseType(typeof(List<ShippingAddress>), 200)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetAll()
         {
             var addressList = await _shippingaddressService.GetAllAddressAsync();
             return Ok(addressList);
         }
 
+        /// <summary>
+        /// Get Shipping Address detail
+        /// </summary>
+        /// <param name="id"></param>
+        /// <response code ="200">Shipping address infos</response>
+        /// <response code ="400">Shipping address not found</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
+
         [HttpGet("getById/{id}")]
+        [ProducesResponseType(typeof(ShippingAddressViewModel), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetById(long id)
         {
             try
@@ -43,7 +64,21 @@ namespace MobileShopAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        /// <summary>
+        /// Add Shipping Address
+        /// </summary>
+        /// <param name="model"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">Shipping Address has been added successfully</response>
+        /// <response code ="400">Model has missing/invalid values</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
+
         [HttpPost("create")]
+        [ProducesResponseType(typeof(ShippingAddressResponse), 200)]
+        [ProducesResponseType(typeof(ShippingAddressResponse), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Create(ShippingAddressViewModel model)
         {
             if (ModelState.IsValid)
@@ -59,8 +94,20 @@ namespace MobileShopAPI.Controllers
             return BadRequest("Some properties are not valid");
         }
 
-
+        /// <summary>
+        /// Update Shipping Address
+        /// </summary>
+        /// <param name="addressId"></param>
+        /// <param name="model"></param>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">Shipping Address has been added successfully</response>
+        /// <response code ="400">Model has missing/invalid values</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpPut("update/{id}")]
+        [ProducesResponseType(typeof(ShippingAddressResponse), 200)]
+        [ProducesResponseType(typeof(ShippingAddressResponse), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Update(long addressId, ShippingAddressViewModel model)
         {
             if (ModelState.IsValid)
@@ -76,7 +123,20 @@ namespace MobileShopAPI.Controllers
             return BadRequest("Some properties are not valid");
         }
 
+
+        /// <summary>
+        /// delete Shipping address
+        /// </summary>
+        /// <param name="id"></param>
+
+        /// <returns></returns>
+        /// <response code ="200">Shipping address has been deleted successfully</response>
+        /// <response code ="400">Something went wrong</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpDelete("delete/{id}")]
+        [ProducesResponseType(typeof(ShippingAddressResponse), 200)]
+        [ProducesResponseType(typeof(ShippingAddressResponse), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> Delete(long id)
         {
             try
