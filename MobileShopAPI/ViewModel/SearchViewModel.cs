@@ -3,6 +3,7 @@
     public class SearchViewModel
     {
         public string KeyWord { get; set; } = null!;
-        public IEnumerable<Object>? Items { get; set; }
+        public int CategoryId { get; set; }
+        public int BrandId { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Security.Claims;
 
 namespace MobileShopAPI.Controllers
 {
@@ -19,18 +20,25 @@ namespace MobileShopAPI.Controllers
         }
 
         /// <summary>
-        /// Get all Shipping Address
+        /// Get user addresses
         /// </summary>
-        /// <response code ="200">Get all shipping address</response>
+        /// <response code ="200">Get all user's shipping addresses</response>
         /// <response code ="500">>Oops! Something went wrong</response>
 
-        [HttpGet("getAll")]
+        [HttpGet("getUserAddress")]
         [ProducesResponseType(typeof(List<ShippingAddress>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAll()
         {
-            var addressList = await _shippingaddressService.GetAllAddressAsync();
-            return Ok(addressList);
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+            string userId;
+            if (user != null)
+            {
+                userId = user.Value;
+                var addressList = await _shippingaddressService.GetAllUserAddressAsync(userId);
+                return Ok(addressList);
+            }
+            return BadRequest("User not authorized");
         }
 
         /// <summary>
@@ -81,8 +89,18 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> Create(ShippingAddressViewModel model)
         {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+            string userId;
+            if (user == null)
+            {
+                return BadRequest("User not authorized");
+            }
+
+            userId = user.Value;
+
             if (ModelState.IsValid)
             {
+                model.UserId = userId;
                 var result = await _shippingaddressService.CreateAddressAsync(model);
                 if (result.isSuccess)
                 {

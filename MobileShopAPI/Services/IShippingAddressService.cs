@@ -8,7 +8,7 @@ namespace MobileShopAPI.Services
 {
     public interface IShippingAddressService
     {
-        Task<List<ShippingAddress>> GetAllAddressAsync();
+        Task<List<ShippingAddress>?> GetAllUserAddressAsync(string userId);
 
         Task<ShippingAddress?> GetByIdAsync(long id);
 
@@ -105,10 +105,12 @@ namespace MobileShopAPI.Services
             };
         }
 
-        public async Task<List<ShippingAddress>> GetAllAddressAsync()
+        public async Task<List<ShippingAddress>?> GetAllUserAddressAsync(string userId)
         {
             var addressList = await _context.ShippingAddresses.AsNoTracking()
+                .Where(p=>p.UserId == userId)
                 .ToListAsync();
+            if (addressList == null) return null;
             return addressList;
         }
         public async Task<ShippingAddress?> GetByIdAsync(long id)
