@@ -729,6 +729,10 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("description");
 
+                    b.Property<DateTime?>("ExpiredDate")
+                        .HasColumnType("datetime")
+                        .HasColumnName("expiredDate");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -759,10 +763,6 @@ namespace MobileShopAPI.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("int")
                         .HasColumnName("stock");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime")
-                        .HasColumnName("updateDate");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime")

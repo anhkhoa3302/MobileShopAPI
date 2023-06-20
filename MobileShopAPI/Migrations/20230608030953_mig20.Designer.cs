@@ -677,7 +677,7 @@ namespace MobileShopAPI.Migrations
                         .HasColumnName("type")
                         .HasComment("1 = trả hết, 2 = đặt cọc");
 
-                    b.Property<DateTime?>("UpdateDate")
+                    b.Property<DateTime?>("ExpiredDate")
                         .HasColumnType("datetime")
                         .HasColumnName("updateDate");
 
@@ -762,7 +762,7 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("int")
                         .HasColumnName("stock");
 
-                    b.Property<DateTime?>("UpdateDate")
+                    b.Property<DateTime?>("ExpiredDate")
                         .HasColumnType("datetime")
                         .HasColumnName("updateDate");
 

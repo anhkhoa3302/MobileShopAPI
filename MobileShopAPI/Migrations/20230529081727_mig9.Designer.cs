@@ -418,7 +418,7 @@ namespace MobileShopAPI.Migrations
                         .HasColumnType("bigint")
                         .HasColumnName("total");
 
-                    b.Property<DateTime?>("UpdateDate")
+                    b.Property<DateTime?>("ExpiredDate")
                         .HasColumnType("datetime")
                         .HasColumnName("updateDate");
 
