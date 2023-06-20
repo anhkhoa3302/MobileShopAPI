@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Censored;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobileShopAPI.Data;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.ViewModel;
+using Swashbuckle.SwaggerUi;
+using System.Buffers.Text;
+using System.Text;
 
 namespace MobileShopAPI.Services
 {
@@ -30,6 +34,12 @@ namespace MobileShopAPI.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IImageService _imageService;
+        private readonly List<string> censoredWords = new List<string>
+                {
+                  "đụ",
+                  "du",
+                  "Du",
+                };//Caution: HOT
 
         public ProductService(ApplicationDbContext context,IImageService imageService)
         {
@@ -68,13 +78,29 @@ namespace MobileShopAPI.Services
 
         public async Task<ProductResponse> CreateProductAsync(ProductViewModel model)
         {
+            bool check = false;//Check of censored words
             if (model == null)
                 return new ProductResponse
                 {
                     Message = "Model is null",
                     isSuccess = false
                 };
-            if(model.Images == null)
+            //censored words
+            if (model.Description != null)
+            {
+                var censor = new Censor(censoredWords);
+                check = censor.HasCensoredWord(model.Description);
+                //if (check)
+                //{
+                //    return new ProductResponse
+                //    {
+                //        Message = "censored word",
+                //        isSuccess = false
+                //    };
+                //}  
+            }
+            //End - censored words
+            if (model.Images == null)
                 return new ProductResponse
                 {
                     Message = "Images list is null",
@@ -87,41 +113,81 @@ namespace MobileShopAPI.Services
                     Message = "Product need at least 2 image",
                     isSuccess = false
                 };
-            }    
-            var product = new Product
-            {
-                Name = model.Name,
-                Description = model.Description,
-                Stock = model.Stock,
-                Price = model.Price,
-                Status = model.Status,
-                CategoryId = model.CategoryId,
-                BrandId = model.BrandId,
-                UserId = model.UserId,
-                SizeId = model.SizeId,
-                ColorId = model.ColorId
-            };
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            }
 
             bool hasCover = false;
-            if(model.Images != null)
-                foreach(var item in model.Images)
+            if (check)
+            {
+                var product = new Product
                 {
-                    var image = new ImageViewModel();
-                    if(!hasCover)
+                    Name = model.Name,
+                    Description = model.Description,
+                    Stock = model.Stock,
+                    Price = model.Price,
+                    Status = 2,
+                    CategoryId = model.CategoryId,
+                    BrandId = model.BrandId,
+                    UserId = model.UserId,
+                    SizeId = model.SizeId,
+                    ColorId = model.ColorId
+                };
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
+;
+                if (model.Images != null)
+                    foreach (var item in model.Images)
                     {
+                        var image = new ImageViewModel();
+                        if (!hasCover)
+                        {
 
-                        image.IsCover = true;
-                        hasCover = true;
+                            image.IsCover = true;
+                            hasCover = true;
+                        }
+                        else
+                        {
+                            image.IsCover = false;
+                        }
+                        image.Url = item.Url;
+                        await _imageService.AddAsync(product.Id, image);
                     }
-                    else
+            }
+            else
+            {
+                var product = new Product
+                {
+                    Name = model.Name,
+                    Description = model.Description,
+                    Stock = model.Stock,
+                    Price = model.Price,
+                    Status = model.Status,
+                    CategoryId = model.CategoryId,
+                    BrandId = model.BrandId,
+                    UserId = model.UserId,
+                    SizeId = model.SizeId,
+                    ColorId = model.ColorId
+                };
+                _context.Products.Add(product);
+                await _context.SaveChangesAsync();
+
+                if (model.Images != null)
+                    foreach (var item in model.Images)
                     {
-                        image.IsCover = false;
+                        var image = new ImageViewModel();
+                        if (!hasCover)
+                        {
+
+                            image.IsCover = true;
+                            hasCover = true;
+                        }
+                        else
+                        {
+                            image.IsCover = false;
+                        }
+                        image.Url = item.Url;
+                        await _imageService.AddAsync(product.Id, image);
                     }
-                    image.Url = item.Url;
-                    await _imageService.AddAsync(product.Id, image);
-                }
+            }
 
             return new ProductResponse
             {
@@ -166,8 +232,9 @@ namespace MobileShopAPI.Services
 
         public async Task<ProductResponse> EditProductAsync(long productId,ProductViewModel model)
         {
+            bool check = false;//Check of censored words
             var product = await _context.Products
-                .Where(p=>p.Id == productId && p.Status != 3)
+                .Where(p => p.Id == productId && p.Status != 3)
                 .SingleOrDefaultAsync();
             if (product == null)
             {
@@ -177,15 +244,25 @@ namespace MobileShopAPI.Services
                     isSuccess = false
                 };
             }
+            if (model.Description != null)
+            {
+                var censor = new Censor(censoredWords);
+                check = censor.HasCensoredWord(model.Description);
+            }
             product.Name = model.Name;
             product.Description = model.Description;
             product.Stock = model.Stock;
             product.Price = model.Price;
+            if (check)
+                product.Status = 2;
+            else
+                product.Status = 0;
             product.CategoryId = model.CategoryId;
             product.BrandId = model.BrandId;
             product.SizeId = model.SizeId;
             product.ColorId = model.ColorId;
             product.isHidden = model.isHidden;
+            product.UpdatedDate = DateTime.Now;
 
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
