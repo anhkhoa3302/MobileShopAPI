@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Security.Claims;
 
 namespace MobileShopAPI.Controllers
 {
@@ -87,7 +89,18 @@ namespace MobileShopAPI.Controllers
         /// Add product
         /// </summary>
         /// <param name="model"></param>
-        /// <remarks></remarks>
+        /// <remarks>
+        /// Add image along with product:
+        /// 
+        ///     GET
+        ///     {
+        ///         "id": 0, (not require, can be any number but null)
+        ///         "url": "string", (required)
+        ///         "isCover": false, (not required, true/false makes no differences)
+        ///         "isDeleted": false, (not required, true/false makes no differences)
+        ///         "isNewlyAdded": false (not required, true/false makes no differences)
+        ///     }
+        ///</remarks>
         /// <returns></returns>
         /// <response code ="200">Product has been added successfully</response>
         /// <response code ="400">Model has missing/invalid values</response>
@@ -96,32 +109,41 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(ProductResponse), 200)]
         [ProducesResponseType(typeof(ProductResponse),400)]
         [ProducesResponseType(500)]
+        [Authorize]
         public async Task<IActionResult> Create(ProductViewModel model)
         {
-            if(ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
-                var result = await _productService.CreateProductAsync(model);
-                if(result.isSuccess)
+                return BadRequest("Some properties are not valid");
+            }
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+            string userId;
+            if (user != null)
+            {
+                userId = user.Value;
+
+                var result = await _productService.CreateProductAsync(userId, model);
+                if (result.isSuccess)
                 {
                     return Ok(result);
                 }
                 return BadRequest(result);
             }
-
-            return BadRequest("Some properties are not valid");
+                
+            return BadRequest("Oops! Something went wrong");
         }
 
         /// <summary>
         /// Approve product
         /// </summary>
         /// <param name="id"></param>
-        /// <remarks>Approve product</remarks>
+        /// <remarks>Approve product, change status to 0 and isHidden to false</remarks>
         /// <returns></returns>
         /// <response code ="200">Product has been approved</response>
         /// <response code ="400">Something went wrong</response>
         /// <response code ="500">>Oops! Something went wrong</response>
         [HttpPost("ApproveProduct/{id}")]
-                [ProducesResponseType(typeof(ProductResponse), 200)]
+        [ProducesResponseType(typeof(ProductResponse), 200)]
         [ProducesResponseType(typeof(ProductResponse),400)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> ApproveProduct(long id)
@@ -144,7 +166,40 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
-        /// <remarks></remarks>
+        /// <remarks>
+        /// Change product's cover:
+        /// 
+        ///     PUT
+        ///     {
+        ///         "id": 0, (id of an image you want it to be the cover)
+        ///         "url": "string", ( not required)
+        ///         "isCover": true, (must be TRUE)
+        ///         "isDeleted": false, (must be FALSE)
+        ///         "isNewlyAdded": false (must be FALSE)
+        ///     }
+        ///     
+        /// Add new image to product:
+        /// 
+        ///     PUT
+        ///     {
+        ///         "id": 0, (not required)
+        ///         "url": "string", (required)
+        ///         "isCover": true, (could be true, if true the newly added image will be product's new cover)
+        ///         "isDeleted": false, (must be FALSE)
+        ///         "isNewlyAdded": true (must be TRUE)   
+        ///     }
+        ///     
+        /// Delete image:
+        /// 
+        ///     PUT
+        ///     {
+        ///         "id": 0, (required)
+        ///         "url": "string", ( not required)
+        ///         "isCover": false, (must be FALSE)
+        ///         "isDeleted": true, (must be TRUE)
+        ///         "isNewlyAdded": false (must be FALSE)   
+        ///     }
+        /// </remarks>
         /// <returns></returns>
         /// <response code ="200">Product has been updated successfully</response>
         /// <response code ="400">Model has missing/invalid values</response>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
@@ -23,6 +24,8 @@ namespace MobileShopAPI.Controllers
         /// <response code ="200">Get all UserRaiting</response>
         /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getAll")]
+        [ProducesResponseType(typeof(List<UserRating>), 200)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -45,6 +48,9 @@ namespace MobileShopAPI.Controllers
         /// <response code ="400">UserRaiting not found</response>
         /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getById/{id}")]
+        [ProducesResponseType(typeof(List<UserRating>), 200)]
+        [ProducesResponseType(typeof(List<UserRating>), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetById(long id)
         {
             try
@@ -75,6 +81,9 @@ namespace MobileShopAPI.Controllers
         /// <response code ="400">UserRaiting not found</response>
         /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("getByUserId/{id}")]
+        [ProducesResponseType(typeof(UserRating), 200)]
+        [ProducesResponseType(typeof(UserRating), 400)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetByUserId(string id)
         {
             try
@@ -97,7 +106,7 @@ namespace MobileShopAPI.Controllers
         /// <summary>
         /// Add UserRaiting
         /// </summary>
-        /// <param name="userRaiting"></param>
+        /// <param name="userRating"></param>
         /// <remarks></remarks>
         /// <returns></returns>
         /// <response code ="200">New User Raiting Added</response>

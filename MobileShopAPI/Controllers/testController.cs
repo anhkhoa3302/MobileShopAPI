@@ -6,11 +6,14 @@ using System.Security.Claims;
 
 namespace MobileShopAPI.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class testController : ControllerBase
     {
-
+        /// <summary>
+        /// Create for testing only, front-end group can ignore this
+        /// </summary>
         [HttpGet("AuthorizeTest")]
         [Authorize]
         public IActionResult AuthTest()
@@ -20,7 +23,9 @@ namespace MobileShopAPI.Controllers
                 return Ok(user.Value);
             return BadRequest();
         }
-
+        /// <summary>
+        /// Create for testing only, front-end group can ignore this
+        /// </summary>
         [HttpGet]
         [Route("getBaseUrl")]
         public string GetBaseUrl()
@@ -32,7 +37,9 @@ namespace MobileShopAPI.Controllers
             var confirmEmailUrl = $"{baseUrl}/api/auth/confirmEmail";
             return baseUrl;
         }
-
+        /// <summary>
+        /// Created for testing only, front-end group can ignore this
+        /// </summary>
         [HttpGet]
         [Route("getUniqueString")]
         public string GetUniqueString()

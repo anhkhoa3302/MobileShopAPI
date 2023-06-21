@@ -412,9 +412,9 @@ namespace MobileShopAPI.Data
 
                 entity.Property(e => e.Stock).HasColumnName("stock");
 
-                entity.Property(e => e.UpdateDate)
+                entity.Property(e => e.ExpiredDate)
                     .HasColumnType("datetime")
-                    .HasColumnName("updateDate");
+                    .HasColumnName("expiredDate");
 
                 entity.Property(e => e.UpdatedDate)
                     .HasColumnType("datetime")

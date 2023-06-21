@@ -41,7 +41,7 @@ namespace MobileShopAPI.Models
         /// Used for sorting algorithms
         /// </summary>
         public int? Priorities { get; set; }
-        public DateTime? UpdateDate { get; set; }
+        public DateTime? ExpiredDate { get; set; }
 
         public virtual Brand Brand { get; set; } = null!;
         public virtual Category Category { get; set; } = null!;

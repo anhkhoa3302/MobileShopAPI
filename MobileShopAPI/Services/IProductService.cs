@@ -23,7 +23,7 @@ namespace MobileShopAPI.Services
 
         Task<ProductDetailViewModel?> GetNoneHiddenProductDetailAsync(long productId);
 
-        Task<ProductResponse> CreateProductAsync(ProductViewModel model);
+        Task<ProductResponse> CreateProductAsync(string userId, ProductViewModel model);
 
         Task<ProductResponse> EditProductAsync(long productId,ProductViewModel model);
 
@@ -76,7 +76,7 @@ namespace MobileShopAPI.Services
             };
         }
 
-        public async Task<ProductResponse> CreateProductAsync(ProductViewModel model)
+        public async Task<ProductResponse> CreateProductAsync(string userId, ProductViewModel model)
         {
             bool check = false;//Check of censored words
             if (model == null)
