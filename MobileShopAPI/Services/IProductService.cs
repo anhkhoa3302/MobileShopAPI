@@ -35,11 +35,11 @@ namespace MobileShopAPI.Services
         private readonly ApplicationDbContext _context;
         private readonly IImageService _imageService;
         private readonly List<string> censoredWords = new List<string>
-                {
-                  "đụ",
-                  "du",
-                  "Du",
-                };//Caution: HOT
+        {
+            "đụ",
+            "du",
+            "Du",
+        };//Caution: HOT
 
         public ProductService(ApplicationDbContext context,IImageService imageService)
         {
