@@ -18,6 +18,8 @@ namespace MobileShopAPI.Models
         public long ProductId { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
+        public bool IsVideo { get; set; }
+
         public virtual Product Product { get; set; } = null!;
     }
 }

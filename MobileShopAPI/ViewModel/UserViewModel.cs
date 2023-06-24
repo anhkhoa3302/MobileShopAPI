@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MobileShopAPI.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MobileShopAPI.ViewModel
@@ -17,5 +18,8 @@ namespace MobileShopAPI.ViewModel
         public long? UserBalance { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
+
+        public IEnumerable<Product>? Products { get; set; }
+
     }
 }

@@ -30,6 +30,8 @@ namespace MobileShopAPI.Data
         public virtual DbSet<SubscriptionPackage> SubscriptionPackages { get; set; } = null!;
         public virtual DbSet<VnpTransaction> Transactions { get; set; } = null!;
         public virtual DbSet<UserRating> UserRatings { get; set; } = null!;
+
+        public virtual DbSet<MarkedProduct> MarkedProducts{ get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -771,6 +773,29 @@ namespace MobileShopAPI.Data
                     .HasForeignKey(d => d.UsderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_user_rating_AspNetUsers");
+            });
+
+            modelBuilder.Entity<MarkedProduct>(entity =>
+            {
+                entity.ToTable("marked_product");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+
+                entity.Property(e => e.UserId)
+                    .HasMaxLength(450)
+                    .HasColumnName("userId");
+                entity.Property(e => e.ProductId)
+                    .HasColumnName("productId");
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.MarkedProducts)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.MarkedProducts)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }
