@@ -66,6 +66,8 @@ builder.Services.AddScoped<ISubscriptionPackageService, SubscriptionPackageServi
 builder.Services.AddScoped<IInternalTransactionService, InternalTransactionService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductOrderService, ProductOrderService>();
+builder.Services.AddScoped<IActiveSubscriptionService, ActiveSubscriptionService>();
+builder.Services.AddScoped<IPostAndPackageService, PostAndPackageService>();
 
 //Email Service
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
