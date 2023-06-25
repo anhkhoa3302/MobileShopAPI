@@ -1,7 +1,7 @@
-﻿using Censored;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobileShopAPI.Data;
+using MobileShopAPI.Helpers;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.ViewModel;
@@ -34,12 +34,6 @@ namespace MobileShopAPI.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IImageService _imageService;
-        private readonly List<string> censoredWords = new List<string>
-        {
-            "đụ",
-            "du",
-            "Du",
-        };//Caution: HOT
 
         public ProductService(ApplicationDbContext context,IImageService imageService)
         {
@@ -88,16 +82,15 @@ namespace MobileShopAPI.Services
             //censored words
             if (model.Description != null)
             {
-                var censor = new Censor(censoredWords);
-                check = censor.HasCensoredWord(model.Description);
-                //if (check)
-                //{
-                //    return new ProductResponse
-                //    {
-                //        Message = "censored word",
-                //        isSuccess = false
-                //    };
-                //}  
+                check = CensoredWord.isCensoredWord(model.Description);
+                if (check)
+                {
+                    return new ProductResponse
+                    {
+                        Message = "censored word: " + CensoredWord.result,
+                        isSuccess = false
+                    };
+                }
             }
             //End - censored words
             if (model.Images == null)
@@ -116,78 +109,39 @@ namespace MobileShopAPI.Services
             }
 
             bool hasCover = false;
-            if (check)
+            var product = new Product
             {
-                var product = new Product
+                Name = model.Name,
+                Description = model.Description,
+                Stock = model.Stock,
+                Price = model.Price,
+                Status = model.Status,
+                CategoryId = model.CategoryId,
+                BrandId = model.BrandId,
+                UserId = model.UserId,
+                SizeId = model.SizeId,
+                ColorId = model.ColorId
+            };
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+
+            if (model.Images != null)
+                foreach (var item in model.Images)
                 {
-                    Name = model.Name,
-                    Description = model.Description,
-                    Stock = model.Stock,
-                    Price = model.Price,
-                    Status = 2,
-                    CategoryId = model.CategoryId,
-                    BrandId = model.BrandId,
-                    UserId = model.UserId,
-                    SizeId = model.SizeId,
-                    ColorId = model.ColorId
-                };
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
-;
-                if (model.Images != null)
-                    foreach (var item in model.Images)
+                    var image = new ImageViewModel();
+                    if (!hasCover)
                     {
-                        var image = new ImageViewModel();
-                        if (!hasCover)
-                        {
 
-                            image.IsCover = true;
-                            hasCover = true;
-                        }
-                        else
-                        {
-                            image.IsCover = false;
-                        }
-                        image.Url = item.Url;
-                        await _imageService.AddAsync(product.Id, image);
+                        image.IsCover = true;
+                        hasCover = true;
                     }
-            }
-            else
-            {
-                var product = new Product
-                {
-                    Name = model.Name,
-                    Description = model.Description,
-                    Stock = model.Stock,
-                    Price = model.Price,
-                    Status = model.Status,
-                    CategoryId = model.CategoryId,
-                    BrandId = model.BrandId,
-                    UserId = model.UserId,
-                    SizeId = model.SizeId,
-                    ColorId = model.ColorId
-                };
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
-
-                if (model.Images != null)
-                    foreach (var item in model.Images)
+                    else
                     {
-                        var image = new ImageViewModel();
-                        if (!hasCover)
-                        {
-
-                            image.IsCover = true;
-                            hasCover = true;
-                        }
-                        else
-                        {
-                            image.IsCover = false;
-                        }
-                        image.Url = item.Url;
-                        await _imageService.AddAsync(product.Id, image);
+                        image.IsCover = false;
                     }
-            }
+                    image.Url = item.Url;
+                    await _imageService.AddAsync(product.Id, image);
+                }
 
             return new ProductResponse
             {
@@ -246,8 +200,7 @@ namespace MobileShopAPI.Services
             }
             if (model.Description != null)
             {
-                var censor = new Censor(censoredWords);
-                check = censor.HasCensoredWord(model.Description);
+                check = CensoredWord.isCensoredWord(model.Description);
             }
             product.Name = model.Name;
             product.Description = model.Description;
@@ -283,11 +236,18 @@ namespace MobileShopAPI.Services
                     await _imageService.UpdateAsync(productId,item);
                 }
             await _imageService.CheckCover(productId);
-            return new ProductResponse
-            {
-                Message = "Product has been updated successfully",
-                isSuccess = true
-            };
+            if (check)
+                return new ProductResponse
+                {
+                    Message = "Product has been hidden, because censored word: " + CensoredWord.result,
+                    isSuccess = true
+                };
+            else
+                return new ProductResponse
+                {
+                    Message = "Product has been updated successfully",
+                    isSuccess = true
+                };
         }
 
         public async Task<List<Product>> GetAllNoneHiddenProductAsync()
