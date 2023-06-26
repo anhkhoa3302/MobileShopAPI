@@ -1,4 +1,6 @@
-﻿namespace MobileShopAPI.Helpers
+﻿/* Implement of Censoring Library */
+
+namespace MobileShopAPI.Helpers
 {
     public class CensoredWord
     {
@@ -14,7 +16,7 @@
             "cac",
             "đĩ",
             "Đỉ"
-        };//Caution: HOT
+        };//Caution: HOT. List of Censored Words
 
         public static string? result = null;
 
@@ -22,7 +24,7 @@
         {
             bool check = false;//Check of censored words
             var censor = new Censor(censoredWords);
-            check = censor.HasCensoredWord(word.ToUpper());
+            check = censor.HasCensoredWord(word);
             result = censor.CensorText(word);
             if (check)
                 return true;

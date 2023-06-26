@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿/* ----> Censored - A.NET CORE Profanity Censoring Library <---- */
+
+using System.Text.RegularExpressions;
 //using System;
 //using System.Collections.Generic;
 
@@ -47,7 +49,7 @@ namespace MobileShopAPI.Helpers
             foreach (string censoredWord in CensoredWords)
             {
                 string pattern = ToRegexPattern(censoredWord);
-                text2 = Regex.Replace(text2, pattern, "\'" + censoredWord + "\'", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+                text2 = Regex.Replace(text2, pattern, "\'" + censoredWord.ToUpper() + "\'", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
             }
 
             return text2;
@@ -70,7 +72,7 @@ namespace MobileShopAPI.Helpers
                 return false;
             }
 
-            string text2 = text.ToUpper();
+            string text2 = text; //Converts every characters of Description to uppercase
             foreach (string censoredWord in CensoredWords)
             {
                 string pattern = ToRegexPattern(censoredWord);
