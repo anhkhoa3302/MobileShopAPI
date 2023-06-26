@@ -28,6 +28,12 @@ namespace MobileShopAPI.Services
         Task<ProductResponse> EditProductAsync(long productId,ProductViewModel model);
 
         Task<ProductResponse> DeleteProductAsync(long productId);
+
+        Task<ProductResponse> AddMarkedProductAsync(string userId, long productId);
+
+        Task<ProductResponse> RemoveMarkedProductAsync(string userId, long productId);
+
+        Task<List<Product>> ListUserMarkedProduct(string userId);
     }
 
     public class ProductService : IProductService
@@ -115,7 +121,7 @@ namespace MobileShopAPI.Services
                 Description = model.Description,
                 Stock = model.Stock,
                 Price = model.Price,
-                Status = model.Status,
+                Status = 2,
                 CategoryId = model.CategoryId,
                 BrandId = model.BrandId,
                 UserId = model.UserId,
@@ -352,6 +358,60 @@ namespace MobileShopAPI.Services
 
 
             return returnValue;
+        }
+
+        public async Task<ProductResponse> AddMarkedProductAsync(string userId,long productId)
+        {
+            var marked = await _context.MarkedProducts.Where(p => p.ProductId == productId && p.UserId == userId).FirstOrDefaultAsync();
+            if (marked != null) return new ProductResponse
+            {
+                Message = "Product is already in the marked product list",
+                isSuccess = false,
+            };
+            var mark = new MarkedProduct
+            {
+                ProductId = productId,
+                UserId = userId
+            };
+            _context.MarkedProducts.Add(mark);
+            await _context.SaveChangesAsync();
+
+            return new ProductResponse
+            {
+                Message = "Product has been added to the marked list",
+                isSuccess = true,
+            };
+        }
+
+        public async Task<ProductResponse> RemoveMarkedProductAsync(string userId, long productId)
+        {
+            var marked = await _context.MarkedProducts.Where(p => p.ProductId == productId && p.UserId == userId).FirstOrDefaultAsync();
+            if (marked == null) return new ProductResponse
+            {
+                Message = "Product is not in the marked product list of user",
+                isSuccess = false,
+            };
+
+            _context.MarkedProducts.Remove(marked);
+
+            await _context.SaveChangesAsync();
+
+            return new ProductResponse
+            {
+                Message = "Product has been removed",
+                isSuccess = true,
+            };
+
+        }
+
+        public async Task<List<Product>> ListUserMarkedProduct(string userId)
+        {
+            var listMarkedProduct = await _context.Products.AsNoTracking()
+                .Include(p => p.MarkedProducts)
+                .Where(p => p.MarkedProducts.Any(p => p.UserId == userId))
+                .ToListAsync();
+
+            return listMarkedProduct;
         }
     }
 }

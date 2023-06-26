@@ -31,6 +31,7 @@ namespace MobileShopAPI.Services
             {
                 Url = image.Url,
                 IsCover = image.IsCover,
+                IsVideo = image.IsVideo,
                 ProductId = productId
             };
             _context.Images.Add(_image);

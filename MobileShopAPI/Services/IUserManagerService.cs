@@ -13,6 +13,8 @@ namespace MobileShopAPI.Services
         Task<List<UserViewModel>> GetAllUserAsync();
         Task<UserViewModel?> GetUserProfileAsync(string userId);
 
+        Task<UserViewModel?> GetUserOwnProfileAsync(string userId);
+
         Task<UserViewModel?> UpdateUserProfileAsync(string userId,UpdateUserProfileViewModel model);
 
         Task<UserManagerResponse?> BanUser(string userId);
@@ -79,10 +81,14 @@ namespace MobileShopAPI.Services
             return userViewList;
         }
 
-        public async Task<UserViewModel?> GetUserProfileAsync(string userId)
+        public async Task<UserViewModel?> GetUserOwnProfileAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) { return null; }
+            var productList = await _context.Products.AsNoTracking().Where(p =>
+                p.UserId == userId)
+                .ToListAsync();
+
 
             var userView = new UserViewModel
             {
@@ -97,7 +103,38 @@ namespace MobileShopAPI.Services
                 AvatarUrl = user.AvatarUrl,
                 UserBalance = user.UserBalance,
                 CreatedDate = user.CreatedDate,
-                UpdatedDate = user.UpdatedDate
+                UpdatedDate = user.UpdatedDate,
+                Products = productList
+            };
+            return userView;
+        }
+
+        public async Task<UserViewModel?> GetUserProfileAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) { return null; }
+            var productList = await _context.Products.AsNoTracking().Where(p=>
+                p.UserId == userId && 
+                p.isHidden == false && 
+                (p.Status ==1 || p.Status == 2))
+                .ToListAsync();
+
+
+            var userView = new UserViewModel
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                MiddleName = user.LastName,
+                LastName = user.LastName,
+                Description = user.Description,
+                Status = user.Status,
+                AvatarUrl = user.AvatarUrl,
+                UserBalance = user.UserBalance,
+                CreatedDate = user.CreatedDate,
+                UpdatedDate = user.UpdatedDate,
+                Products = productList
             };
             return userView;
         }
@@ -132,5 +169,6 @@ namespace MobileShopAPI.Services
                 UpdatedDate = user.UpdatedDate
             };
         }
+
     }
 }

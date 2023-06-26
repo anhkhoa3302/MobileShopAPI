@@ -11,6 +11,7 @@ namespace MobileShopAPI.Models
             Images = new HashSet<Image>();
             ProductOrders = new HashSet<ProductOrder>();
             UserRatings = new HashSet<UserRating>();
+            MarkedProducts = new HashSet<MarkedProduct>();
         }
 
         public long Id { get; set; }
@@ -51,5 +52,7 @@ namespace MobileShopAPI.Models
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<ProductOrder> ProductOrders { get; set; }
         public virtual ICollection<UserRating> UserRatings { get; set; }
+
+        public virtual ICollection<MarkedProduct> MarkedProducts { get; set; }
     }
 }

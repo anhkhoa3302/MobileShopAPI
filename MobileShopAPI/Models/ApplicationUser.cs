@@ -16,6 +16,7 @@ namespace MobileShopAPI.Models
             UserRatings = new HashSet<UserRating>();
             InternalTransactions = new HashSet<InternalTransaction>();
             ActiveSubscriptions = new HashSet<ActiveSubscription>();
+            MarkedProducts = new HashSet<MarkedProduct>();
         }
         [PersonalData]
         public string? FirstName { get; set; }
@@ -50,5 +51,7 @@ namespace MobileShopAPI.Models
         public virtual ICollection<InternalTransaction> InternalTransactions { get; set; }
         public virtual ICollection<Report> Reports { get; set; }
         public virtual ICollection<ShippingAddress> ShippingAddresses { get; set; }
+
+        public virtual ICollection<MarkedProduct> MarkedProducts { get; set; }
     }
 }

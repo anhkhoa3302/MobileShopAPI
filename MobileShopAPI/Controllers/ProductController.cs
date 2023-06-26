@@ -97,6 +97,7 @@ namespace MobileShopAPI.Controllers
         ///         "id": 0, (not require, can be any number but null)
         ///         "url": "string", (required)
         ///         "isCover": false, (not required, true/false makes no differences)
+        ///         "isVideo" : false, (whether or not this object is a video)
         ///         "isDeleted": false, (not required, true/false makes no differences)
         ///         "isNewlyAdded": false (not required, true/false makes no differences)
         ///     }
@@ -172,8 +173,9 @@ namespace MobileShopAPI.Controllers
         ///     PUT
         ///     {
         ///         "id": 0, (id of an image you want it to be the cover)
-        ///         "url": "string", ( not required)
+        ///         "url": "string", (does not matter in this function)
         ///         "isCover": true, (must be TRUE)
+        ///         "isVideo" : false, (whether or not this object is a video)
         ///         "isDeleted": false, (must be FALSE)
         ///         "isNewlyAdded": false (must be FALSE)
         ///     }
@@ -185,6 +187,7 @@ namespace MobileShopAPI.Controllers
         ///         "id": 0, (not required)
         ///         "url": "string", (required)
         ///         "isCover": true, (could be true, if true the newly added image will be product's new cover)
+        ///         "isVideo" : false, (does not matter in this function)
         ///         "isDeleted": false, (must be FALSE)
         ///         "isNewlyAdded": true (must be TRUE)   
         ///     }
@@ -196,6 +199,7 @@ namespace MobileShopAPI.Controllers
         ///         "id": 0, (required)
         ///         "url": "string", ( not required)
         ///         "isCover": false, (must be FALSE)
+        ///         "isVideo" : false (does not matter in this function)
         ///         "isDeleted": true, (must be TRUE)
         ///         "isNewlyAdded": false (must be FALSE)   
         ///     }
@@ -251,6 +255,60 @@ namespace MobileShopAPI.Controllers
             }
 
             return BadRequest("Some properties are not valid");
+        }
+
+        [HttpPost("mark/{id}")]
+        public async Task<IActionResult> Mark(long id)
+        {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+            string userId;
+            if (user != null)
+            {
+                userId = user.Value;
+
+                var result = await _productService.AddMarkedProductAsync(userId,id);
+                if (result.isSuccess)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+            return BadRequest("Oops! Something went wrong");
+        }
+
+        [HttpPost("RemoveMark/{id}")]
+
+        public async Task<IActionResult> RemoveMark(long id)
+        {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+            string userId;
+            if (user != null)
+            {
+                userId = user.Value;
+
+                var result = await _productService.RemoveMarkedProductAsync(userId, id);
+                if (result.isSuccess)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+            return BadRequest("Oops! Something went wrong");
+        }
+
+        [HttpGet("GetMarkedProduct")]
+        public async Task<IActionResult> GetMarkedProduct()
+        {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+            string userId;
+            if (user != null)
+            {
+                userId = user.Value;
+
+                var result = await _productService.ListUserMarkedProduct(userId);
+                return Ok(result);
+            }
+            return BadRequest("Oops! Something went wrong");
         }
     }
 }
