@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Security.Claims;
 
 namespace MobileShopAPI.Controllers
 {
@@ -116,11 +118,14 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(UserRatingResponse), 200)]
         [ProducesResponseType(typeof(UserRatingResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize]
         public async Task<IActionResult> Add(UserRatingViewModel userRating)
         {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+
             if (ModelState.IsValid)
             {
-                var result = await _userRatingService.AddAsync(userRating);
+                var result = await _userRatingService.AddAsync(user.Value, userRating);
                 if (result.isSuccess)
                     return Ok(result); //Status code: 200
                 return BadRequest(result);//Status code: 404
@@ -198,10 +203,10 @@ namespace MobileShopAPI.Controllers
         /// <param name="id"></param>
         /// <remarks></remarks>
         /// <returns></returns>
-        [HttpGet("getEverageRating")]
-        public async Task<float> getEverageRating(long id)
+        [HttpGet("getAverageRating")]
+        public async Task<float> getAverageRating(long id)
         {
-            var result = await _userRatingService.getEverageRatingAsync(id);
+            var result = await _userRatingService.getAverageRatingAsync(id);
 
             return result;
         }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Security.Claims;
 
 namespace MobileShopAPI.Controllers
 {
@@ -96,13 +97,49 @@ namespace MobileShopAPI.Controllers
             }
         }
 
-        // api/brand/add
-        [HttpPost("add")]
-        public async Task<IActionResult> Add(InternalTransactionViewModel it)
+        // api/brand/pushUp
+        [HttpPost("pushUp")]
+        public async Task<IActionResult> PushUp()
         {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+
             if (ModelState.IsValid)
             {
-                var result = await _itService.AddAsync(it);
+                var result = await _itService.PushUpAsync(user.Value);
+                if (result.isSuccess)
+                    return Ok(result); //Status code: 200
+                return BadRequest(result);//Status code: 404
+            }
+
+            return BadRequest("Some properies are not valid");//Status code: 404
+        }
+
+        // api/brand/buyPackage
+        [HttpPost("buyPackage")]
+        public async Task<IActionResult> BuyPackage(InternalTransactionViewModel it)
+        {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (ModelState.IsValid)
+            {
+                var result = await _itService.BuyPackageAsync(user.Value, it.SpId);
+                if (result.isSuccess)
+                    return Ok(result); //Status code: 200
+                return BadRequest(result);//Status code: 404
+            }
+
+            return BadRequest("Some properies are not valid");//Status code: 404
+        }
+
+        // api/brand/post
+        [HttpPost("post")]
+        public async Task<IActionResult> Post(InternalTransactionViewModel it)
+        {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            if (ModelState.IsValid)
+            {
+                var result = await _itService.PostAsync(user.Value, it.SpId);
                 if (result.isSuccess)
                     return Ok(result); //Status code: 200
                 return BadRequest(result);//Status code: 404

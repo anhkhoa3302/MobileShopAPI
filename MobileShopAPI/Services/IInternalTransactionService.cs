@@ -18,7 +18,11 @@ namespace MobileShopAPI.Services
 
         Task<List<InternalTransaction>> GetByCoinActionIdAsync(long id);
 
-        Task<InternalTransactionResponse> AddAsync(InternalTransactionViewModel internalTransaction);
+        Task<InternalTransactionResponse> PushUpAsync(string UsrId);
+
+        Task<InternalTransactionResponse> BuyPackageAsync(string UsrId, long? SubPacId);
+
+        Task<InternalTransactionResponse> PostAsync(string UsrId, long? SubPacId);
     }
 
     public class InternalTransactionService : IInternalTransactionService
@@ -29,18 +33,45 @@ namespace MobileShopAPI.Services
         {
             _context = context;
         }
-        public async Task<InternalTransactionResponse> AddAsync(InternalTransactionViewModel internalTransaction)
+        // Đẩy tin
+        public async Task<InternalTransactionResponse> PushUpAsync(string UsrId)
         {
-            var SP = _context.SubscriptionPackages.Include(p => p.InternalTransactions).Where(sp => sp.Id == internalTransaction.SpId).FirstOrDefault();
-
-            var CA = _context.CoinActions.Include(p => p.InternalTransactions).Where(sp => sp.Id == internalTransaction.CoinActionId).FirstOrDefault();
+            var CA = _context.CoinActions.Include(p => p.InternalTransactions).Where(sp => sp.Id == 1).FirstOrDefault();
 
             var _it = new InternalTransaction
             {
                 Id = StringIdGenerator.GenerateUniqueId(),
-                UserId = internalTransaction.UserId,
-                CoinActionId = internalTransaction.CoinActionId,
-                SpId = internalTransaction.SpId,
+                UserId = UsrId,
+                CoinActionId = 1,
+                SpId = null,
+                ItAmount = null,
+                ItInfo = CA.Description,
+                ItSecureHash = null,
+                CreatedDate = null
+            };
+            _context.Add(_it);
+            await _context.SaveChangesAsync();
+
+            return new InternalTransactionResponse
+            {
+                Message = "New Internal Transaction (Push Up) Added!",
+                isSuccess = true
+            };
+        }
+
+        // Mua gói tin đăng
+        public async Task<InternalTransactionResponse> BuyPackageAsync(string UsrId, long? SubPacId)
+        {
+            var SP = _context.SubscriptionPackages.Include(p => p.InternalTransactions).Where(sp => sp.Id == SubPacId).FirstOrDefault();
+
+            var CA = _context.CoinActions.Include(p => p.InternalTransactions).Where(sp => sp.Id == 2).FirstOrDefault();
+
+            var _it = new InternalTransaction
+            {
+                Id = StringIdGenerator.GenerateUniqueId(),
+                UserId = UsrId,
+                CoinActionId = 2,
+                SpId = SubPacId,
                 ItAmount = SP.PostAmout,
                 ItInfo = CA.Description,
                 ItSecureHash = null,
@@ -51,7 +82,35 @@ namespace MobileShopAPI.Services
 
             return new InternalTransactionResponse
             {
-                Message = "New Internal Transaction Added!",
+                Message = "New Internal Transaction (Buy Package) Added!",
+                isSuccess = true
+            };
+        }
+
+        // Đăng tin
+        public async Task<InternalTransactionResponse> PostAsync(string UsrId, long? SubPacId)
+        {
+            var SP = _context.SubscriptionPackages.Include(p => p.InternalTransactions).Where(sp => sp.Id == SubPacId).FirstOrDefault();
+
+            var CA = _context.CoinActions.Include(p => p.InternalTransactions).Where(sp => sp.Id == 3).FirstOrDefault();
+
+            var _it = new InternalTransaction
+            {
+                Id = StringIdGenerator.GenerateUniqueId(),
+                UserId = UsrId,
+                CoinActionId = 3,
+                SpId = SubPacId,
+                ItAmount = SP.PostAmout,
+                ItInfo = CA.Description,
+                ItSecureHash = null,
+                CreatedDate = null
+            };
+            _context.Add(_it);
+            await _context.SaveChangesAsync();
+
+            return new InternalTransactionResponse
+            {
+                Message = "New Internal Transaction (Post) Added!",
                 isSuccess = true
             };
         }

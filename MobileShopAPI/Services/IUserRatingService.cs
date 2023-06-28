@@ -16,13 +16,13 @@ namespace MobileShopAPI.Services
 
         Task<List<UserRating>> GetAllRatingOfUserAsync(string id);
 
-        Task<UserRatingResponse> AddAsync(UserRatingViewModel ur);
+        Task<UserRatingResponse> AddAsync(string UsrId, UserRatingViewModel ur);
 
         Task<UserRatingResponse> UpdateAsync(long id, UserRatingViewModel ur);
 
         Task<UserRatingResponse> DeleteAsync(long id);
 
-        Task<float> getEverageRatingAsync(long id);
+        Task<float> getAverageRatingAsync(long id);
     }
 
     public class UserRatingService : IUserRatingService
@@ -33,7 +33,7 @@ namespace MobileShopAPI.Services
         {
             _context = context;
         }
-        public async Task<UserRatingResponse> AddAsync(UserRatingViewModel ur)
+        public async Task<UserRatingResponse> AddAsync(string UsrId, UserRatingViewModel ur)
         {
             var _userRating = new UserRating
             {
@@ -41,7 +41,7 @@ namespace MobileShopAPI.Services
                 Comment = ur.Comment,
                 CreatedDate = null,
                 ProductId = ur.ProductId,
-                UsderId = ur.UsderId
+                UsderId = UsrId
             };
             _context.Add(_userRating);
             await _context.SaveChangesAsync();
@@ -126,7 +126,7 @@ namespace MobileShopAPI.Services
             };
         }
 
-        public async Task<float> getEverageRatingAsync(long id)
+        public async Task<float> getAverageRatingAsync(long id)
         {
             var userRating = _context.UserRatings.Where(ur => ur.ProductId == id);
 

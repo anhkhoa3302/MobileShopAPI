@@ -14,9 +14,11 @@ namespace MobileShopAPI.Controllers
     public class AuthController : ControllerBase
     {
         private IUserService _userService;
-        public AuthController(IUserService userService,IEmailSender mailService)
+        private IActiveSubscriptionService _activeSubsciptionService;
+        public AuthController(IUserService userService,IEmailSender mailService, IActiveSubscriptionService activeSubscriptionService)
         {
             _userService = userService;
+            _activeSubsciptionService = activeSubscriptionService;
         }
         /// <summary>
         /// Register a user
@@ -36,8 +38,13 @@ namespace MobileShopAPI.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _userService.RegisterUserAsync(model);
+               
                 if(result.isSuccess)
+                {
+                    var asub = await _activeSubsciptionService.RegisterActiveSubAsync(model);
                     return Ok(result); //Status code: 200
+                }    
+                    
                 return BadRequest(result);//Status code: 400
             }
 

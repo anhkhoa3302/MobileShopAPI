@@ -14,6 +14,12 @@ namespace MobileShopAPI.Models
         }
 
         public long Id { get; set; }
+
+        /// <summary>
+        /// Đẩy tin     - 20000
+        /// Mua gói tin - 0
+        /// Đăng tin    - 2000
+        /// </summary>
         public string ActionName { get; set; } = null!;
         public string? Description { get; set; }
 
