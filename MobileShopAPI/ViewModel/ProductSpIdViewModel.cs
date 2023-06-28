@@ -2,7 +2,7 @@
 
 namespace MobileShopAPI.ViewModel
 {
-    public class Product5ViewModel
+    public class ProductSpIdViewModel
     {
         [Required]
         public string Name { get; set; } = null!;

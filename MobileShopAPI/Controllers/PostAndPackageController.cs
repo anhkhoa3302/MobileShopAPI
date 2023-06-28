@@ -27,43 +27,49 @@ namespace MobileShopAPI.Controllers
         /// <response code ="500">>Oops! Something went wrong</response>
         [HttpPut("pushUp/{id}")]
         [Authorize]
-        public async Task<IActionResult> PushUp(long id, PushUpViewModel model)
+        public async Task<IActionResult> PushUp(long id)
         {
             var user = User.FindFirst(ClaimTypes.NameIdentifier);
 
             if (ModelState.IsValid)
             {
-                var result = await _PaPService.SetPriorities(id);
+                var result = await _PaPService.SetPriorities(user.Value, id);
 
-                var in_tran = await _PaPService.IT_PushUpAsync(user.Value, model.SpId, id);
+                var in_tran = await _PaPService.IT_PushUpAsync(user.Value, id);
 
-                var active_sub = await _PaPService.AS_PushUpAsync(user.Value, model.SpId);
+                //var active_sub = await _PaPService.AS_PushUpAsync(user.Value, model.SpId);
 
-                if (result.isSuccess && in_tran.isSuccess && active_sub.isSuccess)
-                    return Ok(result);
+                if (result.isSuccess)
+                {
+                    if(in_tran.isSuccess)
+                    {
+                        return Ok(result);
+                    }    
+                }    
+                    
                 return BadRequest(result);
             }
 
             return BadRequest("Some properies are not valid");
         }
 
-        /// <summary>
-        /// Get all product by priorities
-        /// </summary>
-        /// <response code ="200">Get all product</response>
-        /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpGet("getAll")]
-        public async Task<IActionResult> GetAll()
-        {
-            try
-            {
-                return Ok(await _PaPService.GetAll());
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
+        ///// <summary>
+        ///// Get all product by priorities
+        ///// </summary>
+        ///// <response code ="200">Get all product</response>
+        ///// <response code ="500">>Oops! Something went wrong</response>
+        //[HttpGet("getAll")]
+        //public async Task<IActionResult> GetAll()
+        //{
+        //    try
+        //    {
+        //        return Ok(await _PaPService.SortList());
+        //    }
+        //    catch
+        //    {
+        //        return StatusCode(StatusCodes.Status500InternalServerError);
+        //    }
+        //}
 
         /// <summary>
         /// Buy Subscription Package
@@ -89,9 +95,12 @@ namespace MobileShopAPI.Controllers
 
                 var in_tran = await _PaPService.IT_BuyPackageAsync(user.Value, model.SpId);
 
-                if (result.isSuccess && in_tran.isSuccess)
-                    return Ok(result);
-                return BadRequest(result);
+                if (in_tran.isSuccess)
+                {
+                    if(result.isSuccess)
+                    { return Ok(result); }
+                }    
+                return BadRequest(in_tran);
             }
 
             return BadRequest("Some properies are not valid");
@@ -111,23 +120,24 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(ProductResponse), 400)]
         [ProducesResponseType(500)]
         [Authorize]
-        public async Task<IActionResult> Post(Product5ViewModel model)
+        public async Task<IActionResult> Post(ProductSpIdViewModel model)
         {
             var user = User.FindFirst(ClaimTypes.NameIdentifier);
 
             if (ModelState.IsValid)
             {
-                var result = await _PaPService.CreateProductAsync(model, user.Value);
 
                 var rs = await _PaPService.IT_PostAsync(user.Value, model.SpId);
 
                 var asub = await _PaPService.AS_PostAsync(model.SpId, user.Value);
 
-                if (result.isSuccess && rs.isSuccess && asub.isSuccess)
+                if (rs.isSuccess && asub.isSuccess)
                 {
-                    return Ok(result);
+                    var result = await _PaPService.CreateProductAsync(model, user.Value);
+                    if(result.isSuccess)
+                        return Ok(result);
                 }
-                return BadRequest(result);
+                return BadRequest(rs);
             }
 
             return BadRequest("Some properties are not valid");
@@ -148,39 +158,6 @@ namespace MobileShopAPI.Controllers
             try
             {
                 var data = await _PaPService.HideProduct(id);
-                if (data != null)
-                {
-                    return Ok(data);
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        /// <summary>
-        /// Auto Hide Product
-        /// </summary>
-        /// <param name="id"></param>
-        /// <remarks></remarks>
-        /// <returns></returns>
-        /// <response code ="200">Hide product successfully</response>
-        /// <response code ="400">Product not found</response>
-        /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpGet("autoHideProduct")]
-        [Authorize]
-        public async Task<IActionResult> AutoHideProduct()
-        {
-            var user = User.FindFirst(ClaimTypes.NameIdentifier);
-
-            try
-            {
-                var data = await _PaPService.AutoHideProduct(user.Value);
                 if (data != null)
                 {
                     return Ok(data);

@@ -75,12 +75,43 @@ namespace MobileShopAPI.Controllers
         /// <response code ="200">Active Subscripton infos</response>
         /// <response code ="400">Active Subscription not found</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpGet("getUserById/{id}")]
+        [HttpGet("getByUserId/{id}")]
         public async Task<IActionResult> GetByUserId(string id)
         {
             try
             {
                 var data = await _asService.GetByUserIdAsync(id);
+                if (data != null)
+                {
+                    return Ok(data);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// Get Active Subscription List by User Logged
+        /// </summary>
+        /// <remarks></remarks>
+        /// <returns></returns>
+        /// <response code ="200">Active Subscripton infos</response>
+        /// <response code ="400">Active Subscription not found</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
+        [HttpGet("getByUserIdLogged")]
+        public async Task<IActionResult> GetByUserIdLogged()
+        {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+
+            try
+            {
+                var data = await _asService.GetByUserIdAsync(user.Value);
                 if (data != null)
                 {
                     return Ok(data);

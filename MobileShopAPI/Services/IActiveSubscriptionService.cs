@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MobileShopAPI.Data;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
@@ -20,6 +21,8 @@ namespace MobileShopAPI.Services
 
         Task<ActiveSubscription> GetBySubIdAndUserIdAsync(long SubPacId, string UsrId);
 
+        Task<ActiveSubscriptionResponse> RegisterActiveSubAsync(RegisterViewModel model);
+
         Task<ActiveSubscriptionResponse> BuyPackageAsync(AddActiveSubscriptionViewModel model, string UsrId);
 
         Task<ActiveSubscriptionResponse> PostASAsync(long SubPacId, string UsrId);
@@ -32,10 +35,13 @@ namespace MobileShopAPI.Services
     public class ActiveSubscriptionService : IActiveSubscriptionService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ActiveSubscriptionService(ApplicationDbContext context)
+
+        public ActiveSubscriptionService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
         public async Task<ActiveSubscriptionResponse> BuyPackageAsync(AddActiveSubscriptionViewModel model, string UsrId)
         {
@@ -46,6 +52,40 @@ namespace MobileShopAPI.Services
                 ActivatedDate = DateTime.Now,
                 UserId = UsrId, 
                 SpId = model.SpId,
+            };
+            _context.Add(_model);
+            await _context.SaveChangesAsync();
+
+            return new ActiveSubscriptionResponse
+            {
+                Message = "New Active Subscription Added!",
+                isSuccess = true
+            };
+        }
+
+        // Auto Active Free Subscription Package
+        public async Task<ActiveSubscriptionResponse> RegisterActiveSubAsync(RegisterViewModel model)
+        {
+            var user = await _userManager.FindByNameAsync(model.Username);
+
+            var sp = await _context.SubscriptionPackages.Where(p => p.Name == "Free Subscription Package").FirstOrDefaultAsync();
+
+            if(sp == null)
+            {
+                return new ActiveSubscriptionResponse
+                {
+                    Message = "Something went wrong with Free Subscription Package !",
+                    isSuccess = false
+                };
+            }    
+
+            var _model = new ActiveSubscription
+            {
+                UsedPost = 0,
+                ExpiredDate = null,
+                ActivatedDate = DateTime.Now,
+                UserId = user.Id,
+                SpId = sp.Id,
             };
             _context.Add(_model);
             await _context.SaveChangesAsync();

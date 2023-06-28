@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MobileShopAPI.Data;
 using MobileShopAPI.Helpers;
 using MobileShopAPI.Models;
@@ -9,28 +10,23 @@ namespace MobileShopAPI.Services
 {
     public interface IPostAndPackageService
     {
-        Task<ProductResponse> CreateProductAsync(Product5ViewModel model, string UsrId);
+        Task<ProductResponse> CreateProductAsync(ProductSpIdViewModel model, string UsrId);
 
         Task<ActiveSubscriptionResponse> AS_BuyPackageAsync(AddActiveSubscriptionViewModel model, string UsrId);
 
         Task<ActiveSubscriptionResponse> AS_PostAsync(long SubPacId, string UsrId);
 
-        Task<ActiveSubscriptionResponse> AS_PushUpAsync(string UsrId, long SubPacId);
-
         Task<InternalTransactionResponse> IT_BuyPackageAsync(string UsrId, long? SubPacId);
 
         Task<InternalTransactionResponse> IT_PostAsync(string UsrId, long? SubPacId);
 
-        Task<InternalTransactionResponse> IT_PushUpAsync(string UsrId, long SubPacId, long ProductId);
+        Task<InternalTransactionResponse> IT_PushUpAsync(string UsrId, long ProductId);
 
-        Task<ProductResponse> SetPriorities(long id);
+        Task<ProductResponse> SetPriorities(string UsrId, long ProductId);
 
-        Task<List<Product>> GetAll();
+        Task<List<Product>> SortList(List<Product> pro);
 
         Task<ProductResponse> HideProduct(long id);
-
-        Task<ProductResponse> AutoHideProduct(string UsrId);
-
 
     }
 
@@ -40,13 +36,17 @@ namespace MobileShopAPI.Services
 
         private readonly IImageService _imageService;
 
-        public PostAndPackageService(ApplicationDbContext context, IImageService imageService)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+
+        public PostAndPackageService(ApplicationDbContext context, IImageService imageService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _imageService = imageService;
+            _userManager = userManager;
         }
 
-         public async Task<ProductResponse> CreateProductAsync(Product5ViewModel model, string UsrId)
+         public async Task<ProductResponse> CreateProductAsync(ProductSpIdViewModel model, string UsrId)
         {
             if (model == null)
                 return new ProductResponse
@@ -114,6 +114,18 @@ namespace MobileShopAPI.Services
 
         public async Task<ActiveSubscriptionResponse> AS_BuyPackageAsync(AddActiveSubscriptionViewModel model, string UsrId)
         {
+            var user = await _userManager.FindByIdAsync(UsrId);
+            var SP = await _context.SubscriptionPackages.Where(p => p.Id == model.SpId).FirstOrDefaultAsync();
+
+            if(user.UserBalance == null || user.UserBalance < SP.Price)
+            {
+                return new ActiveSubscriptionResponse
+                {
+                    Message = "Not Enougn Coin !",
+                    isSuccess = false
+                };
+            }  
+            
             var _model = new ActiveSubscription
             {
                 UsedPost = 0,
@@ -137,10 +149,22 @@ namespace MobileShopAPI.Services
             var sp = await _context.SubscriptionPackages.FirstOrDefaultAsync(p => p.Id == SubPacId);
             var _model = await _context.ActiveSubscriptions.Where(p => (p.SpId == SubPacId && p.UserId == UsrId)).FirstOrDefaultAsync();
 
-            if(sp != null && _model != null)
+            var user = await _userManager.FindByIdAsync(UsrId);
+            var SP = await _context.SubscriptionPackages.Where(p => p.Id == SubPacId).FirstOrDefaultAsync();
+
+            if (user.UserBalance == null || user.UserBalance < SP.Price)
+            {
+                return new ActiveSubscriptionResponse
+                {
+                    Message = "Not Enougn Coin !",
+                    isSuccess = false
+                };
+            }
+
+            if (sp != null && _model != null)
             {
                 // Free Subcription Package
-                if(SubPacId == 1) 
+                if(sp.Name == "Free Subscription Package") 
                 {
                     if (_model.UsedPost == sp.PostAmout)
                     {
@@ -159,7 +183,7 @@ namespace MobileShopAPI.Services
                 }
                 else // Paid Subcription Package
                 {
-                    if (_model.UsedPost == sp.PostAmout)
+                    if (_model.UsedPost + 1 == sp.PostAmout)
                     {
                         _context.Remove(_model);
                         await _context.SaveChangesAsync();
@@ -206,47 +230,47 @@ namespace MobileShopAPI.Services
             };
         }
 
-        public async Task<ActiveSubscriptionResponse> AS_PushUpAsync(string UsrId, long SubPacId)
-        {
-            var _model = await _context.ActiveSubscriptions.Where(p => (p.SpId == SubPacId && p.UserId == UsrId)).FirstAsync();
-
-
-            if (_model == null)
-            {
-                return new ActiveSubscriptionResponse
-                {
-                    Message = "Bad request",
-                    isSuccess = false
-                };
-            }
-            else
-            {
-
-                _model.UsedPost = _model.UsedPost + 2;
-                _model.ExpiredDate = _model.ExpiredDate;
-                _model.ActivatedDate = DateTime.Now;
-                await _context.SaveChangesAsync();
-            }
-
-            return new ActiveSubscriptionResponse
-            {
-                Message = "This Active Subscription Updated!",
-                isSuccess = true
-            };
-        }
-
         // Mua gói tin đăng
         public async Task<InternalTransactionResponse> IT_BuyPackageAsync(string UsrId, long? SubPacId)
         {
-            var SP = _context.SubscriptionPackages.Include(p => p.InternalTransactions).Where(sp => sp.Id == SubPacId).FirstOrDefault();
+            var SP = _context.SubscriptionPackages.Where(sp => sp.Id == SubPacId).FirstOrDefault();
 
-            var CA = _context.CoinActions.Include(p => p.InternalTransactions).Where(sp => sp.Id == 2).FirstOrDefault();
+            if(SP == null)
+            {
+                return new InternalTransactionResponse
+                {
+                    Message = "This Subscription Package Does Not Exits !",
+                    isSuccess = false
+                };
+            }    
+
+            var CA = _context.CoinActions.Include(p => p.InternalTransactions).Where(sp => sp.ActionName == "Mua gói tin").FirstOrDefault();
+
+            if (CA == null)
+            {
+                return new InternalTransactionResponse
+                {
+                    Message = "This Coin Action Does Not Exits !",
+                    isSuccess = false
+                };
+            }
+
+            var user = await _userManager.FindByIdAsync(UsrId);
+
+            if(user.UserBalance == null || user.UserBalance < SP.Price)
+            {
+                return new InternalTransactionResponse
+                {
+                    Message = "Not Enough Coin !",
+                    isSuccess = false
+                };
+            }    
 
             var _it = new InternalTransaction
             {
                 Id = StringIdGenerator.GenerateUniqueId(),
                 UserId = UsrId,
-                CoinActionId = 2,
+                CoinActionId = CA.Id,
                 SpId = SubPacId,
                 ItAmount = SP.PostAmout,
                 ItInfo = CA.Description,
@@ -254,6 +278,9 @@ namespace MobileShopAPI.Services
                 CreatedDate = null
             };
             _context.Add(_it);
+            await _context.SaveChangesAsync();
+
+            user.UserBalance = user.UserBalance - SP.Price;
             await _context.SaveChangesAsync();
 
             return new InternalTransactionResponse
@@ -268,13 +295,42 @@ namespace MobileShopAPI.Services
         {
             var SP = _context.SubscriptionPackages.Include(p => p.InternalTransactions).Where(sp => sp.Id == SubPacId).FirstOrDefault();
 
-            var CA = _context.CoinActions.Include(p => p.InternalTransactions).Where(sp => sp.Id == 3).FirstOrDefault();
+            if (SP == null)
+            {
+                return new InternalTransactionResponse
+                {
+                    Message = "This Subscription Package Does Not Exits !",
+                    isSuccess = false
+                };
+            }
+
+            var CA = _context.CoinActions.Include(p => p.InternalTransactions).Where(sp => sp.ActionName == "Đăng tin").FirstOrDefault();
+
+            if (CA == null)
+            {
+                return new InternalTransactionResponse
+                {
+                    Message = "This Coin Action Does Not Exits !",
+                    isSuccess = false
+                };
+            }
+
+            var user = await _userManager.FindByIdAsync(UsrId);
+            
+            if(user.UserBalance == null || user.UserBalance < CA.CaCoinAmount)
+            {
+                return new InternalTransactionResponse
+                {
+                    Message = "Not Enough Coin For This Action !",
+                    isSuccess = false
+                };
+            }    
 
             var _it = new InternalTransaction
             {
                 Id = StringIdGenerator.GenerateUniqueId(),
                 UserId = UsrId,
-                CoinActionId = 3,
+                CoinActionId = CA.Id,
                 SpId = SubPacId,
                 ItAmount = SP.PostAmout,
                 ItInfo = CA.Description,
@@ -284,6 +340,13 @@ namespace MobileShopAPI.Services
             _context.Add(_it);
             await _context.SaveChangesAsync();
 
+            if(SP.Name == "Free Subscription Package")
+            {
+                user.UserBalance = user.UserBalance - CA.CaCoinAmount;
+                await _context.SaveChangesAsync();
+            }    
+
+
             return new InternalTransactionResponse
             {
                 Message = "New Internal Transaction (Post) Added!",
@@ -292,20 +355,38 @@ namespace MobileShopAPI.Services
         }
 
         // Đẩy tin
-        public async Task<InternalTransactionResponse> IT_PushUpAsync(string UsrId, long SubPacId, long ProductId)
+        public async Task<InternalTransactionResponse> IT_PushUpAsync(string UsrId, long ProductId)
         {
-            var SP = _context.SubscriptionPackages.Include(p => p.InternalTransactions).Where(sp => sp.Id == SubPacId).FirstOrDefault();
+            var CA = _context.CoinActions.Include(p => p.InternalTransactions).Where(sp => sp.ActionName == "Đẩy tin").FirstOrDefault();
 
-            var CA = _context.CoinActions.Include(p => p.InternalTransactions).Where(sp => sp.Id == 1).FirstOrDefault();
+            if (CA == null)
+            {
+                return new InternalTransactionResponse
+                {
+                    Message = "This Coin Action Does Not Exits !",
+                    isSuccess = false
+                };
+            }
+
+            var user = await _userManager.FindByIdAsync(UsrId);
+
+            if (user.UserBalance == null || user.UserBalance < CA.CaCoinAmount)
+            {
+                return new InternalTransactionResponse
+                {
+                    Message = "Not Enougn Coin !",
+                    isSuccess = false
+                };
+            }
 
             var _it = new InternalTransaction
             {
                 Id = StringIdGenerator.GenerateUniqueId(),
                 UserId = UsrId,
-                CoinActionId = 1,
-                SpId = SubPacId,
-                ItAmount = SP.PostAmout,
-                ItInfo = ProductId.ToString(),
+                CoinActionId = CA.Id,
+                SpId = null,
+                ItAmount = null,
+                ItInfo = CA.Description,
                 ItSecureHash = null,
                 CreatedDate = null
             };
@@ -320,12 +401,29 @@ namespace MobileShopAPI.Services
         }
 
         // Đẩy tin
-        public async Task<ProductResponse> SetPriorities(long id)
+        public async Task<ProductResponse> SetPriorities( string UsrId, long ProductId)
         {
-            var pro = await _context.Products.FindAsync(id);
+            var pro = await _context.Products.FindAsync(ProductId);
 
-            pro.Priorities = 1;
-            await _context.SaveChangesAsync();
+           
+            var ca = await _context.CoinActions.Where(p => p.ActionName == "Đẩy tin").FirstOrDefaultAsync();
+            if (ca != null)
+            {
+                var user = await _userManager.FindByIdAsync(UsrId);
+
+                if(user.UserBalance == null || user.UserBalance < ca.CaCoinAmount)
+                {
+                    return new ProductResponse
+                    {
+                        Message = "Not enough coin for this action !",
+                        isSuccess = true
+                    };
+                }
+                user.UserBalance = user.UserBalance - ca.CaCoinAmount;
+
+                pro.Priorities = pro.Priorities + 100;
+                await _context.SaveChangesAsync();
+            }
 
             return new ProductResponse
             {
@@ -335,10 +433,10 @@ namespace MobileShopAPI.Services
         }
 
         // Lấy danh sách sản phẩm ưu tiên
-        public async Task<List<Product>> GetAll()
+        public async Task<List<Product>> SortList(List<Product> pro)
         {
-            var products = await _context.Products.Where(t => t.isHidden == false).OrderBy(p => p.Priorities).ToListAsync();
-            return products;
+            var sortList = pro.OrderByDescending(p => p.Priorities).ToList();
+            return sortList;
         }
 
 
@@ -346,6 +444,15 @@ namespace MobileShopAPI.Services
         public async Task<ProductResponse> HideProduct(long id)
         {
             var pro = await _context.Products.FindAsync(id);
+
+            if(pro == null)
+            {
+                return new ProductResponse
+                {
+                    Message = "This Product Does Not Exits !",
+                    isSuccess = false
+                };
+            }    
 
             pro.isHidden = true;
             await _context.SaveChangesAsync();
@@ -357,42 +464,5 @@ namespace MobileShopAPI.Services
             };
         }
 
-        // Tự động ẩn tin, ngưng đẩy tin
-        public async Task<ProductResponse> AutoHideProduct(string UsrId)
-        {
-            var pro = await _context.Products.ToListAsync();
-
-            
-            foreach (var item in pro)
-            {
-                if(item.ExpiredDate <= DateTime.Now)
-                {
-                    item.isHidden = true;
-                    await _context.SaveChangesAsync();
-                }
-
-                if ((item.isHidden == true) && (item.ExpiredDate <= DateTime.Now.AddDays(-30)))
-                {
-                    item.Status = 3;
-                    await _context.SaveChangesAsync();
-                }
-
-                if(item.Priorities == 1)
-                {
-                    var it_info = await _context.InternalTransactions.Where(p => p.UserId == UsrId && p.ItInfo == item.Id.ToString()).FirstOrDefaultAsync();
-                    if ((it_info != null) && it_info.CreatedDate <= DateTime.Now.AddDays(-7))
-                    {
-                        item.Priorities = 2;
-                        await _context.SaveChangesAsync();
-                    }    
-                }    
-            }    
-
-            return new ProductResponse
-            {
-                Message = "Auto Hide Completed",
-                isSuccess = true
-            };
-        }
     }
 }
