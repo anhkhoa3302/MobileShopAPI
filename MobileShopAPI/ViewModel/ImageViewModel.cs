@@ -12,6 +12,10 @@
         /// </summary>
         public bool IsCover { get; set; }
 
+        /// <summary>
+        /// Đây là video
+        /// </summary>
+        public bool IsVideo { get; set; }
 
         /// <summary>
         /// Biến này chỉ được sử dụng khi chỉnh sửa sản phẩm

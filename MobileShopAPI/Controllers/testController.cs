@@ -15,7 +15,7 @@ namespace MobileShopAPI.Controllers
         /// Create for testing only, front-end group can ignore this
         /// </summary>
         [HttpGet("AuthorizeTest")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult AuthTest()
         {
             var user = User.FindFirst(ClaimTypes.NameIdentifier);

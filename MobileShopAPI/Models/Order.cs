@@ -13,6 +13,10 @@ namespace MobileShopAPI.Models
 
         public string Id { get; set; } = null!;
         public long Total { get; set; }
+        /// <summary>
+        /// 0 = pending (default)
+        /// 1 = completed
+        /// </summary>
         public int? Status { get; set; }
         public string UserId { get; set; } = null!;
         public DateTime? CreatedDate { get; set; }
