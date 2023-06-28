@@ -79,7 +79,9 @@ builder.Services.AddCors(policyBuilder =>
         policy.WithOrigins("http://localhost:3000")
         .AllowAnyHeader()
         .AllowAnyMethod()
-        .AllowCredentials())
+        .AllowCredentials()
+        .AllowAnyMethod()
+        )
 );
 
 //Json options
