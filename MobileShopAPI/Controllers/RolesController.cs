@@ -78,7 +78,7 @@ namespace MobileShopAPI.Controllers
                 }
 
             }
-            return Ok("Role has been edited");
+            return Ok(model);
         }
 
         [HttpPost("edit")]
