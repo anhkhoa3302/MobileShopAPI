@@ -14,6 +14,10 @@ namespace MobileShopAPI.Services
 
         Task<List<Report>> GetAllReportOfUserAsync(string userId);
 
+        Task<List<Report>> GetAllReportedInfoOfUserAsync(string reportedUserId);
+
+        Task<List<Report>> GetAllReportedInfoOfProductAsync(long reportedProductId);
+
         Task<Report?> GetByIdAsync(long id);
 
         Task<ReportResponse> AddAsync(ReportViewModel report);
@@ -104,6 +108,18 @@ namespace MobileShopAPI.Services
         {
             var reportOfUser = await _context.Reports.Where(r => r.UserId == userId).Include(r => r.Evidences).ToListAsync();
             return reportOfUser;
+        }
+
+        public async Task<List<Report>> GetAllReportedInfoOfUserAsync(string reportedUserId)
+        {
+            var reportedOfUser = await _context.Reports.Where(ru => ru.ReportedUserId == reportedUserId && (ru.Status == 0 || ru.Status == 1)).Include(ru => ru.Evidences).ToListAsync();
+            return reportedOfUser;
+        }
+
+        public async Task<List<Report>> GetAllReportedInfoOfProductAsync(long reportedProductId)
+        {
+            var reportedOfProduct = await _context.Reports.Where(rpid => rpid.ReportedProductId == reportedProductId && rpid.Status != 2).Include(rpid => rpid.Evidences).ToListAsync();
+            return reportedOfProduct;
         }
 
         public async Task<Report?> GetByIdAsync(long id)
