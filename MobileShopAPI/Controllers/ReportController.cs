@@ -71,7 +71,7 @@ namespace MobileShopAPI.Controllers
         }
 
         /// <summary>
-        /// Show all reported infos of users by userid
+        /// Show all reported information of users by userid
         /// </summary>
         /// <param name="reportedUserId"></param>
         /// <remarks>Get Id of reported user"</remarks>
@@ -103,7 +103,7 @@ namespace MobileShopAPI.Controllers
         }
 
         /// <summary>
-        /// Show all reported infos of product by productid
+        /// Show all reported information of product by productid
         /// </summary>
         /// <param name="reportedProductId"></param>
         /// <remarks>Get Id of product"</remarks>
