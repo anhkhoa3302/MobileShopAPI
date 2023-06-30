@@ -136,7 +136,7 @@ namespace MobileShopAPI.Services
             var roles = await _userManager.GetRolesAsync(user);
 
 
-            //Claim array
+            //Claim list
             List<Claim> claim = new List<Claim>
             {
                 new Claim("Email", user.Email),
