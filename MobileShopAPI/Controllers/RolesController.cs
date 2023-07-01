@@ -119,7 +119,11 @@ namespace MobileShopAPI.Controllers
             }
             return BadRequest(ModelState);
         }
-
+        /// <summary>
+        /// Get a list of user that can be added to the role
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
         [HttpGet("getUserByRole")]
         public async Task<IActionResult> EditUserRole(string roleId)
         {
@@ -154,7 +158,15 @@ namespace MobileShopAPI.Controllers
             return Ok(model);
         }
 
-
+        /// <summary>
+        /// Add user to role
+        /// </summary>
+        /// <remarks>
+        /// If isSelected = true, user will be added to the role
+        /// </remarks>
+        /// <param name="model"></param>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
         [HttpPost("EditUserRole")]
         public async Task<IActionResult> EditUserRole(List<UserRole> model, string roleId)
         {
