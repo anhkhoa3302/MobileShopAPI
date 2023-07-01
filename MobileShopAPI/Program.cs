@@ -66,15 +66,28 @@ builder.Services.AddScoped<ISubscriptionPackageService, SubscriptionPackageServi
 builder.Services.AddScoped<IInternalTransactionService, InternalTransactionService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductOrderService, ProductOrderService>();
+builder.Services.AddScoped<IActiveSubscriptionService, ActiveSubscriptionService>();
+builder.Services.AddScoped<IPostAndPackageService, PostAndPackageService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<IStatisticsService, StatisticsService>();
 
 //Email Service
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
 builder.Services.AddSingleton(emailConfig);
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 
+//Enable CORS
+builder.Services.AddCors(policyBuilder =>
+    policyBuilder.AddDefaultPolicy(policy =>
+        policy.WithOrigins("http://localhost:3000")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+        .AllowAnyMethod()
+        )
+);
 
-
+//Json options
 builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -143,6 +156,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthentication();
 

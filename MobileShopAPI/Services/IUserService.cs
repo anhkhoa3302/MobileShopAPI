@@ -32,18 +32,21 @@ namespace MobileShopAPI.Services
     {
 
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
 
         public UserService(
             UserManager<ApplicationUser> userManager,
             IConfiguration configuration,
-            IEmailSender emailSender
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager
             )
         {
             _userManager = userManager;
             _configuration = configuration;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         public async Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model)
@@ -101,7 +104,6 @@ namespace MobileShopAPI.Services
         public async Task<UserManagerResponse> LoginUserAsync(LoginViewModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
-
             if(user == null)
             {
                 return new UserManagerResponse
@@ -131,12 +133,21 @@ namespace MobileShopAPI.Services
                 };
             }
 
-            //Claim array
-            var claim = new[]
+            var roles = await _userManager.GetRolesAsync(user);
+
+
+            //Claim list
+            List<Claim> claim = new List<Claim>
             {
                 new Claim("Email", user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
             };
+
+            foreach (var role in roles)
+            {
+                var item = new Claim(ClaimTypes.Role, role);
+                claim.Add(item);
+            }
 
             //Key
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSetting:Key"]));

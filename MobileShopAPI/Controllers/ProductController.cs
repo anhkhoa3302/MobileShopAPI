@@ -14,10 +14,12 @@ namespace MobileShopAPI.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IPostAndPackageService _postAndPackageService;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IPostAndPackageService postAndPackageService)
         {
             _productService = productService;
+            _postAndPackageService = postAndPackageService;
         }
         /// <summary>
         /// Get all non-hidden product
@@ -31,7 +33,10 @@ namespace MobileShopAPI.Controllers
         public async Task<IActionResult> GetAll() 
         {
             var productList = await _productService.GetAllNoneHiddenProductAsync();
-            return Ok(productList);
+            
+            // Sort list
+
+            return Ok(_postAndPackageService.SortList(productList));
         }
         /// <summary>
         /// Get all product
