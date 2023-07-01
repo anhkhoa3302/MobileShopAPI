@@ -80,7 +80,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all posts</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpGet("getPostsByCategoryInStages")]
+        [HttpPut("getPostsByCategoryInStages")]
         public async Task<IActionResult> getPostsByCategoryInStages(PeriodViewModel model)
         {
             try
@@ -153,7 +153,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all posts</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpGet("getPostsByUserInStages")]
+        [HttpPut("getPostsByUserInStages")]
         public async Task<IActionResult> getPostsByUserInStages(PeriodViewModel model)
         {
             try
@@ -171,7 +171,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all user</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpGet("getUserByPostInStages")]
+        [HttpPut("getUserByPostInStages")]
         public async Task<IActionResult> getUserByPostInStages(PeriodViewModel model)
         {
             try
@@ -189,7 +189,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all user</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpGet("getUserByPackagePurchasesInStages")]
+        [HttpPut("getUserByPackagePurchasesInStages")]
         public async Task<IActionResult> getUserByPackagePurchasesInStages(PeriodViewModel model)
         {
             try
