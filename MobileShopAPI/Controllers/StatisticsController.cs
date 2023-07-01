@@ -21,7 +21,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all posts</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPut("getPostsByCategoryInDay")]
+        [HttpGet("getPostsByCategoryInDay")]
         public async Task<IActionResult> getPostsByCategoryInDay()
         {
             try
@@ -39,7 +39,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all posts</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPut("getPostsByCategoryInWeek")]
+        [HttpGet("getPostsByCategoryInWeek")]
         public async Task<IActionResult> getPostsByCategoryInWeek()
         {
             try
@@ -57,7 +57,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all posts</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPut("getPostsByCategoryInMonth")]
+        [HttpGet("getPostsByCategoryInMonth")]
         public async Task<IActionResult> getPostsByCategoryInMonth()
         {
             try
@@ -76,7 +76,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all posts</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPut("getPostsByCategoryInStages")]
+        [HttpGet("getPostsByCategoryInStages")]
         public async Task<IActionResult> getPostsByCategoryInStages(PeriodViewModel model)
         {
             try
@@ -94,7 +94,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all posts</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPut("getPostsByUserInDay")]
+        [HttpGet("getPostsByUserInDay")]
         public async Task<IActionResult> getPostsByUserInDay()
         {
             try
@@ -112,7 +112,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all posts</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPut("getPostsByUserInWeek")]
+        [HttpGet("getPostsByUserInWeek")]
         public async Task<IActionResult> getPostsByUserInWeek()
         {
             try
@@ -130,7 +130,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all posts</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPut("getPostsByUserInMonth")]
+        [HttpGet("getPostsByUserInMonth")]
         public async Task<IActionResult> getPostsByUserInMonth()
         {
             try
@@ -149,7 +149,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all posts</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPut("getPostsByUserInStages")]
+        [HttpGet("getPostsByUserInStages")]
         public async Task<IActionResult> getPostsByUserInStages(PeriodViewModel model)
         {
             try
@@ -167,7 +167,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all user</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPut("getUserByPostInStages")]
+        [HttpGet("getUserByPostInStages")]
         public async Task<IActionResult> getUserByPostInStages(PeriodViewModel model)
         {
             try
@@ -185,7 +185,7 @@ namespace MobileShopAPI.Controllers
         /// </summary>
         /// <response code ="200">Get all user</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPut("getUserByPackagePurchasesInStages")]
+        [HttpGet("getUserByPackagePurchasesInStages")]
         public async Task<IActionResult> getUserByPackagePurchasesInStages(PeriodViewModel model)
         {
             try

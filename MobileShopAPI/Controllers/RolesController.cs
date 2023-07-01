@@ -19,7 +19,11 @@ namespace MobileShopAPI.Controllers
             this.roleManager = roleManager;
             this.userManager = userManager;
         }
-
+        /// <summary>
+        /// Create new role
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("add")]
         public async Task<IActionResult> CreateRole(CreateRole model)
         {
@@ -48,14 +52,21 @@ namespace MobileShopAPI.Controllers
             return BadRequest();
 
         }
+        /// <summary>
+        /// Get list off all roles
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-
         public IActionResult ListRole()
         {
             var roles = roleManager.Roles;
             return Ok(roles);
         }
-
+        /// <summary>
+        /// Get role by Id with a list of all user of that role
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("getById")]
         public async Task<IActionResult> GetRoleById(string id)
         {
@@ -80,7 +91,11 @@ namespace MobileShopAPI.Controllers
             }
             return Ok(model);
         }
-
+        /// <summary>
+        /// Update role name
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("edit")]
         public async Task<IActionResult> EditRole(EditRole model)
         {
