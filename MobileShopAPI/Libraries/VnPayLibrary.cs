@@ -1,10 +1,16 @@
-﻿using MobileShopAPI.Responses;
+﻿using Microsoft.AspNetCore.Identity;
+using MobileShopAPI.Data;
+using MobileShopAPI.Models;
+using MobileShopAPI.Responses;
+using MobileShopAPI.Services;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -13,6 +19,10 @@ public class VnPayLibrary
 {
     private readonly SortedList<string, string> _requestData = new SortedList<string, string>(new VnPayCompare());
     private readonly SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
+    private readonly ApplicationDbContext _context;
+    private readonly UserManager<ApplicationUser> _userManager;
+
+
 
     public PaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
     {
@@ -31,8 +41,8 @@ public class VnPayLibrary
         var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
         var vnpSecureHash =
             collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
-        var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
-
+        var package = vnPay.GetResponseData("vnp_OrderInfo");
+        var user = vnPay.GetResponseData("vnp_OrderType");
         var checkSignature =
             vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
 
@@ -41,16 +51,19 @@ public class VnPayLibrary
             {
                 Success = false
             };
-
+        
         return new PaymentResponseModel()
         {
             Success = true,
+            UserId = user,
+            packageId = package,
             PaymentMethod = "VnPay",
             OrderId = orderId.ToString(),
             TransactionId = vnPayTranId.ToString(),
             Token = vnpSecureHash,
             VnPayResponseCode = vnpResponseCode
         };
+
     }
     public string GetIpAddress(HttpContext context)
     {
@@ -58,7 +71,7 @@ public class VnPayLibrary
         try
         {
             var remoteIpAddress = context.Connection.RemoteIpAddress;
-        
+
             if (remoteIpAddress != null)
             {
                 if (remoteIpAddress.AddressFamily == AddressFamily.InterNetworkV6)
@@ -66,9 +79,9 @@ public class VnPayLibrary
                     remoteIpAddress = Dns.GetHostEntry(remoteIpAddress).AddressList
                         .FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
                 }
-        
+
                 if (remoteIpAddress != null) ipAddress = remoteIpAddress.ToString();
-        
+
                 return ipAddress;
             }
         }

@@ -11,6 +11,7 @@ namespace MobileShopAPI.ViewModel
         public string? AvatarUrl { get; set; }
         public string? Description { get; set; }
 
+        public long UserBalance { get; set; }
         public string? PhoneNumber { get; set;}
     }
 }

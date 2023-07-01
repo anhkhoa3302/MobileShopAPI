@@ -151,6 +151,7 @@ namespace MobileShopAPI.Services
             user.Description = model.Description;
             user.PhoneNumber = model.PhoneNumber;
             user.UpdatedDate = DateTime.Now;
+            user.UserBalance = model.UserBalance;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return new UserViewModel
