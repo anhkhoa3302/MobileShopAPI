@@ -124,7 +124,7 @@ namespace MobileShopAPI.Services
                 Status = model.Status,
                 CategoryId = model.CategoryId,
                 BrandId = model.BrandId,
-                UserId = model.UserId,
+                UserId = userId,
                 SizeId = model.SizeId,
                 ColorId = model.ColorId
             };
