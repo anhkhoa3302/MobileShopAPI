@@ -115,8 +115,8 @@ namespace MobileShopAPI.Services
             if (user == null) { return null; }
             var productList = await _context.Products.AsNoTracking().Where(p=>
                 p.UserId == userId && 
-                p.isHidden == false && 
-                (p.Status ==1 || p.Status == 2))
+                p.isHidden == false &&
+                (p.Status == 0 || p.Status == 1))
                 .ToListAsync();
 
 

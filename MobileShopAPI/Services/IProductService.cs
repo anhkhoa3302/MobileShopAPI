@@ -121,7 +121,6 @@ namespace MobileShopAPI.Services
                 Description = model.Description,
                 Stock = model.Stock,
                 Price = model.Price,
-                Status = model.Status,
                 CategoryId = model.CategoryId,
                 BrandId = model.BrandId,
                 UserId = userId,
