@@ -6,6 +6,7 @@ using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Security.Claims;
 
 namespace MobileShopAPI.Controllers
 {
@@ -30,6 +31,12 @@ namespace MobileShopAPI.Controllers
         [HttpPost]
         public async Task<IActionResult>CreatePaymentUrl([FromBody]PaymentInformationModel model) 
         {
+            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (user == null) return BadRequest();
+
+            var userId = user.Value;
+            model.userId = userId;
+
             var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
             return Redirect(url);
         }
