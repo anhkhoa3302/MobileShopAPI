@@ -146,6 +146,7 @@ namespace MobileShopAPI.Services
                         image.IsCover = false;
                     }
                     image.Url = item.Url;
+                    image.IsVideo = item.IsVideo;
                     await _imageService.AddAsync(product.Id, image);
                 }
 
@@ -288,6 +289,7 @@ namespace MobileShopAPI.Services
                 .Include(p => p.Category)
                 .Include(p => p.Color)
                 .Include(p => p.Size)
+                .Include(p=>p.UserRatings)
                 .SingleOrDefaultAsync();
             if (product == null) return null;
 
@@ -328,6 +330,7 @@ namespace MobileShopAPI.Services
                 .Include(p=>p.Category)
                 .Include(p => p.Color)
                 .Include(p => p.Size)
+                .Include(p => p.UserRatings)
                 .SingleOrDefaultAsync();
             if (product == null) return null;
 

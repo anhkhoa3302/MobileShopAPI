@@ -30,13 +30,33 @@ namespace MobileShopAPI.Controllers
         [HttpGet("getAll")]
         [ProducesResponseType(typeof(List<Product>), 200)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> GetAll() 
+        public async Task<IActionResult> GetAll(int page, int size)
         {
             var productList = await _productService.GetAllNoneHiddenProductAsync();
-            
-            // Sort list
 
-            return Ok(_postAndPackageService.SortList(productList));
+            // Sort list
+            List<Product> sortedList = await _postAndPackageService.SortList(productList);
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+
+
+            int recsCount = sortedList.Count();
+
+            var pager = new Pager(recsCount, page, size);
+
+            var recSkip = (page - 1) * size;
+
+            var data = new
+            {
+                ProductList = sortedList.Skip(recSkip).Take(pager.PageSize).ToList(),
+                Pager = pager
+            };
+
+            return Ok(data);
         }
         /// <summary>
         /// Get all product
