@@ -1,9 +1,13 @@
-﻿namespace MobileShopAPI.ViewModel
+﻿using MobileShopAPI.Models;
+
+namespace MobileShopAPI.ViewModel
 {
     public class GetUserByBuyPackageViewModel
     {
-        public string User { get; set; }
+        public ApplicationUser User { get; set; }
 
         public int Purchases { get; set; }
+
+        public IEnumerable<InternalTransaction> internalTransactions { get; set; }
     }
 }
