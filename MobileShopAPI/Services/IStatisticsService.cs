@@ -4,26 +4,27 @@ using MobileShopAPI.Data;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.ViewModel;
+using System.Net.Security;
 
 namespace MobileShopAPI.Services
 {
     public interface IStatisticsService
     {
-        Task<List<GetPostsByCateViewModel>> GetPostsByCategoryInDay();
+        Task<List<Product>> GetPostsByCategoryInDay();
 
-        Task<List<GetPostsByCateViewModel>> GetPostsByCategoryInWeek();
+        Task<List<Product>> GetPostsByCategoryInWeek();
 
-        Task<List<GetPostsByCateViewModel>> GetPostsByCategoryInMonth();
+        Task<List<Product>> GetPostsByCategoryInMonth();
 
-        Task<List<GetPostsByCateViewModel>> GetPostsByCategoryInStages(PeriodViewModel model);
+        Task<List<Product>> GetPostsByCategoryInStages(PeriodViewModel model);
 
-        Task<List<GetPostsByUserViewModel>> GetPostsByUserInDay();
+        Task<List<Product>> GetPostsByUserInDay();
 
-        Task<List<GetPostsByUserViewModel>> GetPostsByUserInWeek();
+        Task<List<Product>> GetPostsByUserInWeek();
 
-        Task<List<GetPostsByUserViewModel>> GetPostsByUserInMonth();
+        Task<List<Product>> GetPostsByUserInMonth();
 
-        Task<List<GetPostsByUserViewModel>> GetPostsByUserInStages(PeriodViewModel model);
+        Task<List<Product>> GetPostsByUserInStages(PeriodViewModel model);
 
         Task<List<GetUserByPostedViewModel>> GetUserByPostInStages(PeriodViewModel model);
 
@@ -42,444 +43,60 @@ namespace MobileShopAPI.Services
             _context = context;
         }
 
-        public async Task<List<GetPostsByCateViewModel>> GetPostsByCategoryInDay()
+        public async Task<List<Product>> GetPostsByCategoryInDay()
         {
             var pro = await _context.Products.Include(o => o.Category).Where(p => p.CreatedDate >= DateTime.Today && p.CreatedDate < DateTime.Now.AddDays(1).Date).ToListAsync();
 
-            //return pro;
-
-            //int[] arr1 = new int[100];
-            int[] fr1 = new int[100];
-            int n, i, j, bien_dem;
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                fr1[i] = -1;
-            }
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                bien_dem = 1;
-                for (j = i + 1; j < pro.Count; j++)
-                {
-                    if (pro[i].CategoryId == pro[j].CategoryId)
-                    {
-                        bien_dem++;
-                        fr1[j] = 0;
-                    }
-                }
-
-                if (fr1[i] != 0)
-                {
-                    fr1[i] = bien_dem;
-                }
-            }
-
-            var cateViewList = new List<GetPostsByCateViewModel>();
-
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                if (fr1[i] != 0)
-                {
-
-                    var temp = new GetPostsByCateViewModel
-                    {
-                        Category = pro[i].Category.Name,
-                        Posted = fr1[i]
-                    };
-                    cateViewList.Add(temp);
-                }
-
-            }
-
-            // Begin Updated
-            cateViewList = cateViewList.OrderByDescending(p => p.Posted).ToList();
-            // End Updated
-
-            return cateViewList;
+            return pro;
         }
 
-        public async Task<List<GetPostsByCateViewModel>> GetPostsByCategoryInWeek()
+        public async Task<List<Product>> GetPostsByCategoryInWeek()
         {
             var pro = await _context.Products.Include(o => o.Category).Where(p => p.CreatedDate < DateTime.Now.AddDays(1).Date && p.CreatedDate >= DateTime.Now.AddDays(-7).Date).ToListAsync();
 
-            //return pro;
-
-            //int[] arr1 = new int[100];
-            int[] fr1 = new int[100];
-            int n, i, j, bien_dem;
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                fr1[i] = -1;
-            }
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                bien_dem = 1;
-                for (j = i + 1; j < pro.Count; j++)
-                {
-                    if (pro[i].CategoryId == pro[j].CategoryId)
-                    {
-                        bien_dem++;
-                        fr1[j] = 0;
-                    }
-                }
-
-                if (fr1[i] != 0)
-                {
-                    fr1[i] = bien_dem;
-                }
-            }
-
-            var cateViewList = new List<GetPostsByCateViewModel>();
-
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                if (fr1[i] != 0)
-                {
-
-                    var temp = new GetPostsByCateViewModel
-                    {
-                        Category = pro[i].Category.Name,
-                        Posted = fr1[i]
-                    };
-                    cateViewList.Add(temp);
-                }
-
-            }
-
-            // Begin Updated
-            cateViewList = cateViewList.OrderByDescending(p => p.Posted).ToList();
-            // End Updated
-
-            return cateViewList;
+            return pro;
         }
 
-        public async Task<List<GetPostsByCateViewModel>> GetPostsByCategoryInMonth()
+        public async Task<List<Product>> GetPostsByCategoryInMonth()
         {
             var pro = await _context.Products.Include(o => o.Category).Where(p => p.CreatedDate < DateTime.Now.AddDays(1).Date && p.CreatedDate >= DateTime.Now.AddDays(-30).Date).ToListAsync();
 
-            //return pro;
-
-            //int[] arr1 = new int[100];
-            int[] fr1 = new int[100];
-            int n, i, j, bien_dem;
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                fr1[i] = -1;
-            }
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                bien_dem = 1;
-                for (j = i + 1; j < pro.Count; j++)
-                {
-                    if (pro[i].CategoryId == pro[j].CategoryId)
-                    {
-                        bien_dem++;
-                        fr1[j] = 0;
-                    }
-                }
-
-                if (fr1[i] != 0)
-                {
-                    fr1[i] = bien_dem;
-                }
-            }
-
-            var cateViewList = new List<GetPostsByCateViewModel>();
-
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                if (fr1[i] != 0)
-                {
-
-                    var temp = new GetPostsByCateViewModel
-                    {
-                        Category = pro[i].Category.Name,
-                        Posted = fr1[i]
-                    };
-                    cateViewList.Add(temp);
-                }
-
-            }
-
-            // Begin Updated
-            cateViewList = cateViewList.OrderByDescending(p => p.Posted).ToList();
-            // End Updated
-
-            return cateViewList;
+            return pro;
         }
 
-        public async Task<List<GetPostsByCateViewModel>> GetPostsByCategoryInStages(PeriodViewModel model)
+        public async Task<List<Product>> GetPostsByCategoryInStages(PeriodViewModel model)
         {
             var pro = await _context.Products.Include( o => o.Category).Where(p => p.CreatedDate >= model.starDate && p.CreatedDate <= model.endDate).ToListAsync();
 
-            //return pro;
-
-            //int[] arr1 = new int[100];
-            int[] fr1 = new int[100];
-            int n, i, j, bien_dem;
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                fr1[i] = -1;
-            }
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                bien_dem = 1;
-                for (j = i + 1; j < pro.Count; j++)
-                {
-                    if (pro[i].CategoryId == pro[j].CategoryId)
-                    {
-                        bien_dem++;
-                        fr1[j] = 0;
-                    }
-                }
-
-                if (fr1[i] != 0)
-                {
-                    fr1[i] = bien_dem;
-                }
-            }
-
-            var cateViewList = new List<GetPostsByCateViewModel>();
-
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                if (fr1[i] != 0)
-                {
-
-                    var temp = new GetPostsByCateViewModel
-                    {
-                        Category = pro[i].Category.Name,
-                        Posted = fr1[i]
-                    };
-                    cateViewList.Add(temp);
-                }
-
-            }
-
-            // Begin Updated
-            cateViewList = cateViewList.OrderByDescending(p => p.Posted).ToList();
-            // End Updated
-
-            return cateViewList;
+            return pro;
         }
 
-        public async Task<List<GetPostsByUserViewModel>> GetPostsByUserInDay()
+        public async Task<List<Product>> GetPostsByUserInDay()
         {
             var pro = await _context.Products.Include(u => u.User).Where(p => p.CreatedDate >= DateTime.Today && p.CreatedDate < DateTime.Now.AddDays(1).Date).ToListAsync();
 
-            //int[] arr1 = new int[100];
-            int[] fr1 = new int[100];
-            int n, i, j, bien_dem;
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                fr1[i] = -1;
-            }
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                bien_dem = 1;
-                for (j = i + 1; j < pro.Count; j++)
-                {
-                    if (pro[i].UserId == pro[j].UserId)
-                    {
-                        bien_dem++;
-                        fr1[j] = 0;
-                    }
-                }
-
-                if (fr1[i] != 0)
-                {
-                    fr1[i] = bien_dem;
-                }
-            }
-
-            var userViewList = new List<GetPostsByUserViewModel>();
-
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                if (fr1[i] != 0)
-                {
-
-                    var temp = new GetPostsByUserViewModel
-                    {
-                        User = pro[i].User.NormalizedUserName,
-                        Posted = fr1[i]
-                    };
-                    userViewList.Add(temp);
-                }
-
-            }
-
-            return userViewList;
+            return pro;
         }
 
-        public async Task<List<GetPostsByUserViewModel>> GetPostsByUserInWeek()
+        public async Task<List<Product>> GetPostsByUserInWeek()
         {
             var pro = await _context.Products.Include(u => u.User).Where(p => p.CreatedDate < DateTime.Now.AddDays(1).Date && p.CreatedDate >= DateTime.Now.AddDays(-7).Date).ToListAsync();
 
-            //int[] arr1 = new int[100];
-            int[] fr1 = new int[100];
-            int n, i, j, bien_dem;
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                fr1[i] = -1;
-            }
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                bien_dem = 1;
-                for (j = i + 1; j < pro.Count; j++)
-                {
-                    if (pro[i].UserId == pro[j].UserId)
-                    {
-                        bien_dem++;
-                        fr1[j] = 0;
-                    }
-                }
-
-                if (fr1[i] != 0)
-                {
-                    fr1[i] = bien_dem;
-                }
-            }
-
-            var userViewList = new List<GetPostsByUserViewModel>();
-
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                if (fr1[i] != 0)
-                {
-
-                    var temp = new GetPostsByUserViewModel
-                    {
-                        User = pro[i].User.NormalizedUserName,
-                        Posted = fr1[i]
-                    };
-                    userViewList.Add(temp);
-                }
-
-            }
-
-            return userViewList;
+            return pro;
         }
 
-        public async Task<List<GetPostsByUserViewModel>> GetPostsByUserInMonth()
+        public async Task<List<Product>> GetPostsByUserInMonth()
         {
             var pro = await _context.Products.Include(u => u.User).Where(p => p.CreatedDate < DateTime.Now.AddDays(1).Date && p.CreatedDate >= DateTime.Now.AddDays(-30).Date).ToListAsync();
 
-            //int[] arr1 = new int[100];
-            int[] fr1 = new int[100];
-            int n, i, j, bien_dem;
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                fr1[i] = -1;
-            }
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                bien_dem = 1;
-                for (j = i + 1; j < pro.Count; j++)
-                {
-                    if (pro[i].UserId == pro[j].UserId)
-                    {
-                        bien_dem++;
-                        fr1[j] = 0;
-                    }
-                }
-
-                if (fr1[i] != 0)
-                {
-                    fr1[i] = bien_dem;
-                }
-            }
-
-            var userViewList = new List<GetPostsByUserViewModel>();
-
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                if (fr1[i] != 0)
-                {
-
-                    var temp = new GetPostsByUserViewModel
-                    {
-                        User = pro[i].User.NormalizedUserName,
-                        Posted = fr1[i]
-                    };
-                    userViewList.Add(temp);
-                }
-
-            }
-
-            return userViewList;
+            return pro;
         }
 
-        public async Task<List<GetPostsByUserViewModel>> GetPostsByUserInStages(PeriodViewModel model)
+        public async Task<List<Product>> GetPostsByUserInStages(PeriodViewModel model)
         {
             var pro = await _context.Products.Include(u => u.User).Where(p => p.CreatedDate >= model.starDate && p.CreatedDate <= model.endDate).ToListAsync();
 
-            //int[] arr1 = new int[100];
-            int[] fr1 = new int[100];
-            int n, i, j, bien_dem;
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                fr1[i] = -1;
-            }
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                bien_dem = 1;
-                for (j = i + 1; j < pro.Count; j++)
-                {
-                    if (pro[i].UserId == pro[j].UserId)
-                    {
-                        bien_dem++;
-                        fr1[j] = 0;
-                    }
-                }
-
-                if (fr1[i] != 0)
-                {
-                    fr1[i] = bien_dem;
-                }
-            }
-
-            var userViewList = new List<GetPostsByUserViewModel>();
-
-
-            for (i = 0; i < pro.Count; i++)
-            {
-                if (fr1[i] != 0)
-                {
-
-                    var temp = new GetPostsByUserViewModel
-                    {
-                        User = pro[i].User.NormalizedUserName,
-                        Posted = fr1[i]
-                    };
-                    userViewList.Add(temp);
-                }
-
-            }
-
-            return userViewList;
+            return pro;
         }
 
         public async Task<List<GetUserByPostedViewModel>> GetUserByPostInStages(PeriodViewModel model)
@@ -523,9 +140,11 @@ namespace MobileShopAPI.Services
 
                     var temp = new GetUserByPostedViewModel
                     {
-                        User = pro[i].User.NormalizedUserName,
-                        Posted = fr1[i]
-                    };
+                        User = pro[i].User,
+                        Posted = fr1[i],
+                        Products = await _context.Products.Where(p => p.UserId == pro[i].UserId && p.CreatedDate >= model.starDate && p.CreatedDate <= model.endDate).ToListAsync()
+
+                };
                     userViewList.Add(temp);
                 }
 
@@ -578,9 +197,10 @@ namespace MobileShopAPI.Services
 
                     var temp = new GetUserByBuyPackageViewModel
                     {
-                        User = pro[i].User.NormalizedUserName,
-                        Purchases = fr1[i]
-                    };
+                        User = pro[i].User,
+                        Purchases = fr1[i],
+                        internalTransactions = await _context.InternalTransactions.Where(p => p.UserId == pro[i].UserId && p.ItInfo == "Mua gói tin" && p.CreatedDate >= model.starDate && p.CreatedDate <= model.endDate).OrderByDescending(o => o.UserId).ToListAsync()
+                };
                     userViewList.Add(temp);
                 }
 
