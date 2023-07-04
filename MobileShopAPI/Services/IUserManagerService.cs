@@ -85,8 +85,9 @@ namespace MobileShopAPI.Services
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) { return null; }
-            var productList = await _context.Products.AsNoTracking().Where(p =>
-                p.UserId == userId)
+            var productList = await _context.Products.AsNoTracking()
+                .Include(p=>p.Images)
+                .Where(p =>p.UserId == userId)
                 .ToListAsync();
 
 
@@ -113,7 +114,7 @@ namespace MobileShopAPI.Services
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null) { return null; }
-            var productList = await _context.Products.AsNoTracking().Where(p=>
+            var productList = await _context.Products.AsNoTracking().Include(p => p.Images).Where(p=>
                 p.UserId == userId && 
                 p.isHidden == false &&
                 (p.Status == 0 || p.Status == 1))

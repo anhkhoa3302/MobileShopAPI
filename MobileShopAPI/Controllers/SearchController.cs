@@ -63,7 +63,7 @@ namespace MobileShopAPI.Controllers
         /// <response code ="200">Search result</response>
         /// <response code ="400">Not found</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpGet]
+        [HttpPost]
         [ProducesResponseType(typeof(List<Product>), 200)]
         [ProducesResponseType(typeof(List<Product>), 400)]
         [ProducesResponseType(500)]
