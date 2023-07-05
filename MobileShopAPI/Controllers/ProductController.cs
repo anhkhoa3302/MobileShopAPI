@@ -42,8 +42,6 @@ namespace MobileShopAPI.Controllers
                 page = 1;
             }
 
-
-
             int recsCount = sortedList.Count();
 
             var pager = new Pager(recsCount, page, size);
