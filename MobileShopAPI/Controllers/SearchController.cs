@@ -20,6 +20,8 @@ namespace MobileShopAPI.Controllers
         /// <summary>
         /// Search product
         /// </summary>
+        /// <param name="size"></param>
+        /// <param name="page"></param>
         /// <param name="model"></param>
         /// <remarks>
         /// Search all:
@@ -63,40 +65,56 @@ namespace MobileShopAPI.Controllers
         /// <response code ="200">Search result</response>
         /// <response code ="400">Not found</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpGet]
+        [HttpPost]
         [ProducesResponseType(typeof(List<Product>), 200)]
         [ProducesResponseType(typeof(List<Product>), 400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> Get(SearchViewModel model)
+        public async Task<IActionResult> Get(int page, int size,SearchViewModel model)
         {
+            List<Product> result = new List<Product>();
             if (model.CategoryId != 0 && model.BrandId != 0)
             {
-                var result = await _searchService.SearchProductByBrandAndCategory(model);
-                if(result!=null)
-                    return Ok(result);
-                return BadRequest("Not found");
+                result = await _searchService.SearchProductByBrandAndCategory(model);
+                if (result == null)
+                    return BadRequest("Not found");
             }
             else if (model.CategoryId == 0 && model.BrandId != 0)
             {
-                var result = await _searchService.SearchProductByBrand(model);
-                if (result != null)
-                    return Ok(result);
-                return BadRequest("Not found");
+                result = await _searchService.SearchProductByBrand(model);
+                if (result == null)
+                    return BadRequest("Not found");
             }
             else if (model.CategoryId != 0 && model.BrandId == 0)
             {
-                var result = await _searchService.SearchProductByCategory(model);
-                if (result != null)
-                    return Ok(result);
-                return BadRequest("Not found");
+                result = await _searchService.SearchProductByCategory(model);
+                if (result == null)
+                    return BadRequest("Not found");
             }
             else
             {
-                var result = await _searchService.SearchAllProduct(model);
-                if (result != null)
-                    return Ok(result);
-                return BadRequest("Not found");
+                result = await _searchService.SearchAllProduct(model);
+                if (result == null)
+                    return BadRequest("Not found");
             }
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            int recsCount = result.Count();
+
+            var pager = new Pager(recsCount, page, size);
+
+            var recSkip = (page - 1) * size;
+
+            var data = new
+            {
+                ProductList = result.Skip(recSkip).Take(pager.PageSize).ToList(),
+                Pager = pager
+            };
+
+            return Ok(data);
         }
     }
 }

@@ -71,6 +71,70 @@ namespace MobileShopAPI.Controllers
         }
 
         /// <summary>
+        /// Show all reported information of users by userid
+        /// </summary>
+        /// <param name="reportedUserId"></param>
+        /// <remarks>Get Id of reported user"</remarks>
+        /// <response code ="200">reported infos of user</response>
+        /// <response code ="400">Reported infos of user not found</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
+        [HttpGet("GetAllReportedInfoOfUser/{reportedUserId}")]
+        [ProducesResponseType(typeof(Report), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetAllReportedInfoOfUser(string reportedUserId)
+        {
+            try
+            {
+                var data = await _reportService.GetAllReportedInfoOfUserAsync(reportedUserId);
+                if (data != null)
+                {
+                    return Ok(data);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// Show all reported information of product by productid
+        /// </summary>
+        /// <param name="reportedProductId"></param>
+        /// <remarks>Get Id of product"</remarks>
+        /// <response code ="200">reported infos of product</response>
+        /// <response code ="400">Reported infos of product not found</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
+        [HttpGet("GetAllReportedInfoOfProduct/{reportedProductId}")]
+        [ProducesResponseType(typeof(Report), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> GetAllReportedInfoOfProduct(long reportedProductId)
+        {
+            try
+            {
+                var data = await _reportService.GetAllReportedInfoOfProductAsync(reportedProductId);
+                if (data != null)
+                {
+                    return Ok(data);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        /// <summary>
         /// Get report detail
         /// </summary>
         /// <param name="id"></param>

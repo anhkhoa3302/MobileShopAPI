@@ -8,6 +8,7 @@ using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Security.Claims;
 
 namespace MobileShopAPI.Controllers
 {
@@ -52,7 +53,6 @@ namespace MobileShopAPI.Controllers
                 return Json(url);
             }
             return BadRequest();
-            
         }
         [HttpGet("callback")]
         public async Task<IActionResult>PaymentCallback()
