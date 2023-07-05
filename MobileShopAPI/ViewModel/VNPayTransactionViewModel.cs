@@ -22,8 +22,7 @@ namespace MobileShopAPI.ViewModel
         public string? VnpSecureHash { get; set; }
         public string? PackageId { get; set; }
 
-        public virtual Order? Order { get; set; }
-        public virtual CoinPackage? Package { get; set; }
-        public virtual ApplicationUser User { get; set; } = null!;
+        public bool Success { get; set; }
+       
     }
 }

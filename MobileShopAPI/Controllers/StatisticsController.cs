@@ -201,6 +201,12 @@ namespace MobileShopAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        /// <summary>
+        /// The number of new users by month of the year
+        /// </summary>
+        /// <response code ="200">New users by month of the year</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("monthly-registers")]
         public async Task<IActionResult> GetMonthlyNewRegisters(int year)
         {
@@ -215,6 +221,12 @@ namespace MobileShopAPI.Controllers
 
             return Ok(data);
         }
+
+        /// <summary>
+        /// The number of new users during the period
+        /// </summary>
+        /// <response code ="200">The number of new users during the period</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("FromTo-registers")]
         public async Task<IActionResult> GetNewRegisters(string fromDate, string toDate)
         {
@@ -244,9 +256,15 @@ namespace MobileShopAPI.Controllers
             return Ok(result);
         }
 
-
         // product
 
+
+
+        /// <summary>
+        /// The number of new products by month of the year
+        /// </summary>
+        /// <response code ="200">New products by month of the year</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("monthly-product")]
         public async Task<IActionResult> GetMonthlyNewProducts(int year)
         {
@@ -261,6 +279,12 @@ namespace MobileShopAPI.Controllers
 
             return Ok(data);
         }
+
+        /// <summary>
+        /// The number of new products during the period
+        /// </summary>
+        /// <response code ="200">The number of new products during the period</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("FromTo-Products")]
         public async Task<IActionResult> GetNewProducts(string fromDate, string toDate)
         {
@@ -293,6 +317,13 @@ namespace MobileShopAPI.Controllers
 
         //report
 
+
+
+        /// <summary>
+        /// The number of new reports by month of the year
+        /// </summary>
+        /// <response code ="200">New reports by month of the year</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("monthly-reports")]
         public async Task<IActionResult> GetMonthlyNewReports(int year)
         {
@@ -307,6 +338,13 @@ namespace MobileShopAPI.Controllers
 
             return Ok(data);
         }
+
+
+        /// <summary>
+        /// The number of new reports during the period
+        /// </summary>
+        /// <response code ="200">The number of new reports during the period</response>
+        /// <response code ="500">>Oops! Something went wrong</response>
         [HttpGet("FromTo-reports")]
         public async Task<IActionResult> GetNewReports(string fromDate, string toDate)
         {

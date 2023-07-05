@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobileShopAPI.Data;
+using MobileShopAPI.Helpers;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.ViewModel;
@@ -40,20 +41,12 @@ namespace MobileShopAPI.Services
         }
         public async Task<OrderResponse> CreateOrderAsync(OrderViewModel model)
         {
-            var dbOrder = await _context.Orders.FindAsync(model.Id);
-            if(dbOrder != null)
-            {
-                return new OrderResponse
-                {
-                    Message = " ID Order has been used",
-                    isSuccess = false
-                };
-            }
+            
             var order = new Order
             {
-                Id = model.Id,
+                Id = StringIdGenerator.GenerateUniqueId(),
                 Total = model.Total,
-                Status = model.Status,
+                
                 UserId = model.UserId,
                 Address = model.Address,
                 PhoneNumber = model.PhoneNumber,
