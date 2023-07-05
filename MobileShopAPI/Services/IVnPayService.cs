@@ -10,9 +10,9 @@ namespace MobileShopAPI.Services
     public interface IVnPayService
     {
         string CreatePaymentUrl(PaymentInformationModel model, HttpContext context);
-        PaymentResponseModel PaymentExecute(IQueryCollection collections);
+        VNPayTransactionViewModel PaymentExecute(IQueryCollection collections);
 
-        CoinPurseViewModel CoinPurse(string packageid);
+        //CoinPurseViewModel CoinPurse(string packageid);
 
     }
 
@@ -31,7 +31,6 @@ namespace MobileShopAPI.Services
         {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
-            var tick = DateTime.Now.Ticks.ToString();
             var pay = new VnPayLibrary();
             var urlCallBack = _configuration["PaymentCallBack:ReturnUrl"];
             
@@ -45,9 +44,9 @@ namespace MobileShopAPI.Services
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
             pay.AddRequestData("vnp_OrderInfo", $"{model.packageId}");
-            //pay.AddRequestData("vnp_OrderType", model.);
+            pay.AddRequestData("vnp_OrderType", model.OrderType);
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
-            pay.AddRequestData("vnp_TxnRef", tick);
+            pay.AddRequestData("vnp_TxnRef", model.OrderId);
             
 
             var paymentUrl =
@@ -57,29 +56,27 @@ namespace MobileShopAPI.Services
             return paymentUrl;
         }
 
-        public PaymentResponseModel PaymentExecute(IQueryCollection collections)
+        public VNPayTransactionViewModel PaymentExecute(IQueryCollection collections)
         {
             var pay = new VnPayLibrary();
             var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
             return response;
         }
 
-        //public async Task<ProductResponse>
-
-        public CoinPurseViewModel CoinPurse (string packageid)
-        {
-            var packageId = _context.CoinPackages.FirstOrDefault(x=>x.Id == packageid);
-            if (packageId == null)
-            {
-                return null;
-            }
-            var coinPurse = new CoinPurseViewModel()
-            {
-                packageValue = packageId.PackageValue
-            };
+        //public CoinPurseViewModel CoinPurse (string packageid)
+        //{
+        //    var packageId = _context.CoinPackages.FirstOrDefault(x=>x.Id == packageid);
+        //    if (packageId == null)
+        //    {
+        //        return null;
+        //    }
+        //    var coinPurse = new CoinPurseViewModel()
+        //    {
+        //        packageValue = packageId.PackageValue
+        //    };
             
-            return coinPurse;
-        }
+        //    return coinPurse;
+        //}
         
     }
 }

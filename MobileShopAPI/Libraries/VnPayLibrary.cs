@@ -3,7 +3,7 @@ using MobileShopAPI.Data;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
-
+using MobileShopAPI.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -24,7 +24,7 @@ public class VnPayLibrary
 
 
 
-    public PaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
+    public VNPayTransactionViewModel GetFullResponseData(IQueryCollection collection, string hashSecret)
     {
         var vnPay = new VnPayLibrary();
 
@@ -36,32 +36,44 @@ public class VnPayLibrary
             }
         }
 
-        var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
         var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
-        var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
+        var amount = Convert.ToInt64(vnPay.GetResponseData("vnp_Amount")) / 100;
+        var version = vnPay.GetResponseData("vnp_Version");
+        var command = vnPay.GetResponseData("vnp_Command");
+        var tmnCode = vnPay.GetResponseData("vnp_TmnCode");
+        var currentCode = vnPay.GetResponseData("vnp_CurrCode");
+        var IpAdd = vnPay.GetResponseData("vnp_IpAddr");
+        var locale = vnPay.GetResponseData("vnp_Locale");
+        var orderId = vnPay.GetResponseData("vnp_TxnRef");
         var vnpSecureHash =
             collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
         var package = vnPay.GetResponseData("vnp_OrderInfo");
-        var user = vnPay.GetResponseData("vnp_OrderType");
+        
         var checkSignature =
             vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
 
         if (!checkSignature)
-            return new PaymentResponseModel()
+            return new VNPayTransactionViewModel()
             {
                 Success = false
             };
         
-        return new PaymentResponseModel()
+        return new VNPayTransactionViewModel
         {
             Success = true,
-            UserId = user,
-            packageId = package,
-            PaymentMethod = "VnPay",
-            OrderId = orderId.ToString(),
-            TransactionId = vnPayTranId.ToString(),
-            Token = vnpSecureHash,
-            VnPayResponseCode = vnpResponseCode
+            PackageId = package,
+            Id = vnPayTranId.ToString(),
+            VnpSecureHash = vnpSecureHash,
+            VnpAmount = amount,
+            VnpBankCode ="VnPay",
+            VnpCommand = command,
+            VnpCurrCode = currentCode,
+            VnpIpAddr = IpAdd,
+            VnpLocale = locale,
+            VnpTmnCode = tmnCode,
+            OrderId = orderId,
+            VnpVersion = version
+
         };
 
     }

@@ -4,11 +4,10 @@ namespace MobileShopAPI.ViewModel
 {
     public class OrderViewModel
     {
-        [Required]
-        public string Id { get; set; } = null!;
+       
         [Required]
         public long Total { get; set; }
-        public int? Status { get; set; }
+        
         [Required]
         public string UserId { get; set; } = null!;
         [Required]
