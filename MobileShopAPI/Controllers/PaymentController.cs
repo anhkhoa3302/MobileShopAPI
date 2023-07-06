@@ -8,7 +8,6 @@ using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
-using System.Security.Claims;
 
 namespace MobileShopAPI.Controllers
 {
@@ -46,7 +45,10 @@ namespace MobileShopAPI.Controllers
                 return NotFound($"Unable to load user with ID '{_user.GetUserId(User)}'.");
             }
             var order = await _context.Orders.Where(a => a.Id == model.OrderId ).SingleOrDefaultAsync();
-            if (order != null)
+
+            var package = await _context.CoinPackages.Where(a => a.Id == model.packageId ).SingleOrDefaultAsync();
+
+            if (order != null || package != null)
             {
                 var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
                 
@@ -84,31 +86,43 @@ namespace MobileShopAPI.Controllers
                 VnpTmnCode  = response.VnpTmnCode,
                 VnpVersion  = response.VnpVersion
             };
-            if (transaction != null)
+            if (transaction != null && transaction.OrderId != null)
             {
                 Order order = await _context.Orders.FindAsync(transaction.OrderId);
                 order.Status = 1;
                 order.UpdateDate = DateTime.Now;
                 _context.Orders.Update(order);
                 await _context.SaveChangesAsync();
-                String message = "<p>Xin chào " +
+                String message = "<p>Xin chào " + order.UserFullName + ",</p>" +
                             "<p><b>Chi tiết đơn hàng</b> :</p>" +
                             "<p><b>Địa chỉ giao</b> : " + order.Address + "</p>" +
                             "<p><b>Ngày thanh toán</b> : " + order.CreatedDate + "</p>" +
-                            "<p><b>Mã giao dịch</b> : " + transaction.Id + "</p>";
+                            "<p><b>Mã giao dịch</b> : " + transaction.Id + "</p>" +
+                            "<p><b>Tổng giá trị </b> : " + order.Total + "</p>";
                 EmailService.Message mssg = new EmailService.Message(new string[] { user.Email }, "Chi tiết đơn hàng", message);
                 _emailSender.SendEmailAsync(mssg);
 
             }
+            if(transaction != null && transaction.PackageId != null)
+            {
+
+                CoinPackage package = await _context.CoinPackages.FindAsync(transaction.PackageId);
+                user.UserBalance = package.PackageValue;
+                user.UpdatedDate = DateTime.Now;
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+                String message = "<p>Xin chào " + user.FirstName + ",</p>" +
+                            "<p><b>Chi tiết đơn hàng</b> :</p>" +
+                            "<p><b>Tên gói nạp</b> : " + package.PackageName + "</p>" +
+                            "<p><b>Ngày nạp</b> : " + user.CreatedDate + "</p>" +
+                            "<p><b>Mã giao dịch</b> : " + transaction.Id + "</p>" +
+                            "<p><b>Giá trị </b> : " + package.PackageValue + "</p>";
+                EmailService.Message mssg = new EmailService.Message(new string[] { user.Email }, "Chi tiết đơn hàng", message);
+                _emailSender.SendEmailAsync(mssg);
+            }
             
             _context.Transactions.Add(transaction);
             _context.SaveChanges();
-
-            CoinPackage package = await _context.CoinPackages.FindAsync(transaction.PackageId);
-            user.UserBalance = package.PackageValue;
-            user.UpdatedDate = DateTime.Now;
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
 
             return Json(true);
 

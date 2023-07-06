@@ -12,7 +12,7 @@ namespace MobileShopAPI.Services
         string CreatePaymentUrl(PaymentInformationModel model, HttpContext context);
         VNPayTransactionViewModel PaymentExecute(IQueryCollection collections);
 
-        //CoinPurseViewModel CoinPurse(string packageid);
+        
 
     }
 
@@ -33,12 +33,27 @@ namespace MobileShopAPI.Services
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var pay = new VnPayLibrary();
             var urlCallBack = _configuration["PaymentCallBack:ReturnUrl"];
+
+            var ordervalue = _context.Orders.FirstOrDefault(o => o.Id == model.OrderId);
+            var packagevalue = _context.CoinPackages.FirstOrDefault(o => o.Id == model.packageId);
+
+            long amount = 0;
             
+            if(ordervalue != null )
+            {
+                 amount = ordervalue.Total;
+                
+            }
+            if(packagevalue != null)
+            {
+                 amount = packagevalue.PackageValue;
+                
+            }
 
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
             pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
-            pay.AddRequestData("vnp_Amount", ((int)model.Amount * 100).ToString());
+            pay.AddRequestData("vnp_Amount", ((int) amount * 100).ToString());
             pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
@@ -63,20 +78,7 @@ namespace MobileShopAPI.Services
             return response;
         }
 
-        //public CoinPurseViewModel CoinPurse (string packageid)
-        //{
-        //    var packageId = _context.CoinPackages.FirstOrDefault(x=>x.Id == packageid);
-        //    if (packageId == null)
-        //    {
-        //        return null;
-        //    }
-        //    var coinPurse = new CoinPurseViewModel()
-        //    {
-        //        packageValue = packageId.PackageValue
-        //    };
-            
-        //    return coinPurse;
-        //}
+       
         
     }
 }
