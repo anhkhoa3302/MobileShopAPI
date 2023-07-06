@@ -41,7 +41,7 @@ namespace MobileShopAPI.Controllers
         public async Task<IActionResult>CreatePaymentUrl([FromBody]PaymentInformationModel model) 
         {
             var user = await _user.GetUserAsync(User);
-            if (user != null)
+            if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_user.GetUserId(User)}'.");
             }
@@ -63,7 +63,7 @@ namespace MobileShopAPI.Controllers
         {
             var user = await _user.GetUserAsync(User);
 
-            if (user != null)
+            if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_user.GetUserId(User)}'.");
             }
@@ -73,7 +73,7 @@ namespace MobileShopAPI.Controllers
             
             VnpTransaction transaction = new()
             {
-                UserId = "3528fd62-70e6-4b87-a53d-0dad86b058cc",
+                UserId = user.Id,
                 Id = response.Id,
                 PackageId = response.PackageId,
                 OrderId = response.OrderId,
