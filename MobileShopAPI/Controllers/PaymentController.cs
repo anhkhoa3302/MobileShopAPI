@@ -8,7 +8,6 @@ using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
-using Org.BouncyCastle.Asn1.X509;
 
 namespace MobileShopAPI.Controllers
 {
@@ -56,7 +55,6 @@ namespace MobileShopAPI.Controllers
                 return Json(url);
             }
             return BadRequest();
-            
         }
         [HttpGet("callback")]
         public async Task<IActionResult>PaymentCallback()

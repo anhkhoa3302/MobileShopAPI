@@ -19,7 +19,11 @@ namespace MobileShopAPI.Controllers
             this.roleManager = roleManager;
             this.userManager = userManager;
         }
-
+        /// <summary>
+        /// Create new role
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("add")]
         public async Task<IActionResult> CreateRole(CreateRole model)
         {
@@ -48,14 +52,21 @@ namespace MobileShopAPI.Controllers
             return BadRequest();
 
         }
+        /// <summary>
+        /// Get list off all roles
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-
         public IActionResult ListRole()
         {
             var roles = roleManager.Roles;
             return Ok(roles);
         }
-
+        /// <summary>
+        /// Get role by Id with a list of all user of that role
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("getById")]
         public async Task<IActionResult> GetRoleById(string id)
         {
@@ -80,7 +91,11 @@ namespace MobileShopAPI.Controllers
             }
             return Ok(model);
         }
-
+        /// <summary>
+        /// Update role name
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("edit")]
         public async Task<IActionResult> EditRole(EditRole model)
         {
@@ -104,7 +119,11 @@ namespace MobileShopAPI.Controllers
             }
             return BadRequest(ModelState);
         }
-
+        /// <summary>
+        /// Get a list of user that can be added to the role
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
         [HttpGet("getUserByRole")]
         public async Task<IActionResult> EditUserRole(string roleId)
         {
@@ -139,7 +158,15 @@ namespace MobileShopAPI.Controllers
             return Ok(model);
         }
 
-
+        /// <summary>
+        /// Add user to role
+        /// </summary>
+        /// <remarks>
+        /// If isSelected = true, user will be added to the role
+        /// </remarks>
+        /// <param name="model"></param>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
         [HttpPost("EditUserRole")]
         public async Task<IActionResult> EditUserRole(List<UserRole> model, string roleId)
         {

@@ -25,7 +25,7 @@ namespace MobileShopAPI.Services
 
         public async Task<List<Product>> SearchAllProduct(SearchViewModel model)
         {
-            var productList = await _context.Products.AsNoTracking()
+            var productList = await _context.Products.AsNoTracking().Include(p => p.Images)
                 .Where(p=>p.isHidden == false && p.Name.Contains(model.KeyWord.Trim()) && (p.Status == 0 || p.Status == 1))
                 .ToListAsync();
             return productList;
@@ -33,7 +33,7 @@ namespace MobileShopAPI.Services
 
         public async Task<List<Product>> SearchProductByBrand(SearchViewModel model)
         {
-            var productList = await _context.Products.AsNoTracking().Include(p=>p.Brand)
+            var productList = await _context.Products.AsNoTracking().Include(p => p.Images).Include(p=>p.Brand)
                 .Where(p => 
                     p.isHidden == false && 
                     p.Name.Contains(model.KeyWord.Trim()) && 
@@ -45,7 +45,7 @@ namespace MobileShopAPI.Services
 
         public async Task<List<Product>> SearchProductByBrandAndCategory(SearchViewModel model)
         {
-            var productList = await _context.Products.AsNoTracking()
+            var productList = await _context.Products.AsNoTracking().Include(p => p.Images)
                 .Include(p => p.Category)
                 .Include(p=>p.Brand)
                 .Where(p =>
@@ -60,7 +60,7 @@ namespace MobileShopAPI.Services
 
         public async Task<List<Product>> SearchProductByCategory(SearchViewModel model)
         {
-            var productList = await _context.Products.AsNoTracking().Include(p => p.Category)
+            var productList = await _context.Products.AsNoTracking().Include(p => p.Images).Include(p => p.Category)
                 .Where(p =>
                     p.isHidden == false &&
                     p.Name.Contains(model.KeyWord.Trim()) &&

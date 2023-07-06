@@ -70,6 +70,7 @@ builder.Services.AddScoped<IActiveSubscriptionService, ActiveSubscriptionService
 builder.Services.AddScoped<IPostAndPackageService, PostAndPackageService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 
 //Email Service
 var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
