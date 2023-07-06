@@ -4,7 +4,7 @@
     {
         public string OrderId { get; set; }
         public string packageId { get; set; }
-        public double Amount { get; set; }
+        
         public string OrderType { get; set; }
     }
 }
