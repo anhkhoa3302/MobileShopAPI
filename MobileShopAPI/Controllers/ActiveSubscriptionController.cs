@@ -108,10 +108,10 @@ namespace MobileShopAPI.Controllers
         public async Task<IActionResult> GetByUserIdLogged()
         {
             var user = User.FindFirst(ClaimTypes.NameIdentifier);
-
+            string userId = user.Value;
             try
             {
-                var data = await _asService.GetByUserIdAsync(user.Value);
+                var data = await _asService.GetByUserIdAsync(userId);
                 if (data != null)
                 {
                     return Ok(data);

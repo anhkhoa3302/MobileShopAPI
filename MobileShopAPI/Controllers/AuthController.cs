@@ -52,31 +52,31 @@ namespace MobileShopAPI.Controllers
         }
 
 
-        /// <summary>
-        /// Register a user
-        /// </summary>
-        /// <param name="model"></param>
-        /// <remarks>Heyyyyyyyyy</remarks>
-        /// <response code ="200">Account created</response>
-        /// <response code ="400">Account has missing/invalid values</response>
-        /// <response code ="500">>Oops! Something went wrong</response>
-        // api/auth/register
-        [HttpPost("register_google")]
-        [ProducesResponseType(typeof(UserManagerResponse), 200)]
-        [ProducesResponseType(typeof(UserManagerResponse), 400)]
-        [ProducesResponseType(500)]
-        public async Task<IActionResult> RegisterGoogleAsync(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _userService.RegisterUserAsync(model);
-                if (result.isSuccess)
-                    return Ok(result); //Status code: 200
-                return BadRequest(result);//Status code: 400
-            }
+        ///// <summary>
+        ///// Register a user
+        ///// </summary>
+        ///// <param name="model"></param>
+        ///// <remarks>Heyyyyyyyyy</remarks>
+        ///// <response code ="200">Account created</response>
+        ///// <response code ="400">Account has missing/invalid values</response>
+        ///// <response code ="500">>Oops! Something went wrong</response>
+        //// api/auth/register
+        //[HttpPost("register_google")]
+        //[ProducesResponseType(typeof(UserManagerResponse), 200)]
+        //[ProducesResponseType(typeof(UserManagerResponse), 400)]
+        //[ProducesResponseType(500)]
+        //public async Task<IActionResult> RegisterGoogleAsync(RegisterViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var result = await _userService.RegisterUserAsync(model);
+        //        if (result.isSuccess)
+        //            return Ok(result); //Status code: 200
+        //        return BadRequest(result);//Status code: 400
+        //    }
 
-            return BadRequest("Some properies are not valid");//Status code: 400
-        }
+        //    return BadRequest("Some properies are not valid");//Status code: 400
+        //}
 
 
 

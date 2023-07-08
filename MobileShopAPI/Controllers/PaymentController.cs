@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobileShopAPI.Data;
+using MobileShopAPI.Helpers;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
@@ -72,7 +73,7 @@ namespace MobileShopAPI.Controllers
             VnpTransaction transaction = new()
             {
                 UserId = user.Id,
-                Id = response.Id,
+                Id = StringIdGenerator.GenerateUniqueId(),
                 PackageId = response.PackageId,
                 OrderId = response.OrderId,
                 VnpAmount = response.VnpAmount,
@@ -115,6 +116,7 @@ namespace MobileShopAPI.Controllers
                 CoinPackage package = await _context.CoinPackages.FindAsync(transaction.PackageId);
                 if(package != null)
                 {
+                    if(user.UserBalance == null) { user.UserBalance = 0; }
                     user.UserBalance += package.PackageValue;
                     user.UpdatedDate = DateTime.Now;
                     _context.Users.Update(user);

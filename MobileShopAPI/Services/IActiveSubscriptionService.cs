@@ -53,6 +53,15 @@ namespace MobileShopAPI.Services
                 UserId = UsrId, 
                 SpId = model.SpId,
             };
+            var user = await _context.Users.FindAsync(UsrId);
+            var sp = await _context.SubscriptionPackages.FindAsync(model.SpId);
+            if(user != null && sp != null)
+                user.UserBalance -= sp.Price;
+
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+
             _context.Add(_model);
             await _context.SaveChangesAsync();
 
@@ -167,7 +176,7 @@ namespace MobileShopAPI.Services
 
         public async Task<List<ActiveSubscription>> GetByUserIdAsync(string id)
         {
-            var asub = await _context.ActiveSubscriptions.Where(b => b.UserId == id).ToListAsync();
+            var asub = await _context.ActiveSubscriptions.Include(p=>p.Sp).Where(b => b.UserId == id).ToListAsync();
             if (asub != null)
             {
                 return asub;
