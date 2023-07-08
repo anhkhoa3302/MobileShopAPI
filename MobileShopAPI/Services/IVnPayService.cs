@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MobileShopAPI.Data;
+using MobileShopAPI.Helpers;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.ViewModel;
@@ -37,17 +38,19 @@ namespace MobileShopAPI.Services
             var ordervalue = _context.Orders.FirstOrDefault(o => o.Id == model.OrderId);
             var packagevalue = _context.CoinPackages.FirstOrDefault(o => o.Id == model.packageId);
 
+            string orderInfo = string.Empty;
+
             long amount = 0;
             
             if(ordervalue != null )
             {
-                 amount = ordervalue.Total;
-                
+                amount = ordervalue.Total;
+                orderInfo = "Order#" + ordervalue.Id;
             }
-            if(packagevalue != null)
+            else if(packagevalue != null)
             {
-                 amount = packagevalue.PackageValue;
-                
+                amount = packagevalue.PackageValue;
+                orderInfo = "CoinPackage#" + packagevalue.Id; 
             }
 
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
@@ -58,10 +61,10 @@ namespace MobileShopAPI.Services
             pay.AddRequestData("vnp_CurrCode", _configuration["Vnpay:CurrCode"]);
             pay.AddRequestData("vnp_IpAddr", pay.GetIpAddress(context));
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"{model.packageId}");
+            pay.AddRequestData("vnp_OrderInfo", $"{orderInfo}");
             pay.AddRequestData("vnp_OrderType", model.OrderType);
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
-            pay.AddRequestData("vnp_TxnRef", model.OrderId);
+            pay.AddRequestData("vnp_TxnRef", StringIdGenerator.GenerateUniqueId());
             
 
             var paymentUrl =

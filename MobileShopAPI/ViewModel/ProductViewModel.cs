@@ -22,6 +22,7 @@ namespace MobileShopAPI.ViewModel
         /// <summary>
         /// Product is hidden if true
         /// </summary>
+        public long SpId { get; set; }
         public bool isHidden { get; set; }
         [Required]
         public long CategoryId { get; set; }

@@ -140,17 +140,24 @@ namespace MobileShopAPI.Controllers
             {
                 return BadRequest("Some properties are not valid");
             }
+
+
+
             var user = User.FindFirst(ClaimTypes.NameIdentifier);
             string userId;
             if (user != null)
             {
                 userId = user.Value;
+                var rs = await _postAndPackageService.IT_PostAsync(user.Value, model.SpId);
 
+                var asub = await _postAndPackageService.AS_PostAsync(model.SpId, user.Value);
+
+
+                if (!(rs.isSuccess && asub.isSuccess))
+                    return BadRequest(rs);
                 var result = await _productService.CreateProductAsync(userId, model);
                 if (result.isSuccess)
-                {
                     return Ok(result);
-                }
                 return BadRequest(result);
             }
                 

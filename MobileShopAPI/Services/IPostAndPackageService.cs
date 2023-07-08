@@ -340,9 +340,10 @@ namespace MobileShopAPI.Services
             _context.Add(_it);
             await _context.SaveChangesAsync();
 
-            if(SP.Name == "Free Subscription Package")
+            if(SP.Name=="Free Subscription Package")
             {
                 user.UserBalance = user.UserBalance - CA.CaCoinAmount;
+                _context.Users.Update(user);
                 await _context.SaveChangesAsync();
             }    
 

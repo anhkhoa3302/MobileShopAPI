@@ -36,6 +36,21 @@ public class VnPayLibrary
             }
         }
 
+        string packageId = string.Empty;
+        string orderId = string.Empty;
+        string transactionInfo = vnPay.GetResponseData("vnp_OrderInfo");
+        string[] Infos = transactionInfo.Split("#");
+        if (Infos[0].Equals("Order"))
+        {
+            orderId = Infos[1].ToString();
+        }
+        else
+        {
+            packageId = Infos[1].ToString();
+        }
+
+
+
         var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
         var amount = Convert.ToInt64(vnPay.GetResponseData("vnp_Amount")) / 100;
         var version = vnPay.GetResponseData("vnp_Version");
@@ -44,10 +59,8 @@ public class VnPayLibrary
         var currentCode = vnPay.GetResponseData("vnp_CurrCode");
         var IpAdd = vnPay.GetResponseData("vnp_IpAddr");
         var locale = vnPay.GetResponseData("vnp_Locale");
-        var orderId = vnPay.GetResponseData("vnp_TxnRef");
-        var vnpSecureHash =
-            collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
-        var package = vnPay.GetResponseData("vnp_OrderInfo");
+        var bankCode = vnPay.GetResponseData("vnp_BankCode");
+        var vnpSecureHash = collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
         
         var checkSignature =
             vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
@@ -61,11 +74,11 @@ public class VnPayLibrary
         return new VNPayTransactionViewModel
         {
             Success = true,
-            PackageId = package,
+            PackageId = packageId,
             Id = vnPayTranId.ToString(),
             VnpSecureHash = vnpSecureHash,
             VnpAmount = amount,
-            VnpBankCode ="VnPay",
+            VnpBankCode =bankCode,
             VnpCommand = command,
             VnpCurrCode = currentCode,
             VnpIpAddr = IpAdd,
@@ -73,7 +86,6 @@ public class VnPayLibrary
             VnpTmnCode = tmnCode,
             OrderId = orderId,
             VnpVersion = version
-
         };
 
     }
