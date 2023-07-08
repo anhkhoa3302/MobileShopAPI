@@ -722,12 +722,14 @@ namespace MobileShopAPI.Data
                 entity.HasOne(d => d.Order)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.OrderId)
-                    .HasConstraintName("fk_transaction_order");
+                    .HasConstraintName("fk_transaction_order")
+                    .IsRequired(false);
 
                 entity.HasOne(d => d.Package)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.PackageId)
-                    .HasConstraintName("fk_vnp_transaction_coin_package");
+                    .HasConstraintName("fk_vnp_transaction_coin_package")
+                    .IsRequired(false);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Transactions)
