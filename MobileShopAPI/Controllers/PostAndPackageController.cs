@@ -80,31 +80,31 @@ namespace MobileShopAPI.Controllers
         /// <response code ="200">New Active Subscription Added</response>
         /// <response code ="400">Model has missing/invalid values</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPost("buyPackage")]
-        [ProducesResponseType(typeof(ActiveSubscriptionResponse), 200)]
-        [ProducesResponseType(typeof(ActiveSubscriptionResponse), 400)]
-        [ProducesResponseType(500)]
-        [Authorize]
-        public async Task<IActionResult> BuyPackage(AddActiveSubscriptionViewModel model)
-        {
-            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+        //[HttpPost("buyPackage")]
+        //[ProducesResponseType(typeof(ActiveSubscriptionResponse), 200)]
+        //[ProducesResponseType(typeof(ActiveSubscriptionResponse), 400)]
+        //[ProducesResponseType(500)]
+        //[Authorize]
+        //public async Task<IActionResult> BuyPackage(AddActiveSubscriptionViewModel model)
+        //{
+        //    var user = User.FindFirst(ClaimTypes.NameIdentifier);
 
-            if (ModelState.IsValid)
-            {
-                var result = await _PaPService.AS_BuyPackageAsync(model, user.Value);
+        //    if (ModelState.IsValid)
+        //    {
+        //        var result = await _PaPService.AS_BuyPackageAsync(model, user.Value);
 
-                var in_tran = await _PaPService.IT_BuyPackageAsync(user.Value, model.SpId);
+        //        var in_tran = await _PaPService.IT_BuyPackageAsync(user.Value, model.SpId);
 
-                if (in_tran.isSuccess)
-                {
-                    if(result.isSuccess)
-                    { return Ok(result); }
-                }    
-                return BadRequest(in_tran);
-            }
+        //        if (in_tran.isSuccess)
+        //        {
+        //            if(result.isSuccess)
+        //            { return Ok(result); }
+        //        }    
+        //        return BadRequest(in_tran);
+        //    }
 
-            return BadRequest("Some properies are not valid");
-        }
+        //    return BadRequest("Some properies are not valid");
+        //}
 
         /// <summary>
         /// Add product
@@ -115,33 +115,33 @@ namespace MobileShopAPI.Controllers
         /// <response code ="200">Product has been added successfully</response>
         /// <response code ="400">Model has missing/invalid values</response>
         /// <response code ="500">>Oops! Something went wrong</response>
-        [HttpPost("post")]
-        [ProducesResponseType(typeof(ProductResponse), 200)]
-        [ProducesResponseType(typeof(ProductResponse), 400)]
-        [ProducesResponseType(500)]
-        [Authorize]
-        public async Task<IActionResult> Post(ProductSpIdViewModel model)
-        {
-            var user = User.FindFirst(ClaimTypes.NameIdentifier);
+        //[HttpPost("post")]
+        //[ProducesResponseType(typeof(ProductResponse), 200)]
+        //[ProducesResponseType(typeof(ProductResponse), 400)]
+        //[ProducesResponseType(500)]
+        //[Authorize]
+        //public async Task<IActionResult> Post(ProductSpIdViewModel model)
+        //{
+        //    var user = User.FindFirst(ClaimTypes.NameIdentifier);
 
-            if (ModelState.IsValid)
-            {
+        //    if (ModelState.IsValid)
+        //    {
 
-                var rs = await _PaPService.IT_PostAsync(user.Value, model.SpId);
+        //        var rs = await _PaPService.IT_PostAsync(user.Value, model.SpId);
 
-                var asub = await _PaPService.AS_PostAsync(model.SpId, user.Value);
+        //        var asub = await _PaPService.AS_PostAsync(model.SpId, user.Value);
 
-                if (rs.isSuccess && asub.isSuccess)
-                {
-                    var result = await _PaPService.CreateProductAsync(model, user.Value);
-                    if(result.isSuccess)
-                        return Ok(result);
-                }
-                return BadRequest(rs);
-            }
+        //        if (rs.isSuccess && asub.isSuccess)
+        //        {
+        //            var result = await _PaPService.CreateProductAsync(model, user.Value);
+        //            if(result.isSuccess)
+        //                return Ok(result);
+        //        }
+        //        return BadRequest(rs);
+        //    }
 
-            return BadRequest("Some properties are not valid");
-        }
+        //    return BadRequest("Some properties are not valid");
+        //}
 
         /// <summary>
         /// Hide Product
