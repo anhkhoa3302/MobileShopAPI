@@ -214,6 +214,10 @@ namespace MobileShopAPI.Services
             product.Price = model.Price;
             if (check)
                 product.Status = 2;
+            else if (product.Stock <= 0)
+                product.Status = 1;
+            else if (product.Status == 2)
+                product.Status = 2;
             else
                 product.Status = 0;
             product.CategoryId = model.CategoryId;
