@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Data;
 
 namespace MobileShopAPI.Controllers
 {
@@ -83,6 +85,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(ReportCategoryResponse), 200)]
         [ProducesResponseType(typeof(ReportCategoryResponse), 404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(ReportCategoryViewModel reportCategory)
         {
             if (ModelState.IsValid)
@@ -110,6 +113,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(ReportCategoryResponse), 200)]
         [ProducesResponseType(typeof(ReportCategoryResponse), 404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(long id, ReportCategoryViewModel reportCategory)
         {
             try
@@ -141,6 +145,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(ReportCategoryResponse), 200)]
         [ProducesResponseType(typeof(ReportCategoryResponse), 404)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(long id)
         {
             try

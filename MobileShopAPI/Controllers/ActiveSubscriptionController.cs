@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;

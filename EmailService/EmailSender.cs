@@ -19,7 +19,7 @@ namespace EmailService
         {
             var emailMessage = CreateEmailMessage(message);
             //Uncomment later
-            //await Send(emailMessage);
+            await Send(emailMessage);
         }
 
         private MimeMessage CreateEmailMessage(Message message)

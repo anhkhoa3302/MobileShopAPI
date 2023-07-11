@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Data;
 using System.Security.Claims;
 
 namespace MobileShopAPI.Controllers
@@ -78,6 +80,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(SubscriptionPackageResponse), 200)]
         [ProducesResponseType(typeof(SubscriptionPackageResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(SubscriptionPackageViewModel sp)
         {
             if (ModelState.IsValid)
@@ -104,6 +107,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(SubscriptionPackageResponse), 200)]
         [ProducesResponseType(typeof(SubscriptionPackageResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(long id, SubscriptionPackageViewModel sp)
         {
             try
@@ -133,6 +137,7 @@ namespace MobileShopAPI.Controllers
         /// <response code ="200">This Status Updated</response>
         /// <response code ="400">Model has missing/invalid values</response>
         [HttpPut("updateStatus/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateStatus(long id, SubscriptionPackageStatusViewModel sp)
         {
             try
@@ -165,6 +170,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(SubscriptionPackageResponse), 200)]
         [ProducesResponseType(typeof(SubscriptionPackageResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(long id)
         {
             try

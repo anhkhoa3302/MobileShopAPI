@@ -4,11 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using MobileShopAPI.Data;
 using MobileShopAPI.ViewModel;
 using MobileShopAPI.Services;
+using System.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MobileShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class StatisticsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

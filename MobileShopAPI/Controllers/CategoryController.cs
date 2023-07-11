@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Data;
 
 namespace MobileShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _cateService;
@@ -78,6 +81,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(CategoryResponse), 200)]
         [ProducesResponseType(typeof(CategoryResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(CategoryViewModel cate)
         {
             try
@@ -111,6 +115,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(CategoryResponse), 200)]
         [ProducesResponseType(typeof(CategoryResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(long id, CategoryViewModel cate)
         {
             try
@@ -143,6 +148,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(ProductResponse), 200)]
         [ProducesResponseType(typeof(ProductResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(long id)
         {
             try

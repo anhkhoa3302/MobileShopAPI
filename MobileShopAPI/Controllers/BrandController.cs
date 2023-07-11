@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Data;
+
 
 namespace MobileShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class BrandController : ControllerBase
     {
         private readonly IBrandService _brandService;
@@ -78,6 +82,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(BrandResponse), 200)]
         [ProducesResponseType(typeof(BrandResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(BrandViewModel brand)
         {
             if (ModelState.IsValid)
@@ -105,6 +110,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(BrandResponse), 200)]
         [ProducesResponseType(typeof(BrandResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(long id, BrandViewModel brand)
         {
             try
@@ -136,6 +142,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(ProductResponse), 200)]
         [ProducesResponseType(typeof(ProductResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(long id)
         {
             try

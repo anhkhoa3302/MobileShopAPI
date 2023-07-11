@@ -119,6 +119,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(UserManagerResponse), 200)]
         [ProducesResponseType(typeof(UserManagerResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> BanUser(string userId)
         {
             var result = await _userManagerService.BanUser(userId);

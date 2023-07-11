@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.ViewModel;
+using System.Data;
 
 namespace MobileShopAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class RolesController : ControllerBase
     {
         private readonly RoleManager<IdentityRole> roleManager;

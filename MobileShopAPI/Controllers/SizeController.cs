@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Data;
 
 namespace MobileShopAPI.Controllers
 {
@@ -77,6 +79,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(BrandResponse), 200)]
         [ProducesResponseType(typeof(BrandResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(SizeViewModel size)
         {
             try
@@ -111,6 +114,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(SizeResponse), 200)]
         [ProducesResponseType(typeof(SizeResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(long id, SizeViewModel size)
         {
             try
@@ -145,6 +149,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(SizeResponse), 200)]
         [ProducesResponseType(typeof(SizeResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(long id)
         {
             try

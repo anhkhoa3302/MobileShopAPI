@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Data;
 
 namespace MobileShopAPI.Controllers
 {
@@ -77,6 +79,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(CoinPackageResponse), 200)]
         [ProducesResponseType(typeof(CoinPackageResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(CoinPackageViewModel cp)
         {
             if (ModelState.IsValid)
@@ -104,6 +107,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(CoinPackageResponse), 200)]
         [ProducesResponseType(typeof(CoinPackageResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(string id, CoinPackageViewModel cp)
         {
             try
@@ -135,6 +139,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(CoinPackageResponse), 200)]
         [ProducesResponseType(typeof(CoinPackageResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             try

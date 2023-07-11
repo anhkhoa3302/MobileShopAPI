@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MobileShopAPI.Models;
 using MobileShopAPI.Responses;
 using MobileShopAPI.Services;
 using MobileShopAPI.ViewModel;
+using System.Data;
 
 namespace MobileShopAPI.Controllers
 {
@@ -79,6 +81,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(ColorResponse), 200)]
         [ProducesResponseType(typeof(ColorResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(ColorViewModel color)
         {
             try
@@ -111,6 +114,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(ColorResponse), 200)]
         [ProducesResponseType(typeof(ColorResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(long id, ColorViewModel color)
         {
             try
@@ -143,6 +147,7 @@ namespace MobileShopAPI.Controllers
         [ProducesResponseType(typeof(ColorResponse), 200)]
         [ProducesResponseType(typeof(ColorResponse), 400)]
         [ProducesResponseType(500)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(long id)
         {
             try
